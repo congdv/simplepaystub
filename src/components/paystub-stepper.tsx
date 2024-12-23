@@ -43,7 +43,6 @@ export default function PaystubStepper() {
   const {
     formState: { errors }
   } = useFormContext<PayStubType>();
-  console.log("🚀 ~ PaystubStepper ~ errors:", errors);
 
   const getVariant = (field: string) => {
     if (
