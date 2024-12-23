@@ -1,5 +1,5 @@
 "use client";
-import {  useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -14,7 +14,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue
-} from "./ui/select";
+} from "../ui/select";
 import { PROVINCES } from "@/constants";
 
 export default function EmployeeInfoForm() {
@@ -27,7 +27,9 @@ export default function EmployeeInfoForm() {
         name="payee.name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="after:content-['*'] after:text-red-500">Employee Name</FormLabel>
+            <FormLabel className="after:content-['*'] after:text-red-500">
+              Employee Name
+            </FormLabel>
             <FormControl>
               <Input placeholder="" type="text" {...field} />
             </FormControl>
@@ -42,7 +44,9 @@ export default function EmployeeInfoForm() {
         name="payee.address"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="after:content-['*'] after:text-red-500">Address</FormLabel>
+            <FormLabel className="after:content-['*'] after:text-red-500">
+              Address
+            </FormLabel>
             <FormControl>
               <Input placeholder="" type="text" {...field} />
             </FormControl>
@@ -76,7 +80,9 @@ export default function EmployeeInfoForm() {
             name="payee.city"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="after:content-['*'] after:text-red-500">City</FormLabel>
+                <FormLabel className="after:content-['*'] after:text-red-500">
+                  City
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="" type="text" {...field} />
                 </FormControl>
@@ -131,7 +137,9 @@ export default function EmployeeInfoForm() {
             name="payee.postalCode"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="after:content-['*'] after:text-red-500">Postal Code</FormLabel>
+                <FormLabel className="after:content-['*'] after:text-red-500">
+                  Postal Code
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="" type="text" {...field} />
                 </FormControl>
@@ -150,7 +158,9 @@ export default function EmployeeInfoForm() {
             name="payee.phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="after:content-['*'] after:text-red-500">Employee Phone Number</FormLabel>
+                <FormLabel className="after:content-['*'] after:text-red-500">
+                  Employee Phone Number
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="" type="text" {...field} />
                 </FormControl>

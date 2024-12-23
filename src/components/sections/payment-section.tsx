@@ -32,10 +32,10 @@ import {
   PAYMENT_FREQUENCIES,
   PAYMENT_TYPE
 } from "@/constants";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { PayStubType } from "@/types";
 
-export default function IncomeInfoForm() {
+export default function PaymentSection() {
   const form = useFormContext<PayStubType>();
   const formValues = form.watch();
 
@@ -81,9 +81,11 @@ export default function IncomeInfoForm() {
                 name="payment.hourlyRate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Hourly Rate</FormLabel>
+                    <FormLabel className="after:content-['*'] after:text-red-500">
+                      Hourly Rate
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="" type="number" {...field} />
+                      <Input placeholder="" type="number" {...field} min={0} />
                     </FormControl>
 
                     <FormMessage />
@@ -98,9 +100,11 @@ export default function IncomeInfoForm() {
                 name="payment.numOfHours"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Number of hours</FormLabel>
+                    <FormLabel className="after:content-['*'] after:text-red-500">
+                      Number of hours
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="" type="number" {...field} />
+                      <Input placeholder="" type="number" {...field} min={0} />
                     </FormControl>
 
                     <FormMessage />
@@ -118,7 +122,9 @@ export default function IncomeInfoForm() {
                 name="payment.annualSalary"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Annual Salary</FormLabel>
+                    <FormLabel className="after:content-['*'] after:text-red-500">
+                      Annual Salary
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="" type="number" {...field} />
                     </FormControl>
@@ -137,7 +143,9 @@ export default function IncomeInfoForm() {
               name="payment.frequency"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>How often do you pay?</FormLabel>
+                  <FormLabel className="after:content-['*'] after:text-red-500">
+                    How often do you pay?
+                  </FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={DEFAULT_PAYMENT_FREQUENCY}
@@ -211,7 +219,9 @@ export default function IncomeInfoForm() {
               name="payment.periodStart"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Pay Period Start</FormLabel>
+                  <FormLabel className="after:content-['*'] after:text-red-500">
+                    Pay Period Start
+                  </FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -253,7 +263,9 @@ export default function IncomeInfoForm() {
               name="payment.periodEnd"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Pay Period End</FormLabel>
+                  <FormLabel className="after:content-['*'] after:text-red-500">
+                    Pay Period End
+                  </FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -289,6 +301,20 @@ export default function IncomeInfoForm() {
             />
           </div>
         </div>
+        <FormField
+          control={form.control}
+          name="payment.ytd"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Year to Date amount</FormLabel>
+              <FormControl>
+                <Input placeholder="" type="number" {...field} min={0} />
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}

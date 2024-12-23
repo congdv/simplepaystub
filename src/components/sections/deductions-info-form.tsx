@@ -11,13 +11,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { PlusCircleIcon, Trash2 } from "lucide-react";
 
-
-export default function BenefitsInfoForm() {
+export default function DeductionsInfoForm() {
   const { control } = useFormContext();
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "benefits"
+    name: "deductions"
   });
 
   return (
@@ -26,13 +25,13 @@ export default function BenefitsInfoForm() {
         {fields.map((field, index) => {
           return (
             <div className="grid grid-cols-12 gap-2" key={field.id}>
-              <div className="col-span-6">
+              <div className="col-span-4">
                 <FormField
                   control={control}
-                  name={`benefits[${index}].label`}
+                  name={`deductions[${index}].label`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Benefit name</FormLabel>
+                      <FormLabel>Deduction name</FormLabel>
                       <FormControl>
                         <Input placeholder="" type="text" {...field} />
                       </FormControl>
@@ -43,13 +42,30 @@ export default function BenefitsInfoForm() {
                 />
               </div>
 
-              <div className="col-span-5">
+              <div className="col-span-3">
                 <FormField
                   control={control}
-                  name={`benefits[${index}].value`}
+                  name={`deductions[${index}].value`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Benefit value</FormLabel>
+                      <FormLabel>Deduction value</FormLabel>
+                      <FormControl>
+                        <Input placeholder="" type="number" {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="col-span-4">
+                <FormField
+                  control={control}
+                  name={`deductions[${index}].ytd`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Year to Date deduction</FormLabel>
                       <FormControl>
                         <Input placeholder="" type="number" {...field} />
                       </FormControl>
@@ -78,11 +94,11 @@ export default function BenefitsInfoForm() {
         variant={"ghost"}
         onClick={(event) => {
           event.preventDefault();
-          append({ label: "", value: "" });
+          append({ label: "", value: "", ytd: "" });
         }}
       >
         <PlusCircleIcon />
-        Add new benefit
+        Add new deduction
       </Button>
     </>
   );

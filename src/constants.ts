@@ -62,7 +62,8 @@ const PAYMENT_DEFAULT_VALUES = {
   periodStart: new Date(),
   periodEnd: new Date(),
   frequency: "",
-  chequeNumber: ""
+  chequeNumber: "",
+  ytd: ""
 };
 
 export const PAY_STUB_FORM_DEFAULT_VALUES = {

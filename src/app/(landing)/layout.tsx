@@ -12,7 +12,8 @@ export default function LandingLayout({
 }) {
   const form = useForm<PayStubType>({
     resolver: zodResolver(PayStubSchema),
-    defaultValues: PAY_STUB_FORM_DEFAULT_VALUES
+    defaultValues: PAY_STUB_FORM_DEFAULT_VALUES,
+    mode: "all"
   });
   return (
     <main className="h-full bg-[#fff] overflow-auto">

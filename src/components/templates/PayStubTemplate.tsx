@@ -28,6 +28,10 @@ export default function PayStubTemplate(data: PayStubType) {
     0
   );
   const netPay = Number(payments) - Number(deductions);
+  const ytdTotalPayment =
+    Number(data.payment.ytd) +
+    data.benefits.reduce((prev, curr) => Number(prev) + Number(curr.ytd), 0);
+  const ytdTotalDeduction = data.deductions.reduce((prev, curr) => Number(prev) + Number(curr.ytd), 0)
   return (
     <div className="mx-8">
       <div className="flex justify-between">
@@ -63,7 +67,12 @@ export default function PayStubTemplate(data: PayStubType) {
           </p>
         </div>
       </div>
-      <div className="flex justify-between text-sm mt-5 bg-blue-400 p-2 text-white">
+      <div className="mt-2">
+        {data.payment.chequeNumber && (
+          <p>Check #: {data.payment.chequeNumber}</p>
+        )}
+      </div>
+      <div className="flex justify-between text-sm mt-2 bg-blue-400 p-2 text-white">
         {data.payment.periodStart && data.payment.periodEnd && (
           <p>
             Pay Period:{" "}
@@ -116,7 +125,7 @@ export default function PayStubTemplate(data: PayStubType) {
               {formatCurrency(regularPay)}
             </TableCell>
             <TableCell className="text-right">
-              {formatCurrency(regularPay)}
+              {formatCurrency(Number(data.payment.ytd))}
             </TableCell>
             <TableCell>{""}</TableCell>
             <TableCell className="text-right">{""}</TableCell>
@@ -137,7 +146,7 @@ export default function PayStubTemplate(data: PayStubType) {
                 </TableCell>
                 <TableCell className="text-right">
                   {data.benefits[index]?.value &&
-                    formatCurrency(Number(data.benefits[index]?.value))}
+                    formatCurrency(Number(data.benefits[index]?.ytd))}
                 </TableCell>
                 <TableCell>{data.deductions[index]?.label}</TableCell>
                 <TableCell className="text-right">
@@ -146,7 +155,7 @@ export default function PayStubTemplate(data: PayStubType) {
                 </TableCell>
                 <TableCell className="text-right">
                   {data.deductions[index]?.value &&
-                    formatCurrency(Number(data.deductions[index]?.value))}
+                    formatCurrency(Number(data.deductions[index]?.ytd))}
                 </TableCell>
               </TableRow>
             ))}
@@ -160,22 +169,24 @@ export default function PayStubTemplate(data: PayStubType) {
               {formatCurrency(payments)}
             </TableCell>
             <TableCell className="text-right">
-              {formatCurrency(payments)}
+              {formatCurrency(ytdTotalPayment)}
             </TableCell>
             <TableCell>Deductions</TableCell>
             <TableCell className="text-right">
               {formatCurrency(deductions)}
             </TableCell>
             <TableCell className="text-right">
-              {formatCurrency(deductions)}
+              {formatCurrency(ytdTotalDeduction)}
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell colSpan={2}>Deduction</TableCell>
             <TableCell className="text-right"></TableCell>
-            <TableCell className="text-right"></TableCell>
             <TableCell className="text-right">
               {formatCurrency(deductions)}
+            </TableCell>
+            <TableCell className="text-right">
+              {formatCurrency(ytdTotalDeduction)}
             </TableCell>
             <TableCell className="text-right"></TableCell>
             <TableCell className="text-right"></TableCell>
@@ -189,7 +200,7 @@ export default function PayStubTemplate(data: PayStubType) {
               {formatCurrency(netPay)}
             </TableCell>
             <TableCell className="text-right">
-              {formatCurrency(netPay)}
+              {formatCurrency(ytdTotalPayment - ytdTotalDeduction)}
             </TableCell>
             <TableCell className="text-right"></TableCell>
             <TableCell className="text-right"></TableCell>
