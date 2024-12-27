@@ -2,7 +2,7 @@
 
 import { PayStubType } from "@/types";
 import PaystubStepper from "./paystub-stepper";
-
+import { toast } from "sonner";
 import { useFormContext } from "react-hook-form";
 import PayStubTemplate from "./templates/PayStubTemplate";
 import { Form } from "./ui/form";
@@ -30,9 +30,12 @@ export const LandingContent = () => {
         window.URL.revokeObjectURL(url);
       });
   };
+  const onInvalid = () => {
+    toast.warning("Please review invalid fields!");
+  };
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
         <div className="h-full pt-16 flex flex-wrap mx-auto max-w-screen-xl w-full">
           <div className="xl:w-[40%] md:w-full">
             <PaystubStepper />

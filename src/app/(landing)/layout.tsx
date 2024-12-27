@@ -4,6 +4,7 @@ import { PayStubSchema } from "@/schemas";
 import { PayStubType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
+import { Toaster } from "sonner";
 
 export default function LandingLayout({
   children
@@ -17,6 +18,7 @@ export default function LandingLayout({
   });
   return (
     <main className="h-full bg-[#fff] overflow-auto">
+      <Toaster position="top-center" richColors />
       <FormProvider {...form}>{children}</FormProvider>
     </main>
   );
