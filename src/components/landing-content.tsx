@@ -33,6 +33,9 @@ export const LandingContent = () => {
   const onInvalid = () => {
     toast.warning("Please review invalid fields!");
   };
+  const onReset = () => {
+    form.reset();
+  };
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
@@ -40,11 +43,11 @@ export const LandingContent = () => {
           <div className="xl:w-[40%] md:w-full">
             <PaystubStepper />
           </div>
-          <div className="h-full xl:w-[60%] md:w-full">
+          <div className="h-full xl:w-[60%] md:w-full mt-32">
             <PayStubTemplate {...formValues} />
           </div>
         </div>
-        <Toolbar />
+        <Toolbar onReset={onReset} />
       </form>
     </Form>
   );
