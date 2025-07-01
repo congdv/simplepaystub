@@ -43,11 +43,13 @@ export const LandingContent = () => {
           <div className="w-full md:w-[40%]">
             <PaystubStepper />
           </div>
-          <div className="w-full md:w-[60%] mt-8 md:mt-32 overflow-x-auto">
+          <div className="w-full md:w-[60%] mt-0 md:mt-32 overflow-x-auto">
             <PayStubTemplate {...formValues} />
+            <div className="h-4" />
+            <Toolbar onReset={onReset} />
+
           </div>
         </div>
-        <Toolbar onReset={onReset} />
       </form>
     </Form>
   );

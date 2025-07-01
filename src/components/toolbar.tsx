@@ -6,14 +6,25 @@ interface ToolbarProps {
 }
 export default function Toolbar({ onReset }: ToolbarProps) {
   return (
-    <div className="fixed bottom-4 z-50 left-1/2 transform -translate-x-1/2 bg-white  p-4 rounded-full shadow-lg">
-      <Button type="button" variant={"ghost"} title="Reset pay stub" onClick={onReset}>
-        <ListRestart />
-        <span>Reset Pay Stub</span>
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-2 py-3 flex flex-col gap-2 items-center sm:flex-row sm:justify-center sm:gap-4 md:static md:border-0 md:p-0 md:flex-row md:justify-center md:bg-transparent">
+      <Button
+        type="button"
+        variant="ghost"
+        title="Reset pay stub"
+        onClick={onReset}
+        className="flex-1 flex items-center justify-center gap-2 py-3 text-base md:flex-initial md:w-auto md:px-6 md:py-2"
+      >
+        <ListRestart className="w-5 h-5" />
+        <span>Reset</span>
       </Button>
-      <Button type="submit" variant={"ghost"} title="Download pay stub">
-        <DownloadCloud />
-        <span>Download Pay Stub</span>
+      <Button
+        type="submit"
+        variant="ghost"
+        title="Download pay stub"
+        className="flex-1 flex items-center justify-center gap-2 py-3 text-base md:flex-initial md:w-auto md:px-6 md:py-2"
+      >
+        <DownloadCloud className="w-5 h-5" />
+        <span>Download</span>
       </Button>
     </div>
   );
