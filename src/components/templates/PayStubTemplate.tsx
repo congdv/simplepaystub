@@ -111,7 +111,7 @@ export default function PayStubTemplate(data: PayStubType) {
         </TableHeader>
         <TableBody>
           <TableRow>
-            <TableCell className="font-medium">{data.payment.name}</TableCell>
+            <TableCell className="font-medium">{data.payment.type === DEFAULT_PAYMENT_TYPE ? "Hourly" : "Regular Salary"}</TableCell>
             <TableCell className="text-right">
               {data.payment.type === DEFAULT_PAYMENT_TYPE &&
                 data.payment.hourlyRate &&
