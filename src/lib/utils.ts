@@ -25,3 +25,4 @@ export const formatNumberWithCommas = (number: number = 0) => {
 export const formatCurrency = (number: number = 0) => {
   return `$${formatNumberWithCommas(number)}`
 }
+
