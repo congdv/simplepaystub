@@ -39,11 +39,11 @@ export const LandingContent = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
-        <div className="h-full pt-16 flex flex-wrap mx-auto max-w-screen-xl w-full">
-          <div className="xl:w-[40%] md:w-full">
+        <div className="flex flex-col md:flex-row h-full pt-4 md:pt-16 mx-auto max-w-screen-xl w-full gap-4">
+          <div className="w-full md:w-[40%]">
             <PaystubStepper />
           </div>
-          <div className="h-full xl:w-[60%] md:w-full mt-32">
+          <div className="w-full md:w-[60%] mt-8 md:mt-32 overflow-x-auto">
             <PayStubTemplate {...formValues} />
           </div>
         </div>

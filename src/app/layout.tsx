@@ -13,9 +13,10 @@ const geistMono = localFont({
   weight: '100 900',
 });
 
-export const metadata: Metadata = {
-  title: 'Pay Stub',
-  description: 'Pay Stub',
+export const metadata = {
+  title: 'Paystub Generator',
+  description: 'Easily create and generate professional paystubs as PDF files.',
+  keywords: ['paystub', 'paystub generator', 'pdf', 'salary', 'payroll'],
 };
 
 export default function RootLayout({
