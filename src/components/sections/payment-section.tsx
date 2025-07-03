@@ -137,7 +137,7 @@ export default function PaymentSection() {
             </div>
           </div>
         )}
-        <div className="grid grid-cols-12">
+        {/* <div className="grid grid-cols-12">
           <div className="col-span-4">
             <FormField
               control={form.control}
@@ -167,7 +167,7 @@ export default function PaymentSection() {
               )}
             />
           </div>
-        </div>
+        </div> */}
         <FormField
           control={form.control}
           name="payment.date"
