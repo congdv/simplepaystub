@@ -1,22 +1,16 @@
-"use client";
-import { useFieldArray, useFormContext } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { PlusCircleIcon, Trash2 } from "lucide-react";
+'use client';
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { PlusCircleIcon, Trash2 } from 'lucide-react';
 
 export default function BenefitsInfoForm() {
   const { control } = useFormContext();
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "benefits"
+    name: 'benefits',
   });
 
   return (
@@ -78,7 +72,7 @@ export default function BenefitsInfoForm() {
                 <div className="flex flex-col h-full justify-end">
                   <Button
                     className="text-red-400 hover:text-red-500"
-                    variant={"ghost"}
+                    variant={'ghost'}
                     onClick={() => remove(index)}
                   >
                     <Trash2 />
@@ -90,10 +84,10 @@ export default function BenefitsInfoForm() {
         })}
       </div>
       <Button
-        variant={"ghost"}
+        variant={'ghost'}
         onClick={(event) => {
           event.preventDefault();
-          append({ label: "", value: "", ytd: ""});
+          append({ label: '', value: '', ytd: '' });
         }}
       >
         <PlusCircleIcon />

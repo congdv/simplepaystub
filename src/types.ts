@@ -1,4 +1,4 @@
-import z from "zod";
-import { PayStubSchema } from "./schemas";
+import z from 'zod';
+import { PayStubSchema } from './schemas';
 
 export type PayStubType = z.infer<typeof PayStubSchema>;

@@ -1,21 +1,15 @@
-"use client";
-import { useFormContext } from "react-hook-form";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+'use client';
+import { useFormContext } from 'react-hook-form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
-import { PROVINCES } from "@/constants";
+  SelectValue,
+} from '@/components/ui/select';
+import { PROVINCES } from '@/constants';
 
 export default function BusinessInfoForm() {
   const form = useFormContext();
@@ -27,9 +21,7 @@ export default function BusinessInfoForm() {
         name="payer.name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="after:content-['*'] after:text-red-500">
-              Company name
-            </FormLabel>
+            <FormLabel className="after:content-['*'] after:text-red-500">Company name</FormLabel>
             <FormControl>
               <Input placeholder="" type="text" {...field} />
             </FormControl>
@@ -84,9 +76,7 @@ export default function BusinessInfoForm() {
             name="payer.city"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="after:content-['*'] after:text-red-500">
-                  City
-                </FormLabel>
+                <FormLabel className="after:content-['*'] after:text-red-500">City</FormLabel>
                 <FormControl>
                   <Input placeholder="" type="text" {...field} />
                 </FormControl>
@@ -105,13 +95,8 @@ export default function BusinessInfoForm() {
             name="payer.province"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="after:content-['*'] after:text-red-500">
-                  Province
-                </FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <FormLabel className="after:content-['*'] after:text-red-500">Province</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="" />
@@ -119,10 +104,7 @@ export default function BusinessInfoForm() {
                   </FormControl>
                   <SelectContent>
                     {PROVINCES.map((province) => (
-                      <SelectItem
-                        value={province.abbreviation}
-                        key={province.abbreviation}
-                      >
+                      <SelectItem value={province.abbreviation} key={province.abbreviation}>
                         {province.name}
                       </SelectItem>
                     ))}

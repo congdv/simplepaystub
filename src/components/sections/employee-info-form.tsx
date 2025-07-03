@@ -1,21 +1,9 @@
-"use client";
-import { useFormContext } from "react-hook-form";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "../ui/select";
-import { PROVINCES } from "@/constants";
+'use client';
+import { useFormContext } from 'react-hook-form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { PROVINCES } from '@/constants';
 
 export default function EmployeeInfoForm() {
   const form = useFormContext();
@@ -27,9 +15,7 @@ export default function EmployeeInfoForm() {
         name="payee.name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="after:content-['*'] after:text-red-500">
-              Employee Name
-            </FormLabel>
+            <FormLabel className="after:content-['*'] after:text-red-500">Employee Name</FormLabel>
             <FormControl>
               <Input placeholder="" type="text" {...field} />
             </FormControl>
@@ -44,9 +30,7 @@ export default function EmployeeInfoForm() {
         name="payee.address"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="after:content-['*'] after:text-red-500">
-              Address
-            </FormLabel>
+            <FormLabel className="after:content-['*'] after:text-red-500">Address</FormLabel>
             <FormControl>
               <Input placeholder="" type="text" {...field} />
             </FormControl>
@@ -80,9 +64,7 @@ export default function EmployeeInfoForm() {
             name="payee.city"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="after:content-['*'] after:text-red-500">
-                  City
-                </FormLabel>
+                <FormLabel className="after:content-['*'] after:text-red-500">City</FormLabel>
                 <FormControl>
                   <Input placeholder="" type="text" {...field} />
                 </FormControl>
@@ -101,13 +83,8 @@ export default function EmployeeInfoForm() {
             name="payee.province"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="after:content-['*'] after:text-red-500">
-                  Province
-                </FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <FormLabel className="after:content-['*'] after:text-red-500">Province</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="" />
@@ -115,10 +92,7 @@ export default function EmployeeInfoForm() {
                   </FormControl>
                   <SelectContent>
                     {PROVINCES.map((province) => (
-                      <SelectItem
-                        value={province.abbreviation}
-                        key={province.abbreviation}
-                      >
+                      <SelectItem value={province.abbreviation} key={province.abbreviation}>
                         {province.name}
                       </SelectItem>
                     ))}

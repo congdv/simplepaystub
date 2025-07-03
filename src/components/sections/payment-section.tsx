@@ -1,39 +1,35 @@
-"use client";
-import { useFormContext } from "react-hook-form";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+'use client';
+import { useFormContext } from 'react-hook-form';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
-} from "@/components/ui/form";
-import { format } from "date-fns";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Calendar as CalendarIcon } from "lucide-react";
+  FormMessage,
+} from '@/components/ui/form';
+import { format } from 'date-fns';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { Calendar as CalendarIcon } from 'lucide-react';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
+  SelectValue,
+} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import {
   DEFAULT_PAYMENT_FREQUENCY,
   DEFAULT_PAYMENT_TYPE,
   PAYMENT_FREQUENCIES,
-  PAYMENT_TYPE
-} from "@/constants";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { PayStubType } from "@/types";
+  PAYMENT_TYPE,
+} from '@/constants';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { PayStubType } from '@/types';
 
 export default function PaymentSection() {
   const form = useFormContext<PayStubType>();
@@ -146,10 +142,7 @@ export default function PaymentSection() {
                   <FormLabel className="after:content-['*'] after:text-red-500">
                     How often do you pay?
                   </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={DEFAULT_PAYMENT_FREQUENCY}
-                  >
+                  <Select onValueChange={field.onChange} defaultValue={DEFAULT_PAYMENT_FREQUENCY}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="" />
@@ -175,24 +168,18 @@ export default function PaymentSection() {
           name="payment.date"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel className="after:content-['*'] after:text-red-500">
-                Pay date
-              </FormLabel>
+              <FormLabel className="after:content-['*'] after:text-red-500">Pay date</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
-                      variant={"outline"}
+                      variant={'outline'}
                       className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
+                        'w-[240px] pl-3 text-left font-normal',
+                        !field.value && 'text-muted-foreground'
                       )}
                     >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
+                      {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
                   </FormControl>
@@ -226,17 +213,13 @@ export default function PaymentSection() {
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
-                          variant={"outline"}
+                          variant={'outline'}
                           className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
+                            'w-[240px] pl-3 text-left font-normal',
+                            !field.value && 'text-muted-foreground'
                           )}
                         >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
+                          {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </FormControl>
@@ -270,17 +253,13 @@ export default function PaymentSection() {
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
-                          variant={"outline"}
+                          variant={'outline'}
                           className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
+                            'w-[240px] pl-3 text-left font-normal',
+                            !field.value && 'text-muted-foreground'
                           )}
                         >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
+                          {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </FormControl>

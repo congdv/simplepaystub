@@ -4,10 +4,10 @@ import { LandingNavbar } from '@/components/landing-navbar';
 
 export default function Landing() {
   return (
-    <div className='h-full'>
+    <div className="h-full">
       <LandingNavbar />
-      <LandingContent/>
-      <LandingFooter/>
+      <LandingContent />
+      <LandingFooter />
     </div>
   );
 }
