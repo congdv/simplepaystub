@@ -1,6 +1,5 @@
 'use client';
 import { PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
-import { mockPayStub } from '@/lib/mock';
 import { PayStubSchema } from '@/schemas';
 import { PayStubType } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,8 +9,7 @@ import { Toaster } from 'sonner';
 export default function LandingLayout({ children }: { children: React.ReactNode }) {
   const form = useForm<PayStubType>({
     resolver: zodResolver(PayStubSchema),
-    // defaultValues: PAY_STUB_FORM_DEFAULT_VALUES,
-    defaultValues: mockPayStub,
+    defaultValues: PAY_STUB_FORM_DEFAULT_VALUES,
     mode: 'all',
   });
   return (

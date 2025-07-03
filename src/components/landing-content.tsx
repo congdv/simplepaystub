@@ -8,6 +8,8 @@ import PayStubTemplate from './templates/PayStubTemplate';
 import { Form } from './ui/form';
 import Toolbar from './toolbar';
 import { useState } from 'react';
+import { mockPayStub } from '@/lib/mock';
+import { PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
 
 export const LandingContent = () => {
   const form = useFormContext<PayStubType>();
@@ -48,9 +50,14 @@ export const LandingContent = () => {
     toast.warning('Please review invalid fields!');
   };
   const onReset = () => {
-    form.reset();
+    form.reset(PAY_STUB_FORM_DEFAULT_VALUES);
     setErrorMsg(null);
   };
+  const onLoadSample = () => {
+    form.reset(mockPayStub)
+    setErrorMsg(null);
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
@@ -69,7 +76,7 @@ export const LandingContent = () => {
             )}
           </div>
         </div>
-        <Toolbar onReset={onReset} isLoading={isLoading} />
+        <Toolbar onReset={onReset} isLoading={isLoading} onLoadSample={onLoadSample}/>
       </form>
     </Form>
   );
