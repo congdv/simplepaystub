@@ -2,12 +2,14 @@ import { z } from 'zod';
 
 const fieldValidators = {
   minString: (message: string) => z.string().min(1, message),
+  nonNegativeString: (field: string) => z.string().refine(val => Number(val) >= 0, {
+    message: `${field} must be a non-negative number`,})
 };
 
 const DynamicFieldSchema = z.object({
   label: z.string(),
-  value: z.string(),
-  ytd: z.string(),
+  value: fieldValidators.nonNegativeString('Value'),
+  ytd: fieldValidators.nonNegativeString('YTD'),
 });
 
 const PayerSchema = z.object({
@@ -39,14 +41,14 @@ const PaymentSchema = z
     name: z.string(),
     frequency: z.string(),
     type: z.string(),
-    hourlyRate: z.string().optional(),
-    numOfHours: z.string().optional(),
-    annualSalary: z.string().optional(),
+    hourlyRate: fieldValidators.nonNegativeString('Hourly rate'),
+    numOfHours: fieldValidators.nonNegativeString('Number of hours'),
+    annualSalary: fieldValidators.nonNegativeString('Annual salary'),
     date: z.coerce.date(),
     periodStart: z.coerce.date().optional(),
     periodEnd: z.coerce.date().optional(),
     chequeNumber: z.string().optional(),
-    ytd: z.string().optional(),
+    ytd: fieldValidators.nonNegativeString('YTD'),
   })
   .refine(
     (data) => {
