@@ -21,6 +21,7 @@
     "@radix-ui/react-toast": "^1.2.4",
     "@react-pdf/renderer": "^4.3.0",
     "@sparticuz/chromium": "^131.0.1",
+    "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.0.0",
