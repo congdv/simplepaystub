@@ -40,7 +40,7 @@ const steps = [
 
 export default function PaystubStepper() {
   const {
-    formState: { errors }
+    formState: { errors },
   } = useFormContext<PayStubType>();
 
   const getVariant = (field: string) => {

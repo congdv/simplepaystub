@@ -176,6 +176,7 @@ const PaystubDocument = (data: PayStubType) => {
         <View style={styles.tableRow}>
             <Text style={styles.tableCol}>Deduction</Text>
             <Text style={styles.tableCol}></Text>
+            <Text style={styles.tableCol}></Text>
             <Text style={styles.tableCol}>{formatCurrency(deductions)}</Text>
             <Text style={styles.tableCol}>{formatCurrency(ytdTotalDeduction)}</Text>
             <Text style={styles.tableCol}></Text>
