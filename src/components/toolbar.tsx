@@ -1,10 +1,11 @@
-import { DownloadCloud, ListRestart } from "lucide-react";
+import { DownloadCloud, ListRestart, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 
 interface ToolbarProps {
   onReset: () => void;
+  isLoading: boolean;
 }
-export default function Toolbar({ onReset }: ToolbarProps) {
+export default function Toolbar({ onReset, isLoading=false }: ToolbarProps) {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-2 py-3 flex flex-col gap-2 items-center sm:flex-row sm:justify-center sm:gap-4 md:static md:border-0 md:p-0 md:flex-row md:justify-center md:bg-transparent">
       <Button
@@ -22,9 +23,19 @@ export default function Toolbar({ onReset }: ToolbarProps) {
         variant="ghost"
         title="Download pay stub"
         className="flex-1 flex items-center justify-center gap-2 py-3 text-base md:flex-initial md:w-auto md:px-6 md:py-2"
+        disabled={isLoading}
       >
-        <DownloadCloud className="w-5 h-5" />
-        <span>Download</span>
+        {isLoading ? (
+          <>
+            <Loader2 className="w-5 h-5 animate-spin" />
+            <span>Generating...</span>
+          </>
+        ) : (
+          <>
+            <DownloadCloud className="w-5 h-5" />
+            <span>Download</span>
+          </>
+        )}
       </Button>
     </div>
   );
