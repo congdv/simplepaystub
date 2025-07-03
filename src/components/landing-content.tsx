@@ -10,6 +10,7 @@ import Toolbar from './toolbar';
 import { useState } from 'react';
 import { mockPayStub } from '@/lib/mock';
 import { PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
+import { DownloadConfirmationModal } from './download-confirmation-modal';
 
 export const LandingContent = () => {
   const form = useFormContext<PayStubType>();
@@ -17,8 +18,11 @@ export const LandingContent = () => {
   const formValues = watch();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [formData, setFormData] = useState<PayStubType>(PAY_STUB_FORM_DEFAULT_VALUES);
 
-  const onSubmit = async (data: PayStubType) => {
+  const onSubmit = async () => {
+    setConfirmOpen(false);
     setIsLoading(true);
     setErrorMsg(null);
     try {
@@ -27,7 +31,7 @@ export const LandingContent = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formData),
       });
       if (!res.ok) {
         throw new Error('Failed to generate paystub PDF.');
@@ -58,9 +62,14 @@ export const LandingContent = () => {
     setErrorMsg(null);
   }
 
+  const onDownload = (data: PayStubType) => {
+    setConfirmOpen(true);
+    setFormData(data);
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
+      <form onSubmit={form.handleSubmit(onDownload, onInvalid)}>
         <div className="flex flex-col md:flex-row h-full pt-4 md:pt-16 mx-auto max-w-screen-xl w-full gap-4">
           <div className="w-full md:w-[40%]">
             <PaystubStepper />
@@ -77,7 +86,9 @@ export const LandingContent = () => {
           </div>
         </div>
         <Toolbar onReset={onReset} isLoading={isLoading} onLoadSample={onLoadSample}/>
+        <DownloadConfirmationModal open={confirmOpen} onClose={() => setConfirmOpen(false)} onConfirm={onSubmit}/>
       </form>
+     
     </Form>
   );
 };
