@@ -15,9 +15,9 @@ const geistMono = localFont({
 });
 
 export const metadata = {
-  title: 'Paystub Generator',
+  title: 'Simple Paystub',
   description: 'Easily create and generate professional paystubs as PDF files.',
-  keywords: ['paystub', 'paystub generator', 'pdf', 'salary', 'payroll'],
+  keywords: ['simple paystub', 'canadian paystub', 'paystub generator', 'pdf', 'salary', 'payroll', 'hourly', 'rate'],
 };
 
 export default function RootLayout({
