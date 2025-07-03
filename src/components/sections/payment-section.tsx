@@ -30,9 +30,14 @@ import {
 } from '@/constants';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { PayStubType } from '@/types';
+import { useState } from 'react';
 
 export default function PaymentSection() {
   const form = useFormContext<PayStubType>();
+  const [payDateOpen, setPayDateOpen] = useState(false);
+  const [periodStartOpen, setPeriodStartOpen] = useState(false);
+  const [periodEndOpen, setPeriodEndOpen] = useState(false);
+
   const formValues = form.watch();
 
   return (
@@ -169,13 +174,13 @@ export default function PaymentSection() {
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel className="after:content-['*'] after:text-red-500">Pay date</FormLabel>
-              <Popover>
+              <Popover open={payDateOpen} onOpenChange={setPayDateOpen}>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
                       variant={'outline'}
                       className={cn(
-                        'w-[240px] pl-3 text-left font-normal',
+                        'w-[200px] pl-3 text-left font-normal',
                         !field.value && 'text-muted-foreground'
                       )}
                     >
@@ -188,7 +193,10 @@ export default function PaymentSection() {
                   <Calendar
                     mode="single"
                     selected={field.value}
-                    onSelect={field.onChange}
+                    onSelect={date => {
+                      field.onChange(date);
+                      setPayDateOpen(false);
+                    }}
                     initialFocus
                   />
                 </PopoverContent>
@@ -209,13 +217,13 @@ export default function PaymentSection() {
                   <FormLabel className="after:content-['*'] after:text-red-500">
                     Pay Period Start
                   </FormLabel>
-                  <Popover>
+                  <Popover open={periodStartOpen} onOpenChange={setPeriodStartOpen}>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
                           variant={'outline'}
                           className={cn(
-                            'w-[240px] pl-3 text-left font-normal',
+                            'w-[200px] pl-3 text-left font-normal',
                             !field.value && 'text-muted-foreground'
                           )}
                         >
@@ -228,7 +236,10 @@ export default function PaymentSection() {
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={field.onChange}
+                        onSelect={date => {
+                          field.onChange(date);
+                          setPeriodStartOpen(false);
+                        }}
                         initialFocus
                       />
                     </PopoverContent>
@@ -249,13 +260,13 @@ export default function PaymentSection() {
                   <FormLabel className="after:content-['*'] after:text-red-500">
                     Pay Period End
                   </FormLabel>
-                  <Popover>
+                  <Popover open={periodEndOpen} onOpenChange={setPeriodEndOpen}>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
                           variant={'outline'}
                           className={cn(
-                            'w-[240px] pl-3 text-left font-normal',
+                            'w-[200px] pl-3 text-left font-normal',
                             !field.value && 'text-muted-foreground'
                           )}
                         >
@@ -268,7 +279,10 @@ export default function PaymentSection() {
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={field.onChange}
+                        onSelect={date => {
+                          field.onChange(date);
+                          setPeriodEndOpen(false);
+                        }}
                         initialFocus
                       />
                     </PopoverContent>
