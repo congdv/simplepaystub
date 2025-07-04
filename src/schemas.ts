@@ -2,8 +2,10 @@ import { z } from 'zod';
 
 const fieldValidators = {
   minString: (message: string) => z.string().min(1, message),
-  nonNegativeString: (field: string) => z.string().refine(val => Number(val) >= 0, {
-    message: `${field} must be a non-negative number`,})
+  nonNegativeString: (field: string) =>
+    z.string().refine((val) => Number(val) >= 0, {
+      message: `${field} must be a non-negative number`,
+    }),
 };
 
 const DynamicFieldSchema = z.object({

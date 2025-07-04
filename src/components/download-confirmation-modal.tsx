@@ -1,7 +1,13 @@
-import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useEffect, useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface DownloadConfirmationModalProps {
   onClose: () => void;
@@ -9,7 +15,11 @@ interface DownloadConfirmationModalProps {
   open: boolean;
 }
 
-export function DownloadConfirmationModal({ open, onClose, onConfirm }:DownloadConfirmationModalProps) {
+export function DownloadConfirmationModal({
+  open,
+  onClose,
+  onConfirm,
+}: DownloadConfirmationModalProps) {
   const [agreed, setAgreed] = useState(false);
 
   useEffect(() => {
@@ -35,12 +45,20 @@ export function DownloadConfirmationModal({ open, onClose, onConfirm }:DownloadC
             </ul>
           </p>
           <div className="flex items-center space-x-2 mt-4">
-            <Checkbox id="agree" checked={agreed} onCheckedChange={checked => setAgreed(checked === true)} />
-            <label htmlFor="agree" className="text-sm">I have read and agree to these terms.</label>
+            <Checkbox
+              id="agree"
+              checked={agreed}
+              onCheckedChange={(checked) => setAgreed(checked === true)}
+            />
+            <label htmlFor="agree" className="text-sm">
+              I have read and agree to these terms.
+            </label>
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={onConfirm} disabled={!agreed}>Agree & Download</Button>
+          <Button onClick={onConfirm} disabled={!agreed}>
+            Agree & Download
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -58,14 +58,14 @@ export const LandingContent = () => {
     setErrorMsg(null);
   };
   const onLoadSample = () => {
-    form.reset(mockPayStub)
+    form.reset(mockPayStub);
     setErrorMsg(null);
-  }
+  };
 
   const onDownload = (data: PayStubType) => {
     setConfirmOpen(true);
     setFormData(data);
-  }
+  };
 
   return (
     <Form {...form}>
@@ -85,10 +85,13 @@ export const LandingContent = () => {
             )}
           </div>
         </div>
-        <Toolbar onReset={onReset} isLoading={isLoading} onLoadSample={onLoadSample}/>
-        <DownloadConfirmationModal open={confirmOpen} onClose={() => setConfirmOpen(false)} onConfirm={onSubmit}/>
+        <Toolbar onReset={onReset} isLoading={isLoading} onLoadSample={onLoadSample} />
+        <DownloadConfirmationModal
+          open={confirmOpen}
+          onClose={() => setConfirmOpen(false)}
+          onConfirm={onSubmit}
+        />
       </form>
-     
     </Form>
   );
 };

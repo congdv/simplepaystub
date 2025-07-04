@@ -193,7 +193,7 @@ export default function PaymentSection() {
                   <Calendar
                     mode="single"
                     selected={field.value}
-                    onSelect={date => {
+                    onSelect={(date) => {
                       field.onChange(date);
                       setPayDateOpen(false);
                     }}
@@ -236,7 +236,7 @@ export default function PaymentSection() {
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={date => {
+                        onSelect={(date) => {
                           field.onChange(date);
                           setPeriodStartOpen(false);
                         }}
@@ -279,7 +279,7 @@ export default function PaymentSection() {
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={date => {
+                        onSelect={(date) => {
                           field.onChange(date);
                           setPeriodEndOpen(false);
                         }}

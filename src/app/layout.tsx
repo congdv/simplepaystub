@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ClerkProvider } from '@clerk/nextjs';
 import localFont from 'next/font/local';
 import './globals.css';
 import { Analytics } from '@vercel/analytics/next';
@@ -17,7 +18,16 @@ const geistMono = localFont({
 export const metadata = {
   title: 'Simple Paystub',
   description: 'Easily create and generate professional paystubs as PDF files.',
-  keywords: ['simple paystub', 'canadian paystub', 'paystub generator', 'pdf', 'salary', 'payroll', 'hourly', 'rate'],
+  keywords: [
+    'simple paystub',
+    'canadian paystub',
+    'paystub generator',
+    'pdf',
+    'salary',
+    'payroll',
+    'hourly',
+    'rate',
+  ],
 };
 
 export default function RootLayout({
@@ -26,14 +36,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="icon" href="/images/favicon.ico" />
-      </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children}
-        <Analytics />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <head>
+          <link rel="icon" href="/images/favicon.ico" />
+        </head>
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          {children}
+          <Analytics />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
