@@ -4,6 +4,7 @@ import { Montserrat } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
 import { UserButton, SignInButton, useUser } from '@clerk/nextjs';
+import { Button } from './ui/button';
 
 const font = Montserrat({
   weight: '600',
@@ -28,9 +29,9 @@ function UserAuth() {
 
   return (
     <SignInButton mode="modal">
-      <button className="px-4 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium">
+      <Button id="user-sign-in" className="px-4 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium">
         Login
-      </button>
+      </Button>
     </SignInButton>
   );
 }
