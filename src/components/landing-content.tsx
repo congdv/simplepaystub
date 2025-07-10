@@ -38,11 +38,19 @@ export const LandingContent = () => {
       if (!res.ok) {
         throw new Error('Failed to generate paystub PDF.');
       }
+
+      const now = new Date();
+      const timestamp = now
+      .toISOString()
+      .replace(/[:.]/g, '-')
+      .replace('T', '_')
+      .slice(0, 19);
+
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `pay-stub.pdf`;
+      a.download = `pay-stub_${timestamp}.pdf`;
       a.click();
       window.URL.revokeObjectURL(url);
     } catch (err: any) {
