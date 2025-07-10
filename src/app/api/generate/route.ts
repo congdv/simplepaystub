@@ -5,11 +5,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import React from 'react';
 
 export async function POST(req: NextRequest, res: NextResponse) {
-   const { userId } = await auth();
+  //  const { userId } = await auth();
 
-  if (!userId) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
+  // if (!userId) {
+  //   return new NextResponse("Unauthorized", { status: 401 });
+  // }
 
   const body: PayStubType = await req.json();
   try {

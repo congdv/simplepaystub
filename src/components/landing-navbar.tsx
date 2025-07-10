@@ -43,17 +43,17 @@ export const LandingNavbar = () => {
         <Link href={'/'} className="flex items-center">
           <Image
             src="/logo.png" // Place your logo in the public/ directory and update the path if needed
-            alt="Paystub Generator Logo"
+            alt="Pay Stub Generator Logo"
             width={40}
             height={40}
             className="rounded mr-2"
             priority
           />
           <h1 className={cn('text-2xl font-bold text-[#F5EFE7]', font.className)}>
-            Simple Paystub
+            Simple Pay Stub
           </h1>
         </Link>
-        <div className="flex items-center">{UserAuth()}</div>
+        {/* <div className="flex items-center">{UserAuth()}</div> */}
       </div>
     </nav>
   );

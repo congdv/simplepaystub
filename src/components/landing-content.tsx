@@ -65,10 +65,10 @@ export const LandingContent = () => {
   };
 
   const onDownload = (data: PayStubType) => {
-    if(!isSignedIn) {
-      document.getElementById("user-sign-in")?.click();
-      return;
-    }
+    // if(!isSignedIn) {
+    //   document.getElementById("user-sign-in")?.click();
+    //   return;
+    // }
     setConfirmOpen(true);
     setFormData(data);
   };
