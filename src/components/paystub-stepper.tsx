@@ -78,7 +78,7 @@ export default function PaystubStepper() {
             </TabsTrigger>
           ))}
         </TabsList>
-        <div className="pt-4 pb-2 px-1 md:px-2">
+        <div className="pt-4 pb-2 px-1 md:px-2" style={{minHeight: "490px"}}>
           {steps.map((step) => (
             <TabsContent value={step.value} key={step.value}>
               <div className="rounded-lg bg-white shadow-sm p-2 md:p-4">
