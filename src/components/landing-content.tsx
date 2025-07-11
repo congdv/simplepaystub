@@ -12,7 +12,6 @@ import { mockPayStub } from '@/lib/mock';
 import { PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
 import { DownloadConfirmationModal } from './download-confirmation-modal';
 import { useUser } from '@clerk/nextjs';
-import allCountries from 'country-region-data';
 
 export const LandingContent = () => {
   const form = useFormContext<PayStubType>();
