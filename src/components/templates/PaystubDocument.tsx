@@ -76,8 +76,9 @@ const PaystubDocument = (data: PayStubType) => {
             </Text>
             <Text>
               {data.payer.city ? data.payer.city + ', ' : 'ABC, '}
-              {data.payer.province || 'YY'} {data.payer.postalCode || 'XXX XXX'}
+              {data.payer.stateOrProvince || 'YY'} {data.payer.zipOrPostalCode || 'XXX XXX'}
             </Text>
+            <Text>{data.payer.countryOrRegion || 'ZZ'}</Text>
             <Text>
               {data.payer.phoneNumber || '(123) 456-7890'}
               {data.payer.extNo ? '# ' + data.payer.extNo : ''}
@@ -92,8 +93,9 @@ const PaystubDocument = (data: PayStubType) => {
             </Text>
             <Text>
               {data.payee.city ? data.payee.city + ', ' : 'ABC, '}
-              {data.payee.province || 'YY'} {data.payee.postalCode || 'XXX XXX'}
+              {data.payee.stateOrProvince || 'YY'} {data.payee.zipOrPostalCode || 'XXX XXX'}
             </Text>
+            <Text>{data.payee.countryOrRegion || 'ZZ'}</Text>
             <Text>
               {data.payee.phoneNumber || '(123) 456-7890'}{' '}
               {data.payee.extNo ? '# ' + data.payee.extNo : ''}

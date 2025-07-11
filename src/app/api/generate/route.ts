@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth } from '@clerk/nextjs/server';
 import { PayStubType } from '@/types';
 import { renderToBuffer } from '@react-pdf/renderer';
 import { NextRequest, NextResponse } from 'next/server';
@@ -19,14 +19,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
     );
 
     const now = new Date();
-    const timestamp = now
-      .toISOString()
-      .replace(/[:.]/g, '-')
-      .replace('T', '_')
-      .slice(0, 19);
+    const timestamp = now.toISOString().replace(/[:.]/g, '-').replace('T', '_').slice(0, 19);
 
     console.log(`[${timestamp}] /api/generate called`);
-    
+
     // Return the PDF as a response
     return new NextResponse(pdfBuffer, {
       headers: {

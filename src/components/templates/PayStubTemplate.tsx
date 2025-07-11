@@ -38,7 +38,9 @@ export default function PayStubTemplate(data: PayStubType) {
             {data.payer.addressSecond ? '# ' + data.payer.addressSecond : ''}
             <br />
             {data.payer.city ? data.payer.city + ', ' : 'ABC, '}
-            {data.payer.province || 'YY'} {data.payer.postalCode || 'XXX XXX'}
+            {data.payer.stateOrProvince || 'YY'} {data.payer.zipOrPostalCode || 'XXX XXX'}
+            <br />
+            {data.payer.countryOrRegion || 'ZZ'}
             <br />
             {data.payer.phoneNumber || '(123) 456-7890'}
             {data.payer.extNo ? '# ' + data.payer.extNo : ''}
@@ -52,7 +54,9 @@ export default function PayStubTemplate(data: PayStubType) {
             {data.payee.address || '123 Street st'}{' '}
             {data.payee.addressSecond ? '# ' + data.payee.addressSecond : ''}
             <br /> {data.payee.city ? data.payee.city + ', ' : 'ABC, '}
-            {data.payee.province || 'YY'} {data.payee.postalCode || 'XXX XXX'}
+            {data.payee.stateOrProvince || 'YY'} {data.payee.zipOrPostalCode || 'XXX XXX'}
+            <br />
+            {data.payee.countryOrRegion || 'ZZ'}
             <br />
             {data.payee.phoneNumber || '(123) 456-7890'}{' '}
             {data.payee.extNo ? '# ' + data.payee.extNo : ''}
