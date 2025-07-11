@@ -25,6 +25,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
       .replace('T', '_')
       .slice(0, 19);
 
+    console.log(`[${timestamp}] /api/generate called`);
+    
     // Return the PDF as a response
     return new NextResponse(pdfBuffer, {
       headers: {
