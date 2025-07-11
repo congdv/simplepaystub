@@ -1,4 +1,3 @@
-import allCountries from 'country-region-data';
 
 export const PROVINCES = [
   { name: 'Alberta', abbreviation: 'AB' },
