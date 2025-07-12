@@ -22,9 +22,7 @@ export const Header = ({ showAuth = true }: { showAuth?: boolean }) => {
             className="rounded mr-2"
             priority
           />
-          <h1 className={cn('text-2xl font-bold text-[#F5EFE7]', font.className)}>
-            SimplePaystub
-          </h1>
+          <h1 className={cn('text-2xl font-bold text-[#F5EFE7]', font.className)}>SimplePaystub</h1>
         </Link>
 
         <div className="flex items-center space-x-6">
