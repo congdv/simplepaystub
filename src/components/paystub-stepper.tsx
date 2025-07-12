@@ -76,7 +76,7 @@ export default function PaystubStepperSection({ formValues }: PaystubStepperProp
               steps={steps.map(({ value, component }) => ({ value, component }))}
             />
           </div>
-          <div className="w-full md:w-[60%] mt-0 md:mt-32 overflow-x-auto">
+          <div className="w-full md:w-[60%] mt-0 md:mt-14 overflow-x-auto">
             <PayStubTemplate {...formValues} />
           </div>
         </div>
