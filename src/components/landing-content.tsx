@@ -11,7 +11,6 @@ import { useState } from 'react';
 import { mockPayStub } from '@/lib/mock';
 import { PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
 import { DownloadConfirmationModal } from './download-confirmation-modal';
-import { useUser } from '@clerk/nextjs';
 
 export const LandingContent = () => {
   const form = useFormContext<PayStubType>();
@@ -21,7 +20,6 @@ export const LandingContent = () => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [formData, setFormData] = useState<PayStubType>(PAY_STUB_FORM_DEFAULT_VALUES);
-  const { isSignedIn } = useUser();
 
   const onSubmit = async () => {
     setConfirmOpen(false);

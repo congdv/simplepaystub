@@ -3,7 +3,6 @@ import { cn } from '@/lib/utils';
 import { Montserrat } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
-import { UserButton, SignInButton, useUser } from '@clerk/nextjs';
 import { Button } from './ui/button';
 
 const font = Montserrat({
@@ -11,33 +10,6 @@ const font = Montserrat({
   subsets: ['latin'],
 });
 
-function UserAuth() {
-  const { isSignedIn, user, isLoaded } = useUser();
-
-  if (!isLoaded) {
-    return null;
-  }
-
-  if (isSignedIn) {
-    return (
-      <div className="flex items-center gap-3">
-        <span className="text-sm text-white">Hello, {user?.firstName}</span>
-        <UserButton afterSignOutUrl="/" />
-      </div>
-    );
-  }
-
-  return (
-    <SignInButton mode="modal">
-      <Button
-        id="user-sign-in"
-        className="px-4 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium"
-      >
-        Login
-      </Button>
-    </SignInButton>
-  );
-}
 
 export const LandingNavbar = () => {
   return (
@@ -56,7 +28,6 @@ export const LandingNavbar = () => {
             Simple Pay Stub
           </h1>
         </Link>
-        {/* <div className="flex items-center">{UserAuth()}</div> */}
       </div>
     </nav>
   );

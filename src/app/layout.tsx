@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { ClerkProvider } from '@clerk/nextjs';
 import localFont from 'next/font/local';
 import './globals.css';
 import { Analytics } from '@vercel/analytics/next';
@@ -36,7 +35,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
       <html lang="en">
         <head>
           <link rel="icon" href="/images/favicon.ico" />
@@ -46,6 +44,5 @@ export default function RootLayout({
           <Analytics />
         </body>
       </html>
-    </ClerkProvider>
   );
 }
