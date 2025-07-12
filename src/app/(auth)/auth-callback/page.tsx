@@ -53,7 +53,7 @@ function AuthCallbackContent() {
         return;
       }
       if (data.session) {
-        router.replace('/');
+         window.location.replace('/');
       } else {
         setError('Authentication failed or session not found. Please try again.');
         setChecking(false);

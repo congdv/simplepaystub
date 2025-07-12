@@ -1,16 +1,30 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { createClient } from '@/lib/supabase/client';
-import { useSearchParams } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start with loading true
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        router.replace('/dashboard');
+      } else {
+        setLoading(false);
+      }
+    });
+  }, [router]);
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +50,7 @@ export default function LoginPage() {
   const handleSocialLogin = async (provider: 'google') => {
     setLoading(true);
     setError(null);
+
     try {
       const supabase = createClient();
       const { error } = await supabase.auth.signInWithOAuth({
@@ -51,6 +66,20 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="flex flex-col items-center justify-center bg-white p-8 rounded-lg shadow-lg border w-full max-w-md">
+          <Skeleton className="h-10 w-32 mb-6" />
+          <Skeleton className="h-6 w-48 mb-4" />
+          <Skeleton className="h-12 w-full mb-4" />
+          <Skeleton className="h-10 w-full mb-2" />
+          <Skeleton className="h-10 w-full" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center p-64">
