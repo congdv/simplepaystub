@@ -1,4 +1,5 @@
 'use client';
+import { Footer } from '@/components/footer';
 import { PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
 import { PayStubSchema } from '@/schemas';
 import { PayStubType } from '@/types';
@@ -13,9 +14,12 @@ export default function LandingLayout({ children }: { children: React.ReactNode 
     mode: 'all',
   });
   return (
-    <main className="h-full bg-[#fff] overflow-auto">
-      <Toaster position="top-center" richColors />
-      <FormProvider {...form}>{children}</FormProvider>
-    </main>
+    <>
+      <main>
+        <Toaster position="top-center" richColors />
+        <FormProvider {...form}>{children}</FormProvider>
+      </main>
+      <Footer />
+    </>
   );
 }

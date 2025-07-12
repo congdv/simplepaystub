@@ -1,4 +1,4 @@
-export const LandingFooter = () => (
+export const Footer = () => (
   <footer className="w-full bg-white border-t border-gray-200 py-6 px-4 flex flex-col items-center gap-2 text-center text-sm text-gray-500 mt-4">
     <div>&copy; {new Date().getFullYear()} Simple Pay Stub. All rights reserved.</div>
     <div>

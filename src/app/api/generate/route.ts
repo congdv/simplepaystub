@@ -4,8 +4,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import React from 'react';
 
 export async function POST(req: NextRequest, res: NextResponse) {
-
-
   const body: PayStubType = await req.json();
   try {
     const { default: PaystubDocument } = await import('@/components/templates/PaystubDocument');

@@ -1,6 +1,6 @@
 'use client';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Tabs } from './ui/tabs';
 import BusinessInfoForm from './sections/business-info-form';
 import EmployeeInfoForm from './sections/employee-info-form';
 import PaymentSection from './sections/payment-section';
@@ -8,7 +8,9 @@ import DeductionsInfoForm from './sections/deductions-info-form';
 import BenefitsInfoForm from './sections/benefits-info-form';
 import { useFormContext } from 'react-hook-form';
 import { PayStubType } from '@/types';
-import { cn } from '@/lib/utils';
+import { PaystubStepperTriggers } from './paystub-stepper-triggers';
+import { PaystubStepperContent } from './paystub-stepper-content';
+import PayStubTemplate from './templates/PayStubTemplate';
 
 const steps = [
   {
@@ -38,7 +40,11 @@ const steps = [
   },
 ];
 
-export default function PaystubStepper() {
+type PaystubStepperProps = {
+  formValues: PayStubType;
+};
+
+export default function PaystubStepperSection({ formValues }: PaystubStepperProps) {
   const {
     formState: { errors },
   } = useFormContext<PayStubType>();
@@ -58,34 +64,21 @@ export default function PaystubStepper() {
   };
 
   return (
-    <div className="flex w-full flex-col gap-4">
+    <div className="w-full mt-4">
       <Tabs defaultValue={steps[0].value} className="w-full">
-        {/* Mobile-first: horizontal scroll, touch-friendly, responsive */}
-        <TabsList className="w-full flex gap-2 h-full bg-background overflow-x-auto scrollbar-hide px-1 py-2 md:overflow-x-visible md:justify-start">
-          {steps.map((step) => (
-            <TabsTrigger
-              value={step.value}
-              key={step.value}
-              className={cn(
-                // Mobile: min-w-[140px], larger touch area, responsive font
-                'min-w-[140px] px-3 py-2 whitespace-normal text-[#111827] border rounded-md text-xs md:text-sm font-medium transition-colors duration-150 hover:bg-[#111827] hover:text-white data-[state=active]:text-white data-[state=active]:bg-[#111827] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
-                getVariant(step.value) &&
-                  'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90'
-              )}
-              style={{ flex: '0 0 auto' }}
-            >
-              {step.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        <div className="pt-4 pb-2 px-1 md:px-2" style={{ minHeight: '490px' }}>
-          {steps.map((step) => (
-            <TabsContent value={step.value} key={step.value}>
-              <div className="rounded-lg bg-white shadow-sm p-2 md:p-4">
-                <step.component />
-              </div>
-            </TabsContent>
-          ))}
+        <PaystubStepperTriggers
+          steps={steps.map(({ label, value }) => ({ label, value }))}
+          getVariant={getVariant}
+        />
+        <div className="flex flex-col md:flex-row h-full mx-auto max-w-screen-xl w-full gap-4">
+          <div className="w-full md:w-[40%]">
+            <PaystubStepperContent
+              steps={steps.map(({ value, component }) => ({ value, component }))}
+            />
+          </div>
+          <div className="w-full md:w-[60%] mt-0 md:mt-32 overflow-x-auto">
+            <PayStubTemplate {...formValues} />
+          </div>
         </div>
       </Tabs>
     </div>

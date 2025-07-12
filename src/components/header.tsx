@@ -3,17 +3,15 @@ import { cn } from '@/lib/utils';
 import { Montserrat } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Button } from './ui/button';
 
 const font = Montserrat({
   weight: '600',
   subsets: ['latin'],
 });
 
-
-export const LandingNavbar = () => {
+export const Header = ({ showAuth = true }: { showAuth?: boolean }) => {
   return (
-    <nav className="p-4 bg-[#213555]  items-center  ">
+    <nav className="p-4 bg-[#213555]">
       <div className="mx-auto max-w-screen-xl w-full flex justify-between">
         <Link href={'/'} className="flex items-center">
           <Image

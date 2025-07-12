@@ -48,7 +48,7 @@ export function DownloadConfirmationModal({
             <Checkbox
               id="agree"
               checked={agreed}
-              onCheckedChange={(checked) => setAgreed(checked === true)}
+              onCheckedChange={(checked: boolean | "indeterminate") => setAgreed(checked === true)}
             />
             <label htmlFor="agree" className="text-sm">
               I have read and agree to these terms.

@@ -15,7 +15,7 @@ export default function DeductionsInfoForm() {
 
   return (
     <>
-      <div className="space-y-8 max-w-3xl mx-auto py-10">
+      <div className="space-y-4 max-w-3xl mx-auto py-4">
         {fields.map((field, index) => {
           return (
             <div className="grid grid-cols-12 gap-2" key={field.id}>

@@ -1,4 +1,3 @@
-
 export const PROVINCES = [
   { name: 'Alberta', abbreviation: 'AB' },
   { name: 'British Columbia', abbreviation: 'BC' },

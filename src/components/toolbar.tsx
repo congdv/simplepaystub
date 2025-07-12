@@ -8,7 +8,7 @@ interface ToolbarProps {
 }
 export default function Toolbar({ onReset, onLoadSample, isLoading = false }: ToolbarProps) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-2 py-3 flex flex-col gap-2 items-center sm:flex-row sm:justify-center sm:gap-4 md:static md:border-0 md:p-0 md:flex-row md:justify-center md:bg-transparent">
+    <div className="bg-white border-t border-gray-200 px-2 py-3 flex flex-col gap-2 items-center sm:flex-row sm:justify-center sm:gap-4 md:static md:border-0 md:p-0 md:flex-row md:justify-center md:bg-transparent mt-6">
       <Button
         type="button"
         variant="ghost"

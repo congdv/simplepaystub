@@ -1,13 +1,5 @@
-import { LandingContent } from '@/components/landing-content';
-import { LandingFooter } from '@/components/landing-footer';
-import { LandingNavbar } from '@/components/landing-navbar';
+import { PayStubGenerator } from '@/components/paystub-generator';
 
 export default function Landing() {
-  return (
-    <div className="h-full">
-      <LandingNavbar />
-      <LandingContent />
-      <LandingFooter />
-    </div>
-  );
+  return <PayStubGenerator />;
 }

@@ -42,7 +42,7 @@ export default function PaymentSection() {
 
   return (
     <Form {...form}>
-      <div className="space-y-8 max-w-3xl mx-auto py-10">
+      <div className="space-y-4 max-w-3xl mx-auto py-4">
         <div className="grid grid-cols-12">
           <div className="col-span-4">
             <FormField
