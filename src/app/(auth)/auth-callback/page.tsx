@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
@@ -20,7 +21,7 @@ function AuthError({ message }: { message: string }) {
   );
 }
 
-export default function AuthCallbackPage() {
+function AuthCallbackContent() {
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const [checking, setChecking] = useState(true);
@@ -76,5 +77,18 @@ export default function AuthCallbackPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function AuthCallbackPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center mt-64">
+        <Loader2 className="animate-spin mb-4 text-gray-400" size={32} />
+        <h2 className="text-xl font-semibold mb-2 text-gray-800">Signing you in...</h2>
+      </div>
+    }>
+      <AuthCallbackContent />
+    </Suspense>
   );
 }
