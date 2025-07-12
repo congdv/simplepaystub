@@ -10,12 +10,18 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { COUNTRIES } from '@/constants';
+import { LogoUpload } from '../ui/logo-upload';
 
 export default function BusinessInfoForm() {
   const form = useFormContext();
+  const logoUrl = form.watch('payer.logo');
 
   return (
     <div className="space-y-4 max-w-3xl mx-auto py-4">
+      <div className="mb-4">
+        <LogoUpload value={logoUrl} onChange={(val) => form.setValue('payer.logo', val)} />
+      </div>
+
       <FormField
         control={form.control}
         name="payer.name"

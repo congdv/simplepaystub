@@ -12,7 +12,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
-        console.log(data)
+      console.log(data);
       setUser({
         email: data.user?.email,
         name: data.user?.user_metadata?.name || null,
@@ -31,7 +31,8 @@ export default function DashboardPage() {
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full border">
         <h1 className="text-2xl font-bold mb-4 text-center">Dashboard</h1>
         <p className="text-gray-700 text-center mb-4">
-          Welcome to your dashboard!<br />
+          Welcome to your dashboard!
+          <br />
           Here you can manage your pay stubs and account.
         </p>
         <div className="text-center mt-4">

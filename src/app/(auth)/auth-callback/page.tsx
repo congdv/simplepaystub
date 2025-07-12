@@ -53,7 +53,7 @@ function AuthCallbackContent() {
         return;
       }
       if (data.session) {
-         window.location.replace('/');
+        window.location.replace('/');
       } else {
         setError('Authentication failed or session not found. Please try again.');
         setChecking(false);
@@ -82,12 +82,14 @@ function AuthCallbackContent() {
 
 export default function AuthCallbackPage() {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center mt-64">
-        <Loader2 className="animate-spin mb-4 text-gray-400" size={32} />
-        <h2 className="text-xl font-semibold mb-2 text-gray-800">Signing you in...</h2>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center mt-64">
+          <Loader2 className="animate-spin mb-4 text-gray-400" size={32} />
+          <h2 className="text-xl font-semibold mb-2 text-gray-800">Signing you in...</h2>
+        </div>
+      }
+    >
       <AuthCallbackContent />
     </Suspense>
   );

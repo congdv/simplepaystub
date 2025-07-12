@@ -15,6 +15,7 @@ const DynamicFieldSchema = z.object({
 });
 
 const PayerSchema = z.object({
+  logo: z.string().optional(),
   name: fieldValidators.minString('Company name is required'),
   address: fieldValidators.minString('Address is required'),
   addressSecond: z.string().optional(),

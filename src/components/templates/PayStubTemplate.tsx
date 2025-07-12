@@ -30,6 +30,15 @@ export default function PayStubTemplate(data: PayStubType) {
   );
   return (
     <div className="mx-8">
+      {data.payer.logo && (
+        <div>
+          <img
+            src={data.payer.logo}
+            alt="Company Logo"
+            className="w-24 h-24 object-contain rounded"
+          />
+        </div>
+      )}
       <div className="flex justify-between">
         <div className="text-left text-sm">
           <h2 className="font-semibold text-xl">{data.payer.name || 'Acme'}</h2>

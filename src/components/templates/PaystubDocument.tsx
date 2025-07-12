@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 import { PayStubType } from '@/types';
 import { formatCurrency } from '@/lib/utils';
 import { DEFAULT_PAYMENT_TYPE } from '@/constants';
@@ -67,6 +67,9 @@ const PaystubDocument = (data: PayStubType) => {
     <Document>
       <Page size="A4" orientation="landscape" style={styles.page}>
         {/* Header */}
+        <View>
+          {data.payer.logo && <Image src={data.payer.logo} style={{ width: 64, height: 64 }} />}
+        </View>
         <View style={styles.header}>
           <View>
             <Text style={styles.company}>{data.payer.name || 'Acme'}</Text>

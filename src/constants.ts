@@ -29,6 +29,7 @@ export const PAYMENT_FREQUENCIES = [
 export const DEFAULT_PAYMENT_TYPE = 'Hourly';
 export const PAYMENT_TYPE = ['Hourly', 'Salary'];
 const PAYER_DEFAULT_VALUES = {
+  logo: '',
   name: '',
   address: '',
   addressSecond: '',
