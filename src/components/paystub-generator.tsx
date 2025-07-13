@@ -78,7 +78,7 @@ export const PayStubGenerator = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onDownload, onInvalid)}>
-        <PaystubStepper formValues={formValues} />
+        <PaystubStepper formValues={formValues}  />
         {errorMsg && (
           <div className="w-full flex justify-center mt-2">
             <div className="bg-red-100 text-red-700 px-4 py-2 rounded shadow text-sm max-w-md text-center">

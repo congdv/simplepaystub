@@ -9,8 +9,8 @@ export function PaystubStepperTriggers({
   getVariant: (field: string) => boolean;
 }) {
   return (
-    <div className="flex w-full justify-center">
-      <TabsList className="flex gap-2 h-full bg-background overflow-x-auto px-1 py-2 md:justify-center w-full">
+    <div className="flex w-full justify-center mx-auto max-w-screen-xl">
+      <TabsList className="flex gap-2 h-full bg-background overflow-x-auto px-1 py-2 md:justify-center md:justify-start  w-full">
         {steps.map((step) => (
           <TabsTrigger
             value={step.value}
