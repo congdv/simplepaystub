@@ -28,7 +28,7 @@ export default function BenefitsInfoForm() {
                     <FormItem>
                       <FormLabel>Benefit name</FormLabel>
                       <FormControl>
-                        <Input placeholder="" type="text" {...field} />
+                        <Input placeholder="Heath Insurance" type="text" {...field} />
                       </FormControl>
 
                       <FormMessage />
@@ -44,7 +44,7 @@ export default function BenefitsInfoForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Current Pay</FormLabel>
-                      <MoneyInput {...field} />
+                      <MoneyInput {...field} placeholder="150.00" />
 
                       <FormMessage />
                     </FormItem>
@@ -58,7 +58,7 @@ export default function BenefitsInfoForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Year-to-date Total</FormLabel>
-                      <MoneyInput {...field} />
+                      <MoneyInput {...field} placeholder="1,800.00" />
 
                       <FormMessage />
                     </FormItem>

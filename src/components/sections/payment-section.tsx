@@ -87,7 +87,7 @@ export default function PaymentSection() {
                       Rate ($/hr)
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="" type="number" {...field} min={0} />
+                      <Input placeholder="25.00" type="number" {...field} min={0} />
                     </FormControl>
 
                     <FormMessage />
@@ -106,7 +106,7 @@ export default function PaymentSection() {
                       Hours Worked
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="" type="number" {...field} min={0} />
+                      <Input placeholder="40" type="number" {...field} min={0} />
                     </FormControl>
 
                     <FormMessage />
@@ -127,7 +127,7 @@ export default function PaymentSection() {
                     <FormLabel className="after:content-['*'] after:text-red-500">
                       Annual Salary
                     </FormLabel>
-                    <MoneyInput {...field} />
+                    <MoneyInput {...field} placeholder="12,000.00" />
 
                     <FormMessage />
                   </FormItem>
@@ -299,7 +299,7 @@ export default function PaymentSection() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Year-to-date Gross Pay</FormLabel>
-              <MoneyInput {...field} />
+              <MoneyInput {...field} placeholder="12,000.00" />
 
               <FormMessage />
             </FormItem>

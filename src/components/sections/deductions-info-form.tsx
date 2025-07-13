@@ -28,7 +28,7 @@ export default function DeductionsInfoForm() {
                     <FormItem>
                       <FormLabel>Deduction name</FormLabel>
                       <FormControl>
-                        <Input placeholder="" type="text" {...field} />
+                        <Input placeholder="Social Security" type="text" {...field} />
                       </FormControl>
 
                       <FormMessage />
@@ -44,7 +44,7 @@ export default function DeductionsInfoForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Current</FormLabel>
-                      <MoneyInput {...field} />
+                      <MoneyInput {...field} placeholder="150.00" />
 
                       <FormMessage />
                     </FormItem>
@@ -59,7 +59,7 @@ export default function DeductionsInfoForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Year-to-date total</FormLabel>
-                      <MoneyInput {...field} />
+                      <MoneyInput {...field} placeholder="1,800.00" />
 
                       <FormMessage />
                     </FormItem>

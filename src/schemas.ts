@@ -34,26 +34,26 @@ const DynamicFieldSchema = z
 const PayerSchema = z.object({
   logo: z.string().optional(),
   name: fieldValidators.minString('Company name is required'),
-  address: fieldValidators.minString('Address is required'),
+  address: fieldValidators.minString('Street Address is required'),
   addressSecond: z.string().optional(),
   city: fieldValidators.minString('City is required'),
   stateOrProvince: fieldValidators.minString('State/Province is required'),
   countryOrRegion: fieldValidators.minString('Country/region is required'),
   zipOrPostalCode: fieldValidators.minString('Zip/Postal code is required'),
-  phoneNumber: fieldValidators.minString('Company phone number is required'),
+  phoneNumber: fieldValidators.minString('Phone Number is required'),
   extNo: z.string().optional(),
   email: z.string().optional(),
 });
 
 const PayeeSchema = z.object({
-  name: fieldValidators.minString('Employee name is required'),
-  address: fieldValidators.minString('Address is required'),
+  name: fieldValidators.minString('Full name is required'),
+  address: fieldValidators.minString('Street Address is required'),
   addressSecond: z.string().optional(),
   city: fieldValidators.minString('City is required'),
   stateOrProvince: fieldValidators.minString('State/Province is required'),
   countryOrRegion: fieldValidators.minString('Country/region is required'),
   zipOrPostalCode: fieldValidators.minString('Zip/Postal code is required'),
-  phoneNumber: fieldValidators.minString('Employee phone number is required'),
+  phoneNumber: fieldValidators.minString('Phone number is required'),
   extNo: z.string().optional(),
   email: z.string().optional(),
 });
@@ -63,14 +63,14 @@ const PaymentSchema = z
     name: z.string(),
     frequency: z.string(),
     type: z.string(),
-    hourlyRate: fieldValidators.nonNegativeString('Hourly rate'),
-    numOfHours: fieldValidators.nonNegativeString('Number of hours'),
+    hourlyRate: fieldValidators.nonNegativeString('Rate'),
+    numOfHours: fieldValidators.nonNegativeString('Hours Worked'),
     annualSalary: fieldValidators.nonNegativeString('Annual salary'),
     date: z.coerce.date(),
     periodStart: z.coerce.date().optional(),
     periodEnd: z.coerce.date().optional(),
     chequeNumber: z.string().optional(),
-    ytd: fieldValidators.nonNegativeString('YTD'),
+    ytd: fieldValidators.nonNegativeString('Year-to-date Gross Pay'),
   })
   .refine(
     (data) => {
@@ -80,7 +80,7 @@ const PaymentSchema = z
       return true;
     },
     {
-      message: 'Number of hours is required',
+      message: 'Hours Worked is required',
       path: ['numOfHours'],
     }
   )
@@ -92,7 +92,7 @@ const PaymentSchema = z
       return true;
     },
     {
-      message: 'Hourly rate is required',
+      message: 'Rate is required',
       path: ['hourlyRate'],
     }
   )
