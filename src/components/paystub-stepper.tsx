@@ -14,27 +14,27 @@ import PayStubTemplate from './templates/PayStubTemplate';
 
 const steps = [
   {
-    label: '1. Business info',
+    label: '1. Business',
     value: 'payer',
     component: BusinessInfoForm,
   },
   {
-    label: '2. Employee info',
+    label: '2. Employee',
     value: 'payee',
     component: EmployeeInfoForm,
   },
   {
-    label: '3. Income info',
+    label: '3. Income',
     value: 'payment',
     component: PaymentSection,
   },
   {
-    label: '4. Benefits info',
+    label: '4. Benefits',
     value: 'benefits',
     component: BenefitsInfoForm,
   },
   {
-    label: '5. Deductions info',
+    label: '5. Deductions',
     value: 'deductions',
     component: DeductionsInfoForm,
   },

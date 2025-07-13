@@ -45,7 +45,7 @@ export default function BusinessInfoForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="after:content-['*'] after:text-red-500">
-                  Company Address
+                  Street Address
                 </FormLabel>
                 <FormControl>
                   <Input type="text" {...field} />
@@ -179,7 +179,7 @@ export default function BusinessInfoForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="after:content-['*'] after:text-red-500">
-                  Company Phone Number
+                  Phone Number
                 </FormLabel>
                 <FormControl>
                   <Input placeholder="" type="text" {...field} />
@@ -216,7 +216,7 @@ export default function BusinessInfoForm() {
             name="payer.email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Company Email</FormLabel>
+                <FormLabel>Email Address</FormLabel>
                 <FormControl>
                   <Input type="email" {...field} />
                 </FormControl>

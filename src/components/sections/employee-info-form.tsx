@@ -15,7 +15,7 @@ export default function EmployeeInfoForm() {
         name="payee.name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="after:content-['*'] after:text-red-500">Employee Name</FormLabel>
+            <FormLabel className="after:content-['*'] after:text-red-500">Full Name</FormLabel>
             <FormControl>
               <Input placeholder="" type="text" {...field} />
             </FormControl>
@@ -30,7 +30,7 @@ export default function EmployeeInfoForm() {
         name="payee.address"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="after:content-['*'] after:text-red-500">Address</FormLabel>
+            <FormLabel className="after:content-['*'] after:text-red-500">Street Address</FormLabel>
             <FormControl>
               <Input placeholder="" type="text" {...field} />
             </FormControl>
@@ -161,7 +161,7 @@ export default function EmployeeInfoForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="after:content-['*'] after:text-red-500">
-                  Employee Phone Number
+                  Phone Number
                 </FormLabel>
                 <FormControl>
                   <Input placeholder="" type="text" {...field} />
@@ -196,7 +196,7 @@ export default function EmployeeInfoForm() {
         name="payee.email"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Employee Email</FormLabel>
+            <FormLabel>Email Address</FormLabel>
             <FormControl>
               <Input placeholder="" type="email" {...field} />
             </FormControl>
