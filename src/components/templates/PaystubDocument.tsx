@@ -72,7 +72,7 @@ const PaystubDocument = (data: PayStubType) => {
         </View>
         <View style={styles.header}>
           <View>
-            <Text style={styles.company}>{data.payer.name || 'Acme'}</Text>
+            <Text style={styles.company}>{data.payer.name || 'Acme Corporation'}</Text>
             <Text>
               {data.payer.address || '123 Street st'}{' '}
               {data.payer.addressSecond ? '# ' + data.payer.addressSecond : ''}
@@ -196,7 +196,7 @@ const PaystubDocument = (data: PayStubType) => {
             <Text style={styles.tableCol}>{formatCurrency(ytdTotalDeduction)}</Text>
           </View>
           <View style={styles.tableRow}>
-            <Text style={styles.tableCol}>Deduction</Text>
+            <Text style={styles.tableCol}>Deductions</Text>
             <Text style={styles.tableCol}></Text>
             <Text style={styles.tableCol}></Text>
             <Text style={styles.tableCol}>{formatCurrency(deductions)}</Text>

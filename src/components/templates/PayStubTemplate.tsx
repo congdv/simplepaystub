@@ -41,7 +41,7 @@ export default function PayStubTemplate(data: PayStubType) {
       )}
       <div className="flex justify-between">
         <div className="text-left text-sm">
-          <h2 className="font-semibold text-xl">{data.payer.name || 'Acme'}</h2>
+          <h2 className="font-semibold text-xl">{data.payer.name || 'Acme Corporation'}</h2>
           <p>
             {data.payer.address || '123 Street st'}{' '}
             {data.payer.addressSecond ? '# ' + data.payer.addressSecond : ''}
@@ -158,7 +158,7 @@ export default function PayStubTemplate(data: PayStubType) {
             <TableCell className="text-right">{formatCurrency(ytdTotalDeduction)}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell colSpan={2}>Deduction</TableCell>
+            <TableCell colSpan={2}>Deductions</TableCell>
             <TableCell className="text-right"></TableCell>
             <TableCell className="text-right">{formatCurrency(deductions)}</TableCell>
             <TableCell className="text-right">{formatCurrency(ytdTotalDeduction)}</TableCell>
