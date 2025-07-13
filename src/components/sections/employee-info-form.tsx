@@ -17,7 +17,7 @@ export default function EmployeeInfoForm() {
           <FormItem>
             <FormLabel className="after:content-['*'] after:text-red-500">Full Name</FormLabel>
             <FormControl>
-              <Input placeholder="" type="text" {...field} />
+              <Input placeholder="John Smith" type="text" {...field} />
             </FormControl>
 
             <FormMessage />
@@ -32,7 +32,7 @@ export default function EmployeeInfoForm() {
           <FormItem>
             <FormLabel className="after:content-['*'] after:text-red-500">Street Address</FormLabel>
             <FormControl>
-              <Input placeholder="" type="text" {...field} />
+              <Input placeholder="456 Main Street" type="text" {...field} />
             </FormControl>
 
             <FormMessage />
@@ -49,7 +49,7 @@ export default function EmployeeInfoForm() {
               <FormItem>
                 <FormLabel>Apt/Suite No.</FormLabel>
                 <FormControl>
-                  <Input placeholder="" type="text" {...field} />
+                  <Input placeholder="Apt 3B" type="text" {...field} />
                 </FormControl>
 
                 <FormMessage />
@@ -66,7 +66,7 @@ export default function EmployeeInfoForm() {
               <FormItem>
                 <FormLabel className="after:content-['*'] after:text-red-500">City</FormLabel>
                 <FormControl>
-                  <Input placeholder="" type="text" {...field} />
+                  <Input placeholder="Brooklyn" type="text" {...field} />
                 </FormControl>
 
                 <FormMessage />
@@ -87,7 +87,7 @@ export default function EmployeeInfoForm() {
                   State/Province
                 </FormLabel>
                 <FormControl>
-                  <Input placeholder="" type="text" {...field} />
+                  <Input placeholder="NY" type="text" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -105,7 +105,7 @@ export default function EmployeeInfoForm() {
                   Zip/Postal code
                 </FormLabel>
                 <FormControl>
-                  <Input placeholder="" type="text" {...field} />
+                  <Input placeholder="11201" type="text" {...field} />
                 </FormControl>
 
                 <FormMessage />
@@ -133,7 +133,7 @@ export default function EmployeeInfoForm() {
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="" />
+                        <SelectValue placeholder="Select country" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -164,7 +164,7 @@ export default function EmployeeInfoForm() {
                   Phone Number
                 </FormLabel>
                 <FormControl>
-                  <Input placeholder="" type="text" {...field} />
+                  <Input placeholder="(555) 987-6543" type="text" {...field} />
                 </FormControl>
 
                 <FormMessage />
@@ -198,7 +198,7 @@ export default function EmployeeInfoForm() {
           <FormItem>
             <FormLabel>Email Address</FormLabel>
             <FormControl>
-              <Input placeholder="" type="email" {...field} />
+              <Input placeholder="john.smith@email.com" type="email" {...field} />
             </FormControl>
 
             <FormMessage />

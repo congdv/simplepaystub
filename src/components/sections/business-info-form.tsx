@@ -29,7 +29,7 @@ export default function BusinessInfoForm() {
           <FormItem>
             <FormLabel className="after:content-['*'] after:text-red-500">Company name</FormLabel>
             <FormControl>
-              <Input placeholder="" type="text" {...field} />
+              <Input placeholder="Acme Corporation" type="text" {...field} />
             </FormControl>
 
             <FormMessage />
@@ -48,7 +48,7 @@ export default function BusinessInfoForm() {
                   Street Address
                 </FormLabel>
                 <FormControl>
-                  <Input type="text" {...field} />
+                  <Input type="text" {...field} placeholder="123 Business Avenue" />
                 </FormControl>
 
                 <FormMessage />
@@ -67,7 +67,7 @@ export default function BusinessInfoForm() {
               <FormItem>
                 <FormLabel>Apt/Suite No.</FormLabel>
                 <FormControl>
-                  <Input placeholder="" type="text" {...field} />
+                  <Input placeholder="Suite 200" type="text" {...field} />
                 </FormControl>
 
                 <FormMessage />
@@ -84,7 +84,7 @@ export default function BusinessInfoForm() {
               <FormItem>
                 <FormLabel className="after:content-['*'] after:text-red-500">City</FormLabel>
                 <FormControl>
-                  <Input placeholder="" type="text" {...field} />
+                  <Input placeholder="New York" type="text" {...field} />
                 </FormControl>
 
                 <FormMessage />
@@ -105,7 +105,7 @@ export default function BusinessInfoForm() {
                   State/Province
                 </FormLabel>
                 <FormControl>
-                  <Input placeholder="" type="text" {...field} />
+                  <Input placeholder="NY" type="text" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -123,7 +123,7 @@ export default function BusinessInfoForm() {
                   Zip/Postal code
                 </FormLabel>
                 <FormControl>
-                  <Input placeholder="" type="text" {...field} />
+                  <Input placeholder="10001" type="text" {...field} />
                 </FormControl>
 
                 <FormMessage />
@@ -151,7 +151,7 @@ export default function BusinessInfoForm() {
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="" />
+                        <SelectValue placeholder="Select country" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -182,7 +182,7 @@ export default function BusinessInfoForm() {
                   Phone Number
                 </FormLabel>
                 <FormControl>
-                  <Input placeholder="" type="text" {...field} />
+                  <Input placeholder="(555) 123-4567" type="text" {...field} />
                 </FormControl>
 
                 <FormMessage />
@@ -199,7 +199,7 @@ export default function BusinessInfoForm() {
               <FormItem>
                 <FormLabel>Extension No.</FormLabel>
                 <FormControl>
-                  <Input placeholder="" type="number" {...field} />
+                  <Input placeholder="101" type="number" {...field} />
                 </FormControl>
 
                 <FormMessage />
@@ -218,7 +218,7 @@ export default function BusinessInfoForm() {
               <FormItem>
                 <FormLabel>Email Address</FormLabel>
                 <FormControl>
-                  <Input type="email" {...field} />
+                  <Input type="email" {...field} placeholder="hr@company.com" />
                 </FormControl>
 
                 <FormMessage />

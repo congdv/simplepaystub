@@ -7,7 +7,7 @@ interface MoneyInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const MoneyInput = forwardRef<HTMLInputElement, MoneyInputProps>(
-  ({ placeholder = "0.00", ...props }, ref) => {
+  ({ placeholder = '0.00', ...props }, ref) => {
     return (
       <FormControl>
         <div className="relative">
@@ -29,6 +29,6 @@ const MoneyInput = forwardRef<HTMLInputElement, MoneyInputProps>(
   }
 );
 
-MoneyInput.displayName = "MoneyInput";
+MoneyInput.displayName = 'MoneyInput';
 
 export { MoneyInput };

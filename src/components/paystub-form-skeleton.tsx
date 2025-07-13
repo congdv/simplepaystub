@@ -122,7 +122,7 @@ export function PaystubFormSkeleton() {
                   <Skeleton className="h-3 w-16" />
                 </div>
               </div>
-              
+
               {/* Payments section */}
               <div className="bg-blue-100 border rounded p-3 space-y-2">
                 <Skeleton className="h-4 w-20" />
@@ -157,7 +157,7 @@ export function PaystubFormSkeleton() {
               <div className="grid grid-cols-8 gap-2 mb-3 text-sm font-medium">
                 {[
                   'Income',
-                  'Rate', 
+                  'Rate',
                   'Hours',
                   'This Period',
                   'Year to Date',
