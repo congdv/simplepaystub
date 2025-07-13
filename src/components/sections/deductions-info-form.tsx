@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { PlusCircleIcon, Trash2 } from 'lucide-react';
+import { MoneyInput } from '../ui/money-input';
 
 export default function DeductionsInfoForm() {
   const { control } = useFormContext();
@@ -42,10 +43,8 @@ export default function DeductionsInfoForm() {
                   name={`deductions[${index}].value`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Deduction value</FormLabel>
-                      <FormControl>
-                        <Input placeholder="" type="number" {...field} />
-                      </FormControl>
+                      <FormLabel>Current</FormLabel>
+                      <MoneyInput {...field} />
 
                       <FormMessage />
                     </FormItem>
@@ -59,10 +58,8 @@ export default function DeductionsInfoForm() {
                   name={`deductions[${index}].ytd`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Year to Date deduction</FormLabel>
-                      <FormControl>
-                        <Input placeholder="" type="number" {...field} />
-                      </FormControl>
+                      <FormLabel>Year-to-date total</FormLabel>
+                      <MoneyInput {...field} />
 
                       <FormMessage />
                     </FormItem>

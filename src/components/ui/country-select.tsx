@@ -1,6 +1,6 @@
 import { Country } from '@/types';
-import { FormControl } from './ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { FormControl } from './form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
 
 export default function CountrySelect({ field, countries }: { field: any; countries: Country[] }) {
   console.log('🚀 ~ CountrySelect ~ field.value:', field.value);

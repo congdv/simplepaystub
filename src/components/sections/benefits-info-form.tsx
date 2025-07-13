@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { PlusCircleIcon, Trash2 } from 'lucide-react';
+import { MoneyInput } from '../ui/money-input';
 
 export default function BenefitsInfoForm() {
   const { control } = useFormContext();
@@ -42,10 +43,8 @@ export default function BenefitsInfoForm() {
                   name={`benefits[${index}].value`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Benefit value</FormLabel>
-                      <FormControl>
-                        <Input placeholder="" type="number" {...field} />
-                      </FormControl>
+                      <FormLabel>Current Pay</FormLabel>
+                      <MoneyInput {...field} />
 
                       <FormMessage />
                     </FormItem>
@@ -58,10 +57,8 @@ export default function BenefitsInfoForm() {
                   name={`benefits[${index}].ytd`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Year to Date Benefit</FormLabel>
-                      <FormControl>
-                        <Input placeholder="" type="number" {...field} />
-                      </FormControl>
+                      <FormLabel>Year-to-date Total</FormLabel>
+                      <MoneyInput {...field} />
 
                       <FormMessage />
                     </FormItem>

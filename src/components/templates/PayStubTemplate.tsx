@@ -91,14 +91,14 @@ export default function PayStubTemplate(data: PayStubType) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px] font-semibold">Income</TableHead>
+            <TableHead className="w-[100px] font-semibold">Earning Type</TableHead>
             <TableHead className="text-right font-semibold">Rate</TableHead>
             <TableHead className="text-right font-semibold">Hours</TableHead>
-            <TableHead className="text-right font-semibold">This Period</TableHead>
-            <TableHead className="text-right font-semibold">Year to Date</TableHead>
+            <TableHead className="text-right font-semibold">Current Pay</TableHead>
+            <TableHead className="text-right font-semibold">YTD Pay</TableHead>
             <TableHead className="w-[100px] font-semibold">Deductions</TableHead>
-            <TableHead className="text-right font-semibold">Current total</TableHead>
-            <TableHead className="text-right font-semibold">Year to Date</TableHead>
+            <TableHead className="text-right font-semibold">Current</TableHead>
+            <TableHead className="text-right font-semibold">YTD</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

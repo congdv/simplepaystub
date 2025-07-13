@@ -31,6 +31,7 @@ import {
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { PayStubType } from '@/types';
 import { useState } from 'react';
+import { MoneyInput } from '../ui/money-input';
 
 export default function PaymentSection() {
   const form = useFormContext<PayStubType>();
@@ -51,7 +52,7 @@ export default function PaymentSection() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="after:content-['*'] after:text-red-500">
-                    How do you pay?
+                    Payment Type
                   </FormLabel>
                   <FormControl>
                     <RadioGroup
@@ -83,7 +84,7 @@ export default function PaymentSection() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="after:content-['*'] after:text-red-500">
-                      Hourly Rate
+                      Rate ($/hr)
                     </FormLabel>
                     <FormControl>
                       <Input placeholder="" type="number" {...field} min={0} />
@@ -102,7 +103,7 @@ export default function PaymentSection() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="after:content-['*'] after:text-red-500">
-                      Number of hours
+                      Hours Worked
                     </FormLabel>
                     <FormControl>
                       <Input placeholder="" type="number" {...field} min={0} />
@@ -126,9 +127,7 @@ export default function PaymentSection() {
                     <FormLabel className="after:content-['*'] after:text-red-500">
                       Annual Salary
                     </FormLabel>
-                    <FormControl>
-                      <Input placeholder="" type="number" {...field} />
-                    </FormControl>
+                    <MoneyInput {...field} />
 
                     <FormMessage />
                   </FormItem>
@@ -173,7 +172,7 @@ export default function PaymentSection() {
           name="payment.date"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel className="after:content-['*'] after:text-red-500">Pay date</FormLabel>
+              <FormLabel className="after:content-['*'] after:text-red-500">Pay Date</FormLabel>
               <Popover open={payDateOpen} onOpenChange={setPayDateOpen}>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -215,7 +214,7 @@ export default function PaymentSection() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel className="after:content-['*'] after:text-red-500">
-                    Pay Period Start
+                    Period Start
                   </FormLabel>
                   <Popover open={periodStartOpen} onOpenChange={setPeriodStartOpen}>
                     <PopoverTrigger asChild>
@@ -258,7 +257,7 @@ export default function PaymentSection() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel className="after:content-['*'] after:text-red-500">
-                    Pay Period End
+                    Period End
                   </FormLabel>
                   <Popover open={periodEndOpen} onOpenChange={setPeriodEndOpen}>
                     <PopoverTrigger asChild>
@@ -299,10 +298,8 @@ export default function PaymentSection() {
           name="payment.ytd"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Year to Date amount</FormLabel>
-              <FormControl>
-                <Input placeholder="" type="number" {...field} min={0} />
-              </FormControl>
+              <FormLabel>Year-to-date Gross Pay</FormLabel>
+              <MoneyInput {...field} />
 
               <FormMessage />
             </FormItem>
@@ -314,7 +311,7 @@ export default function PaymentSection() {
           name="payment.chequeNumber"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Cheque Number</FormLabel>
+              <FormLabel>Cheque #</FormLabel>
               <FormControl>
                 <Input placeholder="" type="text" {...field} />
               </FormControl>

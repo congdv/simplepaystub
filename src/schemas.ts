@@ -12,7 +12,22 @@ const DynamicFieldSchema = z.object({
   label: z.string(),
   value: fieldValidators.nonNegativeString('Value'),
   ytd: fieldValidators.nonNegativeString('YTD'),
-});
+}).refine(
+  (data) => {
+    // Skip validation if either value is empty
+    if (!data.value || !data.ytd) {
+      return true;
+    }
+    
+    const value = Number(data.value);
+    const ytd = Number(data.ytd);
+    return ytd >= value;
+  },
+  {
+    message: 'Year-to-date amount must be greater than or equal to current period amount',
+    path: ['ytd'],
+  }
+);
 
 const PayerSchema = z.object({
   logo: z.string().optional(),

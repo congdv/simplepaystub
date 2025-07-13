@@ -129,14 +129,14 @@ const PaystubDocument = (data: PayStubType) => {
 
         {/* Table Header */}
         <View style={[styles.tableHeader, styles.xPadded]}>
-          <Text style={[styles.tableCol, styles.bold]}>Income</Text>
+          <Text style={[styles.tableCol, styles.bold]}>Earning Type</Text>
           <Text style={[styles.tableCol, styles.bold]}>Rate</Text>
           <Text style={[styles.tableCol, styles.bold]}>Hours</Text>
-          <Text style={[styles.tableCol, styles.bold]}>This Period</Text>
-          <Text style={[styles.tableCol, styles.bold]}>Year to Date</Text>
+          <Text style={[styles.tableCol, styles.bold]}>Current Pay</Text>
+          <Text style={[styles.tableCol, styles.bold]}>YTD Pay</Text>
           <Text style={[styles.tableCol, styles.bold]}>Deductions</Text>
-          <Text style={[styles.tableCol, styles.bold]}>Current total</Text>
-          <Text style={[styles.tableCol, styles.bold]}>Year to Date</Text>
+          <Text style={[styles.tableCol, styles.bold]}>Current</Text>
+          <Text style={[styles.tableCol, styles.bold]}>YTD</Text>
         </View>
 
         {/* Table Row */}
