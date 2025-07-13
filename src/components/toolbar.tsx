@@ -1,12 +1,9 @@
 import { DownloadCloud, FilePlus2, ListRestart, Loader2 } from 'lucide-react';
 import { Button } from './ui/button';
+import { useToolbar } from '@/contexts/toolbar-context';
 
-interface ToolbarProps {
-  onReset: () => void;
-  onLoadSample: () => void;
-  isLoading: boolean;
-}
-export default function Toolbar({ onReset, onLoadSample, isLoading = false }: ToolbarProps) {
+export default function Toolbar() {
+  const { onReset, onLoadSample, isLoading } = useToolbar();
   return (
     <div className="bg-white border-t border-gray-200 px-2 py-3 flex flex-col gap-2 items-center sm:flex-row sm:justify-center sm:gap-4 md:static md:border-0 md:p-0 md:flex-row md:justify-center md:bg-transparent mt-6">
       <Button
