@@ -1,5 +1,4 @@
 'use client';
-import { useFormContext } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
@@ -10,6 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { COUNTRIES } from '@/constants';
+import { useFormContext } from 'react-hook-form';
 import { LogoUpload } from '../ui/logo-upload';
 
 export default function BusinessInfoForm() {

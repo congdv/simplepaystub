@@ -1,9 +1,9 @@
 'use client';
-import { useFieldArray, useFormContext } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { PlusCircleIcon, Trash2 } from 'lucide-react';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 import { MoneyInput } from '../ui/money-input';
 
 export default function BenefitsInfoForm() {

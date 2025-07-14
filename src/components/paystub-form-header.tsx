@@ -1,8 +1,8 @@
-import { PayStubType } from '@/types';
-import { TabsList, TabsTrigger } from './ui/tabs';
 import { cn } from '@/lib/utils';
+import { PayStubType } from '@/types';
 import { useFormContext } from 'react-hook-form';
 import { PAYSTUB_STEPS } from './paystub-form-content';
+import { TabsList, TabsTrigger } from './ui/tabs';
 
 export function PaystubFormHeader() {
   const {

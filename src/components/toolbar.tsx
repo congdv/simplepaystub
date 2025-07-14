@@ -1,6 +1,6 @@
+import { useToolbar } from '@/contexts/toolbar-context';
 import { DownloadCloud, FilePlus2, ListRestart, Loader2 } from 'lucide-react';
 import { Button } from './ui/button';
-import { useToolbar } from '@/contexts/toolbar-context';
 
 export default function Toolbar() {
   const { onReset, onLoadSample, isLoading, onDownload } = useToolbar();

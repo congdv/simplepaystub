@@ -1,3 +1,5 @@
+import { DEFAULT_PAYMENT_TYPE } from '@/constants';
+import { formatCurrency } from '@/lib/utils';
 import { PayStubType } from '@/types';
 import {
   Table,
@@ -8,8 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from '../ui/table';
-import { formatCurrency } from '@/lib/utils';
-import { DEFAULT_PAYMENT_TYPE } from '@/constants';
 
 export default function PayStubTemplate(data: PayStubType) {
   const maxRows = Math.max(data.deductions?.length || 0, data.benefits?.length || 0);

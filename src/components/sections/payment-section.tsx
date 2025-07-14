@@ -1,7 +1,6 @@
 'use client';
-import { useFormContext } from 'react-hook-form';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Form,
   FormControl,
@@ -10,28 +9,17 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { format } from 'date-fns';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { Calendar as CalendarIcon } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import {
-  DEFAULT_PAYMENT_FREQUENCY,
-  DEFAULT_PAYMENT_TYPE,
-  PAYMENT_FREQUENCIES,
-  PAYMENT_TYPE,
-} from '@/constants';
-import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { DEFAULT_PAYMENT_TYPE, PAYMENT_TYPE } from '@/constants';
+import { cn } from '@/lib/utils';
 import { PayStubType } from '@/types';
+import { format } from 'date-fns';
+import { Calendar as CalendarIcon } from 'lucide-react';
 import { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 import { MoneyInput } from '../ui/money-input';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 
 export default function PaymentSection() {
   const form = useFormContext<PayStubType>();

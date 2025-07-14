@@ -21,9 +21,9 @@ interface ToolbarProviderProps {
 
 export function ToolbarProvider({ children }: ToolbarProviderProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [onReset, setOnReset] = useState<() => void>(() => () => {});
-  const [onLoadSample, setOnLoadSample] = useState<() => void>(() => () => {});
-  const [onDownload, setOnDownload] = useState<() => void>(() => () => {});
+  const [onReset, setOnReset] = useState<() => void>(() => () => { });
+  const [onLoadSample, setOnLoadSample] = useState<() => void>(() => () => { });
+  const [onDownload, setOnDownload] = useState<() => void>(() => () => { });
 
   return (
     <ToolbarContext.Provider

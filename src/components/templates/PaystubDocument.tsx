@@ -1,8 +1,7 @@
-import React from 'react';
-import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
-import { PayStubType } from '@/types';
-import { formatCurrency } from '@/lib/utils';
 import { DEFAULT_PAYMENT_TYPE } from '@/constants';
+import { formatCurrency } from '@/lib/utils';
+import { PayStubType } from '@/types';
+import { Document, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
 // Create styles
 const styles = StyleSheet.create({

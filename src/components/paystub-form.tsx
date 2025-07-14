@@ -1,18 +1,17 @@
 'use client';
 
-import { PayStubType } from '@/types';
-import { toast } from 'sonner';
-import { useFormContext } from 'react-hook-form';
-import { Form } from './ui/form';
-import Toolbar from './toolbar';
-import { useEffect, useState } from 'react';
-import { mockPayStub } from '@/lib/mock';
 import { PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
-import { DownloadConfirmationModal } from './download-confirmation-modal';
 import { useToolbar } from '@/contexts/toolbar-context';
-import { Tabs } from './ui/tabs';
-import { PaystubFormHeader } from './paystub-form-header';
+import { mockPayStub } from '@/lib/mock';
+import { PayStubType } from '@/types';
+import { useEffect, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { toast } from 'sonner';
+import { DownloadConfirmationModal } from './download-confirmation-modal';
 import PaystubFormContent, { PAYSTUB_STEPS } from './paystub-form-content';
+import { PaystubFormHeader } from './paystub-form-header';
+import { Form } from './ui/form';
+import { Tabs } from './ui/tabs';
 
 export const PaystubForm = () => {
   const form = useFormContext<PayStubType>();

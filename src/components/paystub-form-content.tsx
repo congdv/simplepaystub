@@ -1,11 +1,11 @@
 'use client';
 
+import { Building2, DollarSign, Heart, Minus, User } from 'lucide-react';
+import BenefitsInfoForm from './sections/benefits-info-form';
 import BusinessInfoForm from './sections/business-info-form';
+import DeductionsInfoForm from './sections/deductions-info-form';
 import EmployeeInfoForm from './sections/employee-info-form';
 import PaymentSection from './sections/payment-section';
-import DeductionsInfoForm from './sections/deductions-info-form';
-import BenefitsInfoForm from './sections/benefits-info-form';
-import { Building2, User, DollarSign, Heart, Minus } from 'lucide-react';
 import { TabsContent } from './ui/tabs';
 
 export const PAYSTUB_STEPS = [
