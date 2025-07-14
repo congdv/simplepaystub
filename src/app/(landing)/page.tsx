@@ -1,10 +1,10 @@
-import { PayStubGenerator } from '@/components/paystub-generator';
+import PaystubContent from '@/components/paystub-content';
 import { ToolbarProvider } from '@/contexts/toolbar-context';
 
 export default function Landing() {
   return (
     <ToolbarProvider>
-      <PayStubGenerator />
+      <PaystubContent />
     </ToolbarProvider>
   );
 }

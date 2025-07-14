@@ -7,8 +7,10 @@ interface ToolbarContextType {
   setIsLoading: (loading: boolean) => void;
   onReset: () => void;
   onLoadSample: () => void;
+  onDownload: () => void;
   setOnReset: (fn: () => void) => void;
   setOnLoadSample: (fn: () => void) => void;
+  setOnDownload: (fn: () => void) => void;
 }
 
 const ToolbarContext = createContext<ToolbarContextType | undefined>(undefined);
@@ -21,10 +23,20 @@ export function ToolbarProvider({ children }: ToolbarProviderProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [onReset, setOnReset] = useState<() => void>(() => () => {});
   const [onLoadSample, setOnLoadSample] = useState<() => void>(() => () => {});
+  const [onDownload, setOnDownload] = useState<() => void>(() => () => {});
 
   return (
     <ToolbarContext.Provider
-      value={{ isLoading, setIsLoading, onReset, onLoadSample, setOnReset, setOnLoadSample }}
+      value={{
+        isLoading,
+        setIsLoading,
+        onReset,
+        onLoadSample,
+        setOnReset,
+        setOnLoadSample,
+        onDownload,
+        setOnDownload,
+      }}
     >
       {children}
     </ToolbarContext.Provider>

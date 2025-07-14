@@ -3,15 +3,15 @@ import { Button } from './ui/button';
 import { useToolbar } from '@/contexts/toolbar-context';
 
 export default function Toolbar() {
-  const { onReset, onLoadSample, isLoading } = useToolbar();
+  const { onReset, onLoadSample, isLoading, onDownload } = useToolbar();
   return (
-    <div className="bg-white border-t border-gray-200 px-2 py-3 flex flex-col gap-2 items-center sm:flex-row sm:justify-center sm:gap-4 md:static md:border-0 md:p-0 md:flex-row md:justify-center md:bg-transparent mt-6">
+    <div className="flex flex-row gap-2">
       <Button
         type="button"
-        variant="ghost"
+        variant="outline"
         title="Load sample data"
         onClick={onLoadSample}
-        className="flex-1 flex items-center justify-center gap-2 py-3 text-base md:flex-initial md:w-auto md:px-6 md:py-2"
+        className="items-center justify-center px-2 py-2"
         disabled={isLoading}
       >
         <FilePlus2 className="w-5 h-5" />
@@ -19,21 +19,22 @@ export default function Toolbar() {
       </Button>
       <Button
         type="button"
-        variant="ghost"
-        title="Reset pay stub"
+        variant="outline"
+        title="Reset paystub"
         onClick={onReset}
         disabled={isLoading}
-        className="flex-1 flex items-center justify-center gap-2 py-3 text-base md:flex-initial md:w-auto md:px-6 md:py-2"
+        className="items-center justify-center px-2 py-2"
       >
         <ListRestart className="w-5 h-5" />
         <span>Reset</span>
       </Button>
       <Button
-        type="submit"
-        variant="ghost"
-        title="Download pay stub"
-        className="flex-1 flex items-center justify-center gap-2 py-3 text-base md:flex-initial md:w-auto md:px-6 md:py-2"
+        type="button"
+        variant="outline"
+        title="Download paystub"
+        className="items-center justify-center px-2 py-2"
         disabled={isLoading}
+        onClick={onDownload}
       >
         {isLoading ? (
           <>

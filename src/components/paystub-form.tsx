@@ -1,10 +1,8 @@
 'use client';
 
 import { PayStubType } from '@/types';
-import PaystubStepper from './paystub-stepper';
 import { toast } from 'sonner';
 import { useFormContext } from 'react-hook-form';
-import PayStubTemplate from './templates/PayStubTemplate';
 import { Form } from './ui/form';
 import Toolbar from './toolbar';
 import { useEffect, useState } from 'react';
@@ -12,22 +10,21 @@ import { mockPayStub } from '@/lib/mock';
 import { PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
 import { DownloadConfirmationModal } from './download-confirmation-modal';
 import { useToolbar } from '@/contexts/toolbar-context';
+import { Tabs } from './ui/tabs';
+import { PaystubFormHeader } from './paystub-form-header';
+import PaystubFormContent, { PAYSTUB_STEPS } from './paystub-form-content';
 
-export const PayStubGenerator = () => {
+export const PaystubForm = () => {
   const form = useFormContext<PayStubType>();
-  const { watch } = useFormContext<PayStubType>();
-  const formValues = watch();
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [formData, setFormData] = useState<PayStubType>(PAY_STUB_FORM_DEFAULT_VALUES);
 
   // Use toolbar context
-  const { setIsLoading, setOnReset, setOnLoadSample } = useToolbar();
+  const { setIsLoading, setOnReset, setOnLoadSample, setOnDownload } = useToolbar();
 
   const onSubmit = async () => {
     setConfirmOpen(false);
     setIsLoading(true);
-    setErrorMsg(null);
     try {
       const res = await fetch('/api/generate', {
         method: 'POST',
@@ -51,7 +48,6 @@ export const PayStubGenerator = () => {
       a.click();
       window.URL.revokeObjectURL(url);
     } catch (err: any) {
-      setErrorMsg(err.message || 'An unexpected error occurred.');
       toast.error(err.message || 'An unexpected error occurred.');
     } finally {
       setIsLoading(false);
@@ -64,23 +60,22 @@ export const PayStubGenerator = () => {
   useEffect(() => {
     const handleReset = () => {
       form.reset(PAY_STUB_FORM_DEFAULT_VALUES);
-      setErrorMsg(null);
     };
 
     const handleLoadSample = () => {
       form.reset(mockPayStub);
-      setErrorMsg(null);
+    };
+
+    const handleDownload = () => {
+      form.handleSubmit(onDownload, onInvalid)();
     };
 
     setOnReset(() => handleReset);
     setOnLoadSample(() => handleLoadSample);
-  }, [form, setOnReset, setOnLoadSample]);
+    setOnDownload(() => handleDownload);
+  }, [form, setOnReset, setOnLoadSample, setOnDownload]);
 
   const onDownload = (data: PayStubType) => {
-    // if(!isSignedIn) {
-    //   document.getElementById("user-sign-in")?.click();
-    //   return;
-    // }
     setConfirmOpen(true);
     setFormData(data);
   };
@@ -88,15 +83,11 @@ export const PayStubGenerator = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onDownload, onInvalid)}>
-        <PaystubStepper formValues={formValues} />
-        {errorMsg && (
-          <div className="w-full flex justify-center mt-2">
-            <div className="bg-red-100 text-red-700 px-4 py-2 rounded shadow text-sm max-w-md text-center">
-              {errorMsg}
-            </div>
-          </div>
-        )}
-        <Toolbar />
+        <Tabs defaultValue={PAYSTUB_STEPS[0].value}>
+          <PaystubFormHeader />
+
+          <PaystubFormContent />
+        </Tabs>
         <DownloadConfirmationModal
           open={confirmOpen}
           onClose={() => setConfirmOpen(false)}

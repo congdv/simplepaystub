@@ -11,7 +11,7 @@ const font = Montserrat({
 
 export const Header = ({ showAuth = true }: { showAuth?: boolean }) => {
   return (
-    <nav className="p-4 bg-[#213555]">
+    <nav className="p-4 border-gray-200 border-b">
       <div className="mx-auto max-w-screen-xl w-full flex justify-between items-center">
         <Link href={'/'} className="flex items-center">
           <Image
@@ -22,13 +22,13 @@ export const Header = ({ showAuth = true }: { showAuth?: boolean }) => {
             className="rounded mr-2"
             priority
           />
-          <h1 className={cn('text-2xl font-bold text-[#F5EFE7]', font.className)}>SimplePaystub</h1>
+          <h1 className={cn('text-2xl font-bold text-[##92459]', font.className)}>SimplePaystub</h1>
         </Link>
 
         <div className="flex items-center space-x-6">
           <Link
             href="/faq"
-            className="text-[#F5EFE7] hover:text-gray-300 transition-colors duration-200 font-medium"
+            className="text-[##92459] hover:text-blue-500 transition-colors duration-200 font-medium"
           >
             FAQ
           </Link>
