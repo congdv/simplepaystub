@@ -29,7 +29,7 @@ export default function PayStubTemplate(data: PayStubType) {
     0
   );
   return (
-    <div className="mx-8">
+    <div className="px-8 py-4 shadow-sm rounded-lg">
       {data.payer.logo && (
         <div>
           <img
