@@ -4,21 +4,26 @@ export function PaystubFormSkeleton() {
   return (
     <>
       {/* Step indicators */}
-      <div className="flex justify-center py-4 md:py-8">
-        <div className="flex gap-1 md:gap-2 mb-6 overflow-x-auto">
-          {[1, 2, 3, 4, 5].map((step) => (
-            <Skeleton key={step} className="h-8 w-24 md:h-10 md:w-32 rounded-full flex-shrink-0" />
+      <div className="max-w-7xl flex justify-start py-4 md:py-8 mx-auto">
+        <div className="flex gap-1 md:gap-2 overflow-x-auto">
+          {[1, 2, 3].map((step) => (
+            <Skeleton key={step} className="h-4 w-12 md:h-8 md:w-32 rounded-md flex-shrink-0" />
           ))}
         </div>
       </div>
 
       {/* Main content */}
-      <div className="flex justify-center py-4 md:py-8">
-        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 p-4 lg:p-6 max-w-7xl w-full">
+      <div className="flex justify-center md:py-8">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 max-w-7xl w-full">
           {/* Left side - Form skeleton */}
           <div className="flex-1 space-y-4 md:max-w-md md:mx-auto lg:mx-0">
+            <div className="flex justify-center gap-1 md:gap-2 mb-6 overflow-x-auto">
+              {[1, 2, 3, 4, 5].map((step) => (
+                <Skeleton key={step} className="h-4 w-12 md:h-14 md:w-20 rounded-md" />
+              ))}
+            </div>
             {/* Logo upload skeleton */}
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-start mb-6">
               <Skeleton className="h-24 w-24 md:h-32 md:w-32 rounded-lg" />
             </div>
 
@@ -164,7 +169,7 @@ export function PaystubFormSkeleton() {
                   'Deductions',
                   'Current total',
                   'Year to Date',
-                ].map((header, index) => (
+                ].map((_header, index) => (
                   <Skeleton key={index} className="h-4 w-full" />
                 ))}
               </div>
