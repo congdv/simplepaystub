@@ -4,7 +4,6 @@ import { PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
 import { usePaystub } from '@/contexts/paystub-context';
 import { useToolbar } from '@/contexts/toolbar-context';
 import { mockPayStub } from '@/lib/mock';
-import { isFormDataDefault } from '@/lib/utils';
 import { PayStubType } from '@/types';
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -21,8 +20,8 @@ export const PaystubForm = () => {
   const [formData, setFormData] = useState<PayStubType>(PAY_STUB_FORM_DEFAULT_VALUES);
 
   // Use toolbar context
-  const { setIsLoading, setOnReset, setOnLoadSample, setOnDownload, setOnSave } = useToolbar();
-  const { savePaystub } = usePaystub();
+  const { setIsLoading, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub } = useToolbar();
+  const { savePaystub, getPaystub } = usePaystub();
 
   const onSubmit = async () => {
     setConfirmOpen(false);
@@ -73,14 +72,21 @@ export const PaystubForm = () => {
       form.handleSubmit(onDownload, onInvalid)();
 
     };
+    const handleViewPaystub = (id: string) => {
+      const paystub = getPaystub(id);
+      form.reset(paystub?.data)
+    }
 
-    const handleOnSave = () => {
+    const handleOnSave = async () => {
       const currentFormData = form.getValues();
 
-      if (isFormDataDefault(currentFormData)) {
-        toast.info('No changes to save - form contains default values only');
+      const isValid = await form.trigger();
+
+      if (!isValid) {
+        onInvalid();
         return;
       }
+
       try {
         const savedId = savePaystub(currentFormData);
         toast.success('Paystub saved to history successfully!');
@@ -96,6 +102,7 @@ export const PaystubForm = () => {
     setOnLoadSample(() => handleLoadSample);
     setOnDownload(() => handleDownload);
     setOnSave(() => handleOnSave)
+    setOnViewPaystub(() => handleViewPaystub)
   }, [form, setOnReset, setOnLoadSample, setOnDownload]);
 
   const onDownload = (data: PayStubType) => {

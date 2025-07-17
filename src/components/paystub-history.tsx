@@ -16,11 +16,11 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { usePaystub } from '@/contexts/paystub-context';
+import { useToolbar } from '@/contexts/toolbar-context';
 import { formatDate, getTimeAgo } from '@/lib/utils';
 import { PayStubType } from '@/types';
 import {
   Clock,
-  Download,
   Eye,
   Loader2,
   MoreVertical,
@@ -34,6 +34,7 @@ import { DeleteConfirmationDialog } from './delete-confirmation-dialog';
 
 export default function PaystubHistory() {
   const { history, deletePaystub, getPaystub, isLoading } = usePaystub();
+  const { onViewPaystub } = useToolbar();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteDialog, setDeleteDialog] = useState<{
     open: boolean;
@@ -75,17 +76,12 @@ export default function PaystubHistory() {
     // Calculate gross pay
     const regularPay = Number(data.payment.numOfHours || 0) * Number(data.payment.hourlyRate || 0);
 
-
-    // Calculate total deductions
-    const deductions = data.deductions || {};
-    const totalDeductions = Object.values(deductions).reduce((sum, amount) => {
-      return sum + (Number(amount) || 0);
+    const totalDeductions = data.deductions.reduce((sum, deduction) => {
+      return sum + (Number(deduction.value) || 0);
     }, 0);
 
-    // Calculate benefits (if they're added to pay)
-    const benefits = data.benefits || {};
-    const totalBenefits = Object.values(benefits).reduce((sum, amount) => {
-      return sum + (Number(amount) || 0);
+    const totalBenefits = data.benefits.reduce((sum, benefit) => {
+      return sum + (Number(benefit.value) || 0);
     }, 0);
 
     // Net pay = Gross pay + Benefits - Deductions
@@ -117,7 +113,7 @@ export default function PaystubHistory() {
           <h2 className="text-lg font-semibold text-gray-900">Recent Paystubs</h2>
           <span className="text-sm text-gray-500">({history.length})</span>
         </div>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" className='hidden'>
           View All
         </Button>
       </div>
@@ -159,7 +155,7 @@ export default function PaystubHistory() {
                     <div className="text-sm text-gray-900">{formatDateCallback(paystub.data.payment.date)}</div>
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="font-semibold text-gray-900">{calculateNetPay(paystub.data)}</div>
+                    <div className="font-semibold text-gray-900">${calculateNetPay(paystub.data)}</div>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="text-xs text-gray-500">{getTimeAgoCallback(paystub.createdAt)}</div>
@@ -172,14 +168,14 @@ export default function PaystubHistory() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-36">
-                        <DropdownMenuItem className="text-sm" disabled>
+                        <DropdownMenuItem className="text-sm" onClick={() => { onViewPaystub(paystub.id) }}>
                           <Eye className="mr-2 h-3 w-3" />
                           View
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-sm" disabled>
+                        {/* <DropdownMenuItem className="text-sm" disabled>
                           <Download className="mr-2 h-3 w-3" />
                           Download
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                         <DropdownMenuItem className="text-sm" onClick={() => handleDeleteClick(paystub.id, paystub.data.payee.name || 'Unknown Employee')}
                           disabled={!!deletingId}>
                           <Trash2 className="mr-2 h-3 w-3 " />

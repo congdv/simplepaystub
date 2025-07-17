@@ -13,6 +13,8 @@ interface ToolbarContextType {
   setOnLoadSample: (fn: () => void) => void;
   setOnDownload: (fn: () => void) => void;
   setOnSave: (fn: () => void) => void;
+  onViewPaystub: (id: string) => void;
+  setOnViewPaystub: (fn: (id: string) => void) => void;
 }
 
 const ToolbarContext = createContext<ToolbarContextType | undefined>(undefined);
@@ -27,6 +29,7 @@ export function ToolbarProvider({ children }: ToolbarProviderProps) {
   const [onLoadSample, setOnLoadSample] = useState<() => void>(() => () => { });
   const [onDownload, setOnDownload] = useState<() => void>(() => () => { });
   const [onSave, setOnSave] = useState<() => void>(() => () => { });
+  const [onViewPaystub, setOnViewPaystub] = useState<(id: string) => void>((_id: string) => { });
 
   return (
     <ToolbarContext.Provider
@@ -40,7 +43,9 @@ export function ToolbarProvider({ children }: ToolbarProviderProps) {
         onDownload,
         setOnDownload,
         onSave,
-        setOnSave
+        setOnSave,
+        onViewPaystub,
+        setOnViewPaystub
       }}
     >
       {children}
