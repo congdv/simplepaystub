@@ -5,5 +5,6 @@ import PayStubTemplate from './templates/PayStubTemplate';
 export default function PaystubPreview() {
   const { watch } = useFormContext<PayStubType>();
   const formValues = watch();
+
   return <PayStubTemplate {...formValues} />;
 }

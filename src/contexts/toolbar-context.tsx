@@ -6,11 +6,13 @@ interface ToolbarContextType {
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
   onReset: () => void;
+  onSave: () => void;
   onLoadSample: () => void;
   onDownload: () => void;
   setOnReset: (fn: () => void) => void;
   setOnLoadSample: (fn: () => void) => void;
   setOnDownload: (fn: () => void) => void;
+  setOnSave: (fn: () => void) => void;
 }
 
 const ToolbarContext = createContext<ToolbarContextType | undefined>(undefined);
@@ -24,6 +26,7 @@ export function ToolbarProvider({ children }: ToolbarProviderProps) {
   const [onReset, setOnReset] = useState<() => void>(() => () => { });
   const [onLoadSample, setOnLoadSample] = useState<() => void>(() => () => { });
   const [onDownload, setOnDownload] = useState<() => void>(() => () => { });
+  const [onSave, setOnSave] = useState<() => void>(() => () => { });
 
   return (
     <ToolbarContext.Provider
@@ -36,6 +39,8 @@ export function ToolbarProvider({ children }: ToolbarProviderProps) {
         setOnLoadSample,
         onDownload,
         setOnDownload,
+        onSave,
+        setOnSave
       }}
     >
       {children}

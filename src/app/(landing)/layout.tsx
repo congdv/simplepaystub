@@ -1,15 +1,15 @@
 'use client';
 import { Footer } from '@/components/footer';
+import { PaystubFormSkeleton } from '@/components/paystub-form-skeleton';
 import { PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
+import { LocalStorageManager, STORAGE_KEYS } from '@/lib/local-storage-manage';
 import { PayStubSchema } from '@/schemas';
 import { PayStubType } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Toaster } from 'sonner';
-import { useEffect, useState } from 'react';
-import { PaystubFormSkeleton } from '@/components/paystub-form-skeleton';
 
-const STORAGE_KEY = 'SimplePaystub.com';
 
 export default function LandingLayout({ children }: { children: React.ReactNode }) {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -21,29 +21,27 @@ export default function LandingLayout({ children }: { children: React.ReactNode 
 
   // Load data from localStorage on mount
   useEffect(() => {
-    const savedData = localStorage.getItem(STORAGE_KEY);
-    if (savedData) {
-      try {
-        const parsedData = JSON.parse(savedData);
-        form.reset(parsedData);
-      } catch (error) {
-        console.error('Failed to parse saved form data:', error);
-      }
-    }
+    const savedFormData = LocalStorageManager.getItem(STORAGE_KEYS.FORM_DATA, PAY_STUB_FORM_DEFAULT_VALUES);
+    form.reset(savedFormData);
+
     setIsDataLoaded(true);
   }, [form]);
 
   // Save data to localStorage when form values change
   useEffect(() => {
+    if (!isDataLoaded) return;
+
+    let timeoutId: NodeJS.Timeout;
+
     const subscription = form.watch((data) => {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      } catch (error) {
-        console.error('Failed to save form data:', error);
-      }
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        LocalStorageManager.setItem(STORAGE_KEYS.FORM_DATA, data);
+      }, 1000)
+
     });
 
-    return () => subscription.unsubscribe();
+    return () => { clearTimeout(timeoutId); subscription.unsubscribe() };
   }, [form, isDataLoaded]);
 
   if (!isDataLoaded) {
