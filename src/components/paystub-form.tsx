@@ -90,7 +90,7 @@ export const PaystubForm = () => {
       try {
         const savedId = savePaystub(currentFormData);
         toast.success('Paystub saved to history successfully!');
-
+        form.reset(PAY_STUB_FORM_DEFAULT_VALUES)
 
       } catch (error) {
         console.error('Error saving paystub:', error);

@@ -66,9 +66,13 @@ export default function PayStubTemplate(data: PayStubType) {
             {data.payee.stateOrProvince || 'YY'} {data.payee.zipOrPostalCode || 'XXX XXX'}
             <br />
             {data.payee.countryOrRegion || 'ZZ'}
-            <br />
-            {data.payee.phoneNumber || '(123) 456-7890'}{' '}
-            {data.payee.extNo ? '# ' + data.payee.extNo : ''}
+            {data.payee.phoneNumber ? (
+              <>
+                <br />
+                {data.payee.phoneNumber}
+                {data.payee.extNo ? '# ' + data.payee.extNo : ''}
+              </>
+            ) : ''}
             <br />
             {data.payee.email}
           </p>

@@ -160,7 +160,7 @@ export default function EmployeeInfoForm() {
             name="payee.phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="after:content-['*'] after:text-red-500">
+                <FormLabel>
                   Phone Number
                 </FormLabel>
                 <FormControl>

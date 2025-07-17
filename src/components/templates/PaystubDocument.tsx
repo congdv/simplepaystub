@@ -98,10 +98,12 @@ const PaystubDocument = (data: PayStubType) => {
               {data.payee.stateOrProvince || 'YY'} {data.payee.zipOrPostalCode || 'XXX XXX'}
             </Text>
             <Text>{data.payee.countryOrRegion || 'ZZ'}</Text>
-            <Text>
-              {data.payee.phoneNumber || '(123) 456-7890'}{' '}
-              {data.payee.extNo ? '# ' + data.payee.extNo : ''}
-            </Text>
+            {
+              data.payee.phoneNumber && <Text>
+                {data.payee.phoneNumber || ''}{' '}
+                {data.payee.extNo ? '# ' + data.payee.extNo : ''}
+              </Text>
+            }
             <Text>{data.payee.email}</Text>
           </View>
         </View>

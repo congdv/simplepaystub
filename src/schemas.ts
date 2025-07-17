@@ -53,7 +53,7 @@ const PayeeSchema = z.object({
   stateOrProvince: fieldValidators.minString('State/Province is required'),
   countryOrRegion: fieldValidators.minString('Country/region is required'),
   zipOrPostalCode: fieldValidators.minString('Zip/Postal code is required'),
-  phoneNumber: fieldValidators.minString('Phone number is required'),
+  phoneNumber: z.string().optional(),
   extNo: z.string().optional(),
   email: z.string().optional(),
 });
