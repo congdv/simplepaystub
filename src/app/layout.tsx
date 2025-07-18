@@ -1,9 +1,7 @@
-import type { Metadata } from 'next';
+import { Header } from '@/components/header';
+import { Analytics } from '@vercel/analytics/next';
 import localFont from 'next/font/local';
 import './globals.css';
-import { Analytics } from '@vercel/analytics/next';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -21,13 +19,16 @@ export const metadata = {
   description: 'Easily create and generate professional paystubs as PDF files.',
   keywords: [
     'simple paystub',
-    'canadian paystub',
+    'free paystub',
+    'US paystub',
+    'Canadian paystub',
     'paystub generator',
     'pdf',
     'salary',
     'payroll',
     'hourly',
     'rate',
+    'income paystubs'
   ],
 };
 
