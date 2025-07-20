@@ -7,9 +7,9 @@ import { Label } from '@/components/ui/label';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +17,6 @@ export default function ResetPasswordPage() {
   const [submitting, setSubmitting] = useState(false);
   const searchParams = useSearchParams();
   const token_hash = searchParams.get('token_hash');
-
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,21 +37,16 @@ export default function ResetPasswordPage() {
       return;
     }
 
-
     setSubmitting(true);
     try {
       const supabase = createClient();
-      // Verify the recovery token and set the session
-      const { error: verifyError } = await supabase.auth.verifyOtp({ type: 'email', token_hash })
+      const { error: verifyError } = await supabase.auth.verifyOtp({ type: 'email', token_hash });
       if (verifyError) {
         setError(verifyError.message);
         setSubmitting(false);
         return;
       }
-      // Now update the password
-      const { error } = await supabase.auth.updateUser({
-        password,
-      });
+      const { error } = await supabase.auth.updateUser({ password });
       if (error) setError(error.message);
       else {
         setSuccess('Your password has been reset! You can now sign in.');
@@ -100,9 +94,7 @@ export default function ResetPasswordPage() {
             <div className="text-sm text-center text-green-600">
               {success}
               <div className="mt-4">
-                <Link
-                  href="/sign-in"
-                >
+                <Link href="/sign-in">
                   <Button variant="outline" className='text-black'>
                     Back to Sign In
                   </Button>
@@ -121,5 +113,13 @@ export default function ResetPasswordPage() {
         </form>
       </div>
     </CardWithLogo>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }
