@@ -18,6 +18,7 @@ export const metadata = {
   title: 'Simple Paystub',
   description: 'Easily create and generate professional paystubs as PDF files.',
   keywords: [
+    'free payslip',
     'simple paystub',
     'free paystub',
     'US paystub',

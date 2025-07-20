@@ -27,7 +27,7 @@ import {
   Shield,
   Trash2
 } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { DeleteConfirmationDialog } from './delete-confirmation-dialog';
 
@@ -45,6 +45,15 @@ export default function PaystubHistory() {
     paystubId: '',
     employeeName: '',
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
+
+  const paginatedPaystubs = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return history.slice(start, start + pageSize);
+  }, [history, currentPage, pageSize])
+
+  const totalPages = Math.ceil(history.length / pageSize);
 
   const handleDeleteClick = useCallback((paystubId: string, employeeName: string) => {
     setDeleteDialog({
@@ -143,7 +152,7 @@ export default function PaystubHistory() {
                 </TableCell>
               </TableRow>
             ) : (
-              history.slice(0, 5).map((paystub) => ( // Show only 5 recent
+              paginatedPaystubs.map((paystub) => ( // Show only 5 recent
                 <TableRow key={paystub.id} className="hover:bg-gray-50/50">
                   <TableCell>
                     <div>
@@ -188,14 +197,31 @@ export default function PaystubHistory() {
               ))
             )}
           </TableBody>
+
         </Table>
       </div>
 
-      {/* Show more link if there are more than 5 items */}
-      {history.length > 5 && (
-        <div className="text-center mt-3">
-          <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800">
-            View {history.length - 5} more paystubs →
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-4">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+          >
+            Previous
+          </Button>
+          <span className="text-sm text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+          >
+            Next
           </Button>
         </div>
       )}
