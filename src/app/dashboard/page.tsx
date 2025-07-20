@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
+import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function DashboardPage() {
   const [user, setUser] = useState<{ email?: string; name?: string | null }>({});
@@ -23,7 +23,7 @@ export default function DashboardPage() {
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.replace('/login');
+    router.replace('/sign-in');
   };
 
   return (

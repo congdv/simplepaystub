@@ -1,4 +1,3 @@
-import { Header } from '@/components/header';
 import { Analytics } from '@vercel/analytics/next';
 import localFont from 'next/font/local';
 import './globals.css';
@@ -44,7 +43,6 @@ export default function RootLayout({
         <link rel="icon" href="/images/favicon.ico" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Header />
         {children}
         <Analytics />
       </body>

@@ -54,3 +54,8 @@ export const getTimeAgo = (date: string | Date): string => {
 export const isFormDataDefault = (formData: PayStubType): boolean => {
   return isEqual(formData, PAY_STUB_FORM_DEFAULT_VALUES);
 };
+
+export function getInitial(email?: string | null): string {
+  if (!email || typeof email !== 'string' || email.length === 0) return '';
+  return email.trim()[0].toUpperCase();
+}

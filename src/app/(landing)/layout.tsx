@@ -1,5 +1,6 @@
 'use client';
 import { Footer } from '@/components/footer';
+import { Header } from '@/components/header';
 import { PaystubFormSkeleton } from '@/components/paystub-form-skeleton';
 import { PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
 import { LocalStorageManager, STORAGE_KEYS } from '@/lib/local-storage-manage';
@@ -47,6 +48,7 @@ export default function LandingLayout({ children }: { children: React.ReactNode 
   if (!isDataLoaded) {
     return (
       <>
+        <Header />
         <main>
           <PaystubFormSkeleton />
         </main>
@@ -57,6 +59,7 @@ export default function LandingLayout({ children }: { children: React.ReactNode 
 
   return (
     <>
+      <Header />
       <main>
         <Toaster position="top-center" richColors />
         <FormProvider {...form}>{children}</FormProvider>

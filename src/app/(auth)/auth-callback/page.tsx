@@ -1,21 +1,26 @@
 'use client';
 
-import { Suspense } from 'react';
-import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
+import CardWithLogo from '@/components/card-with-logo';
 import { Button } from '@/components/ui/button';
+import { createClient } from '@/lib/supabase/client';
 import { Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 
 function AuthError({ message }: { message: string }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="flex items-center justify-center bg-gray-50">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg border flex flex-col items-center">
         <h1 className="text-2xl font-bold mb-4 text-center text-red-600">Authentication Error</h1>
         <p className="text-red-700 text-center mb-6">{message}</p>
-        <Button onClick={() => (window.location.href = '/login')} variant="outline">
-          Back to Login
-        </Button>
+        <Link
+          href="/sign-in"
+        >
+          <Button variant="outline">
+            Back to Sign In
+          </Button>
+        </Link>
       </div>
     </div>
   );
@@ -62,11 +67,15 @@ function AuthCallbackContent() {
   }, [searchParams, router]);
 
   if (error) {
-    return <AuthError message={error} />;
+    return (
+      <CardWithLogo>
+        <AuthError message={error} />
+      </CardWithLogo>
+    )
   }
 
   return (
-    <div className="flex items-center justify-center mt-64">
+    <CardWithLogo>
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg border flex flex-col items-center">
         <Loader2 className="animate-spin mb-4 text-gray-400" size={32} />
         <h2 className="text-xl font-semibold mb-2 text-gray-800">Signing you in...</h2>
@@ -76,7 +85,7 @@ function AuthCallbackContent() {
           You will be redirected automatically.
         </p>
       </div>
-    </div>
+    </CardWithLogo>
   );
 }
 
