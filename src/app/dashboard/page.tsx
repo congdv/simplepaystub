@@ -12,7 +12,6 @@ export default function DashboardPage() {
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
-      console.log(data);
       setUser({
         email: data.user?.email,
         name: data.user?.user_metadata?.name || null,

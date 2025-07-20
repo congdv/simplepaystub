@@ -6,7 +6,6 @@ export default function CountrySelect({ field, countries }: { field: any; countr
   return (
     <Select
       onValueChange={(value: string) => {
-        console.log(value + ' ddd ' + field.value);
         field.onChange(value);
       }}
       value={field.value}
