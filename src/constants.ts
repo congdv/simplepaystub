@@ -1,3 +1,7 @@
+export const LOADING_STATES = {
+  DOWNLOADING: 'DOWNLOADING',
+  SENDING_EMAIL: 'SENDING_EMAIL'
+}
 export const PROVINCES = [
   { name: 'Alberta', abbreviation: 'AB' },
   { name: 'British Columbia', abbreviation: 'BC' },

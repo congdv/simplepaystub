@@ -1,31 +1,35 @@
 'use client';
 
-import { PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
+import { LOADING_STATES, PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
 import { usePaystub } from '@/contexts/paystub-context';
 import { useToolbar } from '@/contexts/toolbar-context';
 import { mockPayStub } from '@/lib/mock';
+import { createClient } from '@/lib/supabase/client';
 import { PayStubType } from '@/types';
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { toast } from 'sonner';
 import { DownloadConfirmationModal } from './download-confirmation-modal';
+import { LoginDialog } from './login-dialog';
 import PaystubFormContent, { PAYSTUB_STEPS } from './paystub-form-content';
 import { PaystubFormHeader } from './paystub-form-header';
 import { Form } from './ui/form';
 import { Tabs } from './ui/tabs';
 
 export const PaystubForm = () => {
+  const supabase = createClient();
   const form = useFormContext<PayStubType>();
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [formData, setFormData] = useState<PayStubType>(PAY_STUB_FORM_DEFAULT_VALUES);
 
   // Use toolbar context
-  const { setIsLoading, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub } = useToolbar();
+  const { setLoadingState, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail } = useToolbar();
   const { savePaystub, getPaystub } = usePaystub();
 
   const onSubmit = async () => {
     setConfirmOpen(false);
-    setIsLoading(true);
+    setLoadingState(LOADING_STATES.DOWNLOADING);
     try {
       const res = await fetch('/api/generate', {
         method: 'POST',
@@ -51,7 +55,7 @@ export const PaystubForm = () => {
     } catch (err: any) {
       toast.error(err.message || 'An unexpected error occurred.');
     } finally {
-      setIsLoading(false);
+      setLoadingState(null);
     }
   };
   const onInvalid = () => {
@@ -98,11 +102,57 @@ export const PaystubForm = () => {
       }
     }
 
+    const handleSendEmail = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+
+      if (error || !user) {
+        setShowLoginDialog(true);
+        return;
+      }
+
+      const currentFormData = form.getValues();
+
+      const isValid = await form.trigger();
+
+      if (!isValid) {
+        onInvalid();
+        return;
+      }
+
+      setLoadingState(LOADING_STATES.SENDING_EMAIL);
+      try {
+        const res = await fetch('/api/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(currentFormData),
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to send email.');
+        }
+
+        const result = await res.json();
+        toast.success(
+          <div>
+            <div>Email sent successfully to {result.recipient}.</div>
+            <div>Please check your spam folder if you don't see it in your inbox.</div>
+          </div>
+        );
+      } catch (err: any) {
+        toast.error(err.message || 'Failed to send email.');
+      } finally {
+        setLoadingState(null);
+      }
+    }
+
     setOnReset(() => handleReset);
     setOnLoadSample(() => handleLoadSample);
     setOnDownload(() => handleDownload);
     setOnSave(() => handleOnSave)
     setOnViewPaystub(() => handleViewPaystub)
+    setOnSendEmail(() => handleSendEmail);
   }, [form, setOnReset, setOnLoadSample, setOnDownload]);
 
   const onDownload = (data: PayStubType) => {
@@ -122,6 +172,13 @@ export const PaystubForm = () => {
           open={confirmOpen}
           onClose={() => setConfirmOpen(false)}
           onConfirm={onSubmit}
+        />
+        <LoginDialog
+          open={showLoginDialog}
+          onClose={() => setShowLoginDialog(false)}
+          onLoginSuccess={() => {
+            setShowLoginDialog(false);
+          }}
         />
       </form>
     </Form>

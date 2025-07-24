@@ -3,8 +3,8 @@
 import { createContext, ReactNode, useContext, useState } from 'react';
 
 interface ToolbarContextType {
-  isLoading: boolean;
-  setIsLoading: (loading: boolean) => void;
+  loadingState: string | null;
+  setLoadingState: (state: string | null) => void;
   onReset: () => void;
   onSave: () => void;
   onLoadSample: () => void;
@@ -15,6 +15,8 @@ interface ToolbarContextType {
   setOnSave: (fn: () => void) => void;
   onViewPaystub: (id: string) => void;
   setOnViewPaystub: (fn: (id: string) => void) => void;
+  onSendEmail: () => void;
+  setOnSendEmail: (fn: () => void) => void;
 }
 
 const ToolbarContext = createContext<ToolbarContextType | undefined>(undefined);
@@ -24,18 +26,19 @@ interface ToolbarProviderProps {
 }
 
 export function ToolbarProvider({ children }: ToolbarProviderProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingState, setLoadingState] = useState<string | null>(null);
   const [onReset, setOnReset] = useState<() => void>(() => () => { });
   const [onLoadSample, setOnLoadSample] = useState<() => void>(() => () => { });
   const [onDownload, setOnDownload] = useState<() => void>(() => () => { });
   const [onSave, setOnSave] = useState<() => void>(() => () => { });
   const [onViewPaystub, setOnViewPaystub] = useState<(id: string) => void>((_id: string) => { });
+  const [onSendEmail, setOnSendEmail] = useState<() => void>(() => { });
 
   return (
     <ToolbarContext.Provider
       value={{
-        isLoading,
-        setIsLoading,
+        loadingState,
+        setLoadingState,
         onReset,
         onLoadSample,
         setOnReset,
@@ -45,7 +48,9 @@ export function ToolbarProvider({ children }: ToolbarProviderProps) {
         onSave,
         setOnSave,
         onViewPaystub,
-        setOnViewPaystub
+        setOnViewPaystub,
+        onSendEmail,
+        setOnSendEmail
       }}
     >
       {children}
