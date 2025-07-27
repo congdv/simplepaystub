@@ -16,7 +16,7 @@ export default function Toolbar() {
         disabled={!!loadingState}
       >
         <FilePlus2 className="w-5 h-5" />
-        <span>Sample Data</span>
+        <span className="hidden lg:inline">Sample Data</span>
       </Button>
       <Button
         type="button"
@@ -27,7 +27,7 @@ export default function Toolbar() {
         className="items-center justify-center px-2 py-2"
       >
         <ListRestart className="w-5 h-5" />
-        <span>Reset</span>
+        <span className="hidden lg:inline">Reset</span>
       </Button>
       <Button
         type="button"
@@ -38,7 +38,7 @@ export default function Toolbar() {
         className="items-center justify-center px-2 py-2"
       >
         <Save className="w-5 h-5" />
-        <span>Save</span>
+        <span className="hidden lg:inline">Save</span>
       </Button>
       <Button
         type="button"
@@ -51,12 +51,12 @@ export default function Toolbar() {
         {loadingState && loadingState === LOADING_STATES.DOWNLOADING ? (
           <>
             <Loader2 className="w-5 h-5 animate-spin" />
-            <span>Generating...</span>
+            <span className="hidden lg:inline">Generating...</span>
           </>
         ) : (
           <>
             <DownloadCloud className="w-5 h-5" />
-            <span>Download PDF</span>
+            <span className="hidden lg:inline">Download PDF</span>
           </>
         )}
       </Button>
@@ -71,12 +71,12 @@ export default function Toolbar() {
         {loadingState && loadingState === LOADING_STATES.SENDING_EMAIL ? (
           <>
             <Loader2 className="w-5 h-5 animate-spin" />
-            <span>Sending...</span>
+            <span className="hidden lg:inline">Sending...</span>
           </>
         ) : (
           <>
             <Mail className="w-5 h-5" />
-            <span>Send PDF to Email</span>
+            <span className="hidden lg:inline">Send PDF to Email</span>
           </>
         )}
       </Button>
