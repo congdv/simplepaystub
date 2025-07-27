@@ -21,6 +21,11 @@ type UserType = {
   email?: string;
 };
 
+type ExtendedPayStubType = PayStubType & {
+  recipientEmail?: string | null;
+  recipientName?: string | null;
+}
+
 const getFirstName = (user: UserType) => {
   if (user?.user_metadata?.full_name) {
     return user.user_metadata.full_name.split(" ")[0];
@@ -41,7 +46,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body: PayStubType = await req.json();
+    const body: ExtendedPayStubType = await req.json();
 
     // Generate PDF
     const { default: PaystubDocument } = await import('@/components/templates/PaystubDocument');
@@ -52,16 +57,20 @@ export async function POST(req: NextRequest) {
     const now = new Date();
     const timestamp = now.toISOString().replace(/[:.]/g, '-').replace('T', '_').slice(0, 19);
     const filename = `paystub_${timestamp}.pdf`;
-
+    const isSendToOther = !!body.recipientEmail;
+    const toEmail = isSendToOther ? body.recipientEmail ?? undefined : user.email!;
+    const ccEmail = isSendToOther ? user.email! : undefined;
+    const recipientName = isSendToOther ? body.recipientName : getFirstName(user);
 
     // Send email with PDF attachment
     const emailData = {
       from: `Otto from SimplePaystub.com <otto@${process.env.MAILGUN_DOMAIN}>`,
-      to: user.email!,
+      to: toEmail,
+      ...(ccEmail ? { cc: ccEmail } : {}),
       subject: 'Your generator paystub',
       text: 'Please find your paystub attached.',
       html: `
-        <p>Hey ${getFirstName(user)},</p>
+        <p>Hey ${recipientName},</p>
         <p>Your paystub has been generated successfully. Please find it attached to this email.</p>
         <p>Thank you for using SimplePaystub!</p>
         <p>Best regards,<br/>Otto from The SimplePaystub Team</p>

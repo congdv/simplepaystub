@@ -13,6 +13,7 @@ import { DownloadConfirmationModal } from './download-confirmation-modal';
 import { LoginDialog } from './login-dialog';
 import PaystubFormContent, { PAYSTUB_STEPS } from './paystub-form-content';
 import { PaystubFormHeader } from './paystub-form-header';
+import { SendEmailDialog } from './send-email-dialog';
 import { Form } from './ui/form';
 import { Tabs } from './ui/tabs';
 
@@ -22,6 +23,7 @@ export const PaystubForm = () => {
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [formData, setFormData] = useState<PayStubType>(PAY_STUB_FORM_DEFAULT_VALUES);
+  const [showSendEmailDialog, setShowSendEmailDialog] = useState(false);
 
   // Use toolbar context
   const { setLoadingState, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail } = useToolbar();
@@ -109,42 +111,8 @@ export const PaystubForm = () => {
         setShowLoginDialog(true);
         return;
       }
+      setShowSendEmailDialog(true);
 
-      const currentFormData = form.getValues();
-
-      const isValid = await form.trigger();
-
-      if (!isValid) {
-        onInvalid();
-        return;
-      }
-
-      setLoadingState(LOADING_STATES.SENDING_EMAIL);
-      try {
-        const res = await fetch('/api/send-email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(currentFormData),
-        });
-
-        if (!res.ok) {
-          throw new Error('Failed to send email.');
-        }
-
-        const result = await res.json();
-        toast.success(
-          <div>
-            <div>Email sent successfully to {result.recipient}.</div>
-            <div>Please check your spam folder if you don't see it in your inbox.</div>
-          </div>
-        );
-      } catch (err: any) {
-        toast.error(err.message || 'Failed to send email.');
-      } finally {
-        setLoadingState(null);
-      }
     }
 
     setOnReset(() => handleReset);
@@ -154,6 +122,36 @@ export const PaystubForm = () => {
     setOnViewPaystub(() => handleViewPaystub)
     setOnSendEmail(() => handleSendEmail);
   }, [form, setOnReset, setOnLoadSample, setOnDownload]);
+
+  const actuallySendEmail = async (recipientEmail: string | null, recipientName: string | null) => {
+
+    const currentFormData = form.getValues();
+    const isValid = await form.trigger();
+    if (!isValid) {
+      onInvalid();
+      return;
+    }
+    setLoadingState(LOADING_STATES.SENDING_EMAIL);
+    try {
+      const res = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...currentFormData, recipientEmail, recipientName }),
+      });
+      if (!res.ok) throw new Error('Failed to send email.');
+      const result = await res.json();
+      toast.success(
+        <div>
+          <div>Email sent successfully to {result.recipient}.</div>
+          <div>Please check your spam folder if you don't see it in your inbox.</div>
+        </div>
+      );
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to send email.');
+    } finally {
+      setLoadingState(null);
+    }
+  };
 
   const onDownload = (data: PayStubType) => {
     setConfirmOpen(true);
@@ -179,6 +177,11 @@ export const PaystubForm = () => {
           onLoginSuccess={() => {
             setShowLoginDialog(false);
           }}
+        />
+        <SendEmailDialog
+          open={showSendEmailDialog}
+          onClose={() => setShowSendEmailDialog(false)}
+          onSend={actuallySendEmail}
         />
       </form>
     </Form>
