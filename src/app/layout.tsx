@@ -29,7 +29,8 @@ export const metadata = {
     'hourly',
     'rate',
     'income paystubs',
-    'DIY Payroll'
+    'DIY Payroll',
+    'bookkeeping'
   ],
 };
 
