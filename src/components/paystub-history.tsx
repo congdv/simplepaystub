@@ -49,8 +49,13 @@ export default function PaystubHistory() {
   const pageSize = 5;
 
   const paginatedPaystubs = useMemo(() => {
+    const sortedHistory = [...history].sort((a, b) => {
+      const aDate = new Date(a.createdAt).getTime();
+      const bDate = new Date(b.createdAt).getTime();
+      return bDate - aDate;
+    });
     const start = (currentPage - 1) * pageSize;
-    return history.slice(start, start + pageSize);
+    return sortedHistory.slice(start, start + pageSize);
   }, [history, currentPage, pageSize])
 
   const totalPages = Math.ceil(history.length / pageSize);
@@ -153,7 +158,7 @@ export default function PaystubHistory() {
               </TableRow>
             ) : (
               paginatedPaystubs.map((paystub) => ( // Show only 5 recent
-                <TableRow key={paystub.id} className="hover:bg-gray-50/50">
+                <TableRow key={paystub.id} className="hover:bg-gray-50/50" onClick={() => onViewPaystub(paystub.id)}>
                   <TableCell>
                     <div>
                       <div className="font-medium text-gray-900 text-sm">{paystub.data.payee.name}</div>
