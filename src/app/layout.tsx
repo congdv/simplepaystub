@@ -1,4 +1,3 @@
-import { Analytics } from '@vercel/analytics/next';
 import localFont from 'next/font/local';
 import './globals.css';
 
@@ -43,10 +42,22 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" href="/images/favicon.ico" />
+        {/* Google Analytics */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XMQ4K37NDL"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-XMQ4K37NDL');
+            `,
+          }}
+        />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
-        <Analytics />
+        {/* <Analytics /> */}
       </body>
     </html>
   );
