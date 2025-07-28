@@ -90,6 +90,7 @@ export function SendEmailDialog({ open, onClose, onSend }: {
           <Button variant="outline" onClick={onClose}>Cancel</Button>
           <Button
             onClick={handleSend}
+            className='bg-blue-500 text-white hover:text-white hover:bg-blue-700'
             disabled={
               mode === 'other' && (
                 !otherEmail ||
