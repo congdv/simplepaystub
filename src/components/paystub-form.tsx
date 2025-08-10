@@ -165,7 +165,12 @@ export const PaystubForm = () => {
     }
   };
 
-  const onDownload = (data: PayStubType) => {
+  const onDownload = async (data: PayStubType) => {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error || !user) {
+      setShowLoginDialog(true);
+      return;
+    }
     setConfirmOpen(true);
     setFormData(data);
   };

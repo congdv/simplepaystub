@@ -19,7 +19,7 @@ export function LoginDialog({ open, onClose, onLoginSuccess }: LoginDialogProps)
         <DialogHeader>
           <DialogTitle>Login Required</DialogTitle>
           <DialogDescription>
-            You need to be logged in to send paystub via email. Please log in to continue.
+            You need to be logged in to access this feature. Please log in to continue.
           </DialogDescription>
         </DialogHeader>
         <div className="flex gap-2 justify-end">
