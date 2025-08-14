@@ -26,7 +26,7 @@ export function LoginDialog({ open, onClose, onLoginSuccess }: LoginDialogProps)
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={handleLogin}>
+          <Button onClick={handleLogin} className='bg-blue-500 text-white hover:text-white hover:bg-blue-700'>
             Login
           </Button>
         </div>
