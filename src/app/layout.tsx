@@ -1,5 +1,6 @@
 import localFont from 'next/font/local';
 import './globals.css';
+import Script from 'next/script';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -42,17 +43,11 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" href="/images/favicon.ico" />
-        {/* Google Analytics */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XMQ4K37NDL"></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-XMQ4K37NDL');
-            `,
-          }}
+        <Script
+          id="counterscale-script"
+          data-site-id={`${process.env.NEXT_PUBLIC_COUNTERSCALE_SITE_ID}`}
+          src={`${process.env.NEXT_PUBLIC_COUNTERSCALE_REPORTER_HOST}/tracker.js`}
+          defer
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>

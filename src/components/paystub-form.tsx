@@ -3,7 +3,6 @@
 import { LOADING_STATES, PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
 import { usePaystub } from '@/contexts/paystub-context';
 import { useToolbar } from '@/contexts/toolbar-context';
-import { useGtagEvent } from '@/hooks/use-gtag-event';
 import { mockPayStub } from '@/lib/mock';
 import { createClient } from '@/lib/supabase/client';
 import { PayStubType } from '@/types';
@@ -25,7 +24,6 @@ export const PaystubForm = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [formData, setFormData] = useState<PayStubType>(PAY_STUB_FORM_DEFAULT_VALUES);
   const [showSendEmailDialog, setShowSendEmailDialog] = useState(false);
-  const gtagEvent = useGtagEvent();
 
   // Use toolbar context
   const { setLoadingState, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail } = useToolbar();
@@ -34,11 +32,6 @@ export const PaystubForm = () => {
   const onSubmit = async () => {
     setConfirmOpen(false);
     setLoadingState(LOADING_STATES.DOWNLOADING);
-    gtagEvent('click', {
-      event_category: 'Button',
-      event_label: 'Agree download Paystub',
-      value: 1,
-    });
     try {
       const res = await fetch('/api/generate', {
         method: 'POST',
@@ -82,11 +75,6 @@ export const PaystubForm = () => {
     };
 
     const handleDownload = () => {
-      gtagEvent('click', {
-        event_category: 'Button',
-        event_label: 'Download Paystub',
-        value: 1,
-      });
       form.handleSubmit(onDownload, onInvalid)();
 
     };
