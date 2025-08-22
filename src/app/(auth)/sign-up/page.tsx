@@ -52,7 +52,7 @@ export default function SignUpPage() {
       });
       if (error) setError(error.message);
       else {
-        setSuccess('Sign up successful! Please check your email and click the verification link to activate your account.');
+        setSuccess('Sign up successful! Please check your email (including your spam or junk folder) and click the verification link to activate your account.');
       }
     } catch (err: any) {
       setError('Sign up failed. Please try again.');
