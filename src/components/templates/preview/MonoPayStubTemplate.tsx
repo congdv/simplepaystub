@@ -21,15 +21,11 @@ export default function MonoPayStubTemplate(data: PayStubType) {
       {/* Header: logo + company info / earnings statement */}
       <div className="flex justify-between items-start">
         <div className="flex items-start gap-4">
-          {data.payer.logo ? (
+          {data.payer.logo && (
             <img src={data.payer.logo} alt="logo" className="w-20 h-20 object-contain rounded" />
-          ) : (
-            <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center text-lg font-bold">
-              {data.payer.name ? data.payer.name.slice(0, 2).toUpperCase() : 'FK'}
-            </div>
           )}
           <div className="text-xs text-gray-700">
-            <div className="font-semibold">{data.payer.name || 'Financial Kinesis Inc.'}</div>
+            <div className="font-semibold">{data.payer.name || 'Acme Corporation'}</div>
             <div>{data.payer.address}</div>
             <div>
               {data.payer.city}, {data.payer.stateOrProvince} {data.payer.zipOrPostalCode}
