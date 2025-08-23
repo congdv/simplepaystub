@@ -30,6 +30,8 @@ export const PaystubForm = () => {
   const { setLoadingState, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail } = useToolbar();
   const { savePaystub, getPaystub } = usePaystub();
 
+  const [currentTab, setCurrentTab] = useState(PAYSTUB_STEPS[0].value);
+
   // Consolidated download helper: checks auth and requests PDF generation
   const performDownload = async (data: PayStubType) => {
     const { data: { user }, error } = await supabase.auth.getUser();
@@ -98,7 +100,7 @@ export const PaystubForm = () => {
 
     };
 
-    // ... handleDownload is defined in component scope
+    // handleDownload is defined in component scope
     const handleViewPaystub = (id: string) => {
       const paystub = getPaystub(id);
       form.reset(paystub?.data)
@@ -187,15 +189,11 @@ export const PaystubForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit((data) => {
-        setFormData(data);
-        setConfirmAction('download');
-        setConfirmOpen(true);
-      }, onInvalid)}>
-        <Tabs defaultValue={PAYSTUB_STEPS[0].value}>
+      <form onSubmit={(e) => { e.preventDefault(); handleDownload(); }}>
+        <Tabs value={currentTab} onValueChange={setCurrentTab}>
           <PaystubFormHeader />
 
-          <PaystubFormContent />
+          <PaystubFormContent currentTab={currentTab} setCurrentTab={setCurrentTab} />
         </Tabs>
         <DownloadConfirmationModal
           open={confirmOpen}
