@@ -1,33 +1,33 @@
 export default function PrivacyPage() {
   return (
     <main className="max-w-2xl mx-auto py-10 px-4 min-h-screen mt-32">
-      <h1 className="text-2xl font-bold mb-4">Privacy Notice</h1>
+      <h1 className="text-2xl font-bold mb-2">Privacy Notice</h1>
+      <p className="text-sm text-muted-foreground mb-4">Last updated: August 23, 2025</p>
       <p className="mb-4">
-        At SimplePaystub.com, your privacy is our top priority. We are committed to protecting your personal and financial information by following these principles:
+        At SimplePaystub.com, your privacy matters. We keep things simple and transparent about how your data is handled.
       </p>
+
       <ul className="list-disc pl-5 mb-6 space-y-2">
         <li>
-          <strong>No Data Leaves Your Device:</strong> All paystub information you enter is processed and stored locally in your browser. We do not transmit, store, or share your paystub data or personal details on our servers.
+          <strong>Local by default:</strong> Your paystub information is stored in your browser's local storage by default. That means the data stays on the device you used to create it unless you choose to share or export it.
         </li>
         <li>
-          <strong>No Personal Tracking:</strong> We do not track your personal or financial information. Any analytics we collect are anonymous and used solely to improve the user experience.
+          <strong>Server use is temporary:</strong> If you ask us to generate a PDF or send a paystub by email, the paystub data is transmitted to our server only for that task. We use it solely to create or send the PDF and do not keep it for other purposes.
         </li>
         <li>
-          <strong>Anonymous Analytics Only:</strong> We may collect basic, non-identifiable usage data such as page visits and button clicks. This data helps us improve our service, but never includes your paystub or personal information.
+          <strong>Anonymous analytics only:</strong> We may collect basic, non-identifying usage data (like page views and button clicks) to help improve the app. This data is anonymous and never includes your paystub or personal financial details.
         </li>
         <li>
-          <strong>Your Control:</strong> You have full control over your data. You can reset or clear your paystub information at any time by using the app’s reset feature or by clearing your browser data.
+          <strong>Your control:</strong> You can reset or clear your paystub information at any time using the app's Reset button or by clearing your browser data.
         </li>
         <li>
-          <strong>Device-Specific Storage:</strong> Because your data is stored in your browser, it is not accessible from other devices. If you need to keep a record, please download or print your paystub.
+          <strong>Device-specific storage:</strong> Because data is stored locally, it won't sync across your devices. If you need access from another device, download or print your paystub.
         </li>
         <li>
-          <strong>Data Loss Warning:</strong> If you clear your browser’s local storage or cookies, your saved paystub data will be lost. We recommend saving important paystubs externally.
+          <strong>Data loss warning:</strong> Clearing your browser storage or cookies will erase any saved paystubs. We recommend downloading important paystubs for safekeeping.
         </li>
       </ul>
-      <p className="mb-4">
-        We may introduce optional cloud features in the future, but your privacy and security will always remain our core commitment.
-      </p>
+
       <div className="bg-blue-50 rounded-lg p-6 border border-blue-200 text-center mt-8">
         <h3 className="text-base font-semibold text-blue-900 mb-2">Questions or Concerns?</h3>
         <p className="text-blue-700">

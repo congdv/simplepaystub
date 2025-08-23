@@ -4,14 +4,9 @@ import { Header } from '@/components/header';
 export default function FAQ() {
   const faqs = [
     {
-      question: 'Is my data safe and private?',
-      answer:
-        "Yes, your privacy is our top priority. Currently, all paystub information is saved locally in your browser and never leaves your device. We don't store any personal or financial data on our servers.",
-    },
-    {
       question: 'Do you track my data or activity?',
       answer:
-        'We may collect basic analytics data (like page visits and general usage patterns) to improve our service, but we never track or store your personal information or paystub data. Your financial information remains completely private.',
+        'We may collect basic analytics data (like page visits and general usage patterns) to improve our service, but we never track or store your personal information or paystub data.',
     },
     {
       question: 'What analytics data do you collect?',
@@ -21,7 +16,12 @@ export default function FAQ() {
     {
       question: 'Where is my paystub data stored?',
       answer:
-        "Currently, your paystub data is stored locally in your browser's storage. This means only you have access to it, and it's never transmitted to our servers. We may offer optional cloud sync features in the future.",
+        "Currently, your paystub data is stored locally in your browser's storage.",
+    },
+    {
+      question: 'Is my data safe and private?',
+      answer:
+        "Yes — your privacy is our top priority. By default, paystub information is stored locally in your browser. When you request a PDF or send a paystub by email, the data is transmitted to our server temporarily for processing; it is used only to generate or send the PDF and is not retained for other purposes.",
     },
     {
       question: 'What happens if I clear my browser data?',
@@ -31,7 +31,7 @@ export default function FAQ() {
     {
       question: 'Can I access my data from different devices?',
       answer:
-        'Currently, since data is stored locally in your browser, you cannot access the same data from different devices. Each device has its own separate local storage. We may introduce cloud sync features in the future to enable cross-device access.',
+        'Currently, since data is stored locally in your browser, you cannot access the same data from different devices. Each device has its own separate local storage',
     },
     {
       question: 'How do I delete my data?',
