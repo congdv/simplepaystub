@@ -16,6 +16,7 @@ export default function SignUpPage() {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(true);
   const [signing, setSigning] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,9 +36,16 @@ export default function SignUpPage() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSigning(true);
     setError(null);
     setSuccess(null);
+
+    // simple client-side password confirmation check
+    if (!password || !confirmPassword || password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    setSigning(true);
     try {
       const supabase = createClient();
       const { error } = await supabase.auth.signUp({
@@ -187,14 +195,27 @@ export default function SignUpPage() {
               className="rounded-lg"
             />
           </div>
+          <div>
+            <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">Confirm Password</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              autoComplete="new-password"
+              placeholder="Confirm your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              disabled={signing}
+              className="rounded-lg"
+            />
+          </div>
           {success && <p className="text-green-600 text-sm text-center">{success}</p>}
           {error && <p className="text-red-600 text-sm text-center">{error}</p>}
           <Button
             type="submit"
             className="w-full mt-2 bg-black text-white font-semibold rounded-lg hover:bg-gray-900"
-            disabled={signing || !email || !password || !firstName || !lastName}
+            disabled={signing || !email || !password || !confirmPassword || !firstName || !lastName}
           >
-            {loading ? 'Signing up...' : 'Sign up'}
+            {signing ? 'Signing up...' : 'Sign up'}
           </Button>
         </form>
       </div>
