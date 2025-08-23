@@ -152,7 +152,7 @@ export default function SignInPage() {
           {error && <p className="text-red-600 text-sm text-center">{error}</p>}
           <Button
             type="submit"
-            className="w-full mt-2 bg-black text-white font-semibold rounded-lg hover:bg-gray-900"
+            className="w-full mt-2 font-semibold rounded-lg bg-blue-500 text-white hover:text-white hover:bg-blue-700"
             disabled={signing || !email || !password}
           >
             {signing ? 'Signing in...' : 'Sign in'}
