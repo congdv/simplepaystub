@@ -65,8 +65,12 @@ export default function FAQ() {
             <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
               <h3 className="text-lg font-semibold text-blue-900 mb-2">Still have questions?</h3>
               <p className="text-blue-700">
-                Your privacy and security are our commitment. All processing happens locally in your
-                browser.
+                Your privacy and security are our commitment.
+                <br />
+                If you have any questions about privacy or data security, please contact us at{' '}
+                <a href="mailto:support@simplepaystub.com" className="underline">
+                  support@simplepaystub.com
+                </a>
               </p>
             </div>
           </div>
