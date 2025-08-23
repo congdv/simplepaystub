@@ -66,7 +66,7 @@ export const PaystubForm = () => {
 
   useEffect(() => {
     const handleReset = () => {
-      form.reset(PAY_STUB_FORM_DEFAULT_VALUES);
+      form.reset({ ...PAY_STUB_FORM_DEFAULT_VALUES, template: form.getValues("template") });
     };
 
     const handleLoadSample = () => {
