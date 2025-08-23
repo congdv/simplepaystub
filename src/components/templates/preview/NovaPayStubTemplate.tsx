@@ -43,7 +43,7 @@ export default function NovaPayStubTemplate(data: PayStubType) {
         <div className="text-left text-sm">
           <h2 className="font-semibold text-xl">{data.payer.name || 'Acme Corporation'}</h2>
           <p>
-            {data.payer.address || '123 Street st'}{' '}
+            {data.payer.address || '123 Street st '}
             {data.payer.addressSecond ? '# ' + data.payer.addressSecond : ''}
             <br />
             {data.payer.city ? data.payer.city + ', ' : 'ABC, '}
