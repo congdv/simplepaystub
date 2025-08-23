@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
   page: { padding: 24, fontSize: 11, fontFamily: 'Helvetica' },
   header: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8, alignItems: 'flex-start' },
   company: { fontWeight: 'bold', fontSize: 16 },
-  statementBox: { borderWidth: 1, borderColor: '#e5e7eb', padding: 8, width: 160, alignItems: 'flex-start' },
+  statementBox: { borderWidth: 1, borderColor: '#e5e7eb', padding: 8, width: 180, alignItems: 'flex-start' },
   section: { marginBottom: 8 },
   tableHeader: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ccc', paddingBottom: 4, marginBottom: 4 },
   tableRow: { flexDirection: 'row', marginBottom: 2 },
@@ -49,11 +49,11 @@ const MonoPaystubDocument = (data: PayStubType) => {
             <Text style={{ fontWeight: 'bold' }}>Earnings Statement</Text>
             <Text style={styles.small}>
               {data.payment.periodStart && data.payment.periodEnd && (
-                <>Period Ending: {new Date(data.payment.periodEnd).toLocaleDateString('en-US')}{' '}</>
+                <>Pay Period: {new Date(data.payment.periodStart).toLocaleDateString('en-US')}{' - '} {new Date(data.payment.periodEnd).toLocaleDateString('en-US')}</>
               )}
             </Text>
             <Text style={styles.small}>{data.payment.date && `Pay Date: ${new Date(data.payment.date).toLocaleDateString('en-US')}`}</Text>
-            {data.payment.chequeNumber && <Text style={styles.small}>Payroll Check Number: {data.payment.chequeNumber}</Text>}
+            {data.payment.chequeNumber && <Text style={styles.small}>Check #: {data.payment.chequeNumber}</Text>}
           </View>
         </View>
 
@@ -115,7 +115,7 @@ const MonoPaystubDocument = (data: PayStubType) => {
           <View style={[styles.tableHeader]}>
             <Text style={[styles.labelCol, { fontWeight: 'bold' }]}>Deductions</Text>
             <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>This Period</Text>
-            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>YTD</Text>
+            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>Year to Date</Text>
           </View>
           {data.deductions.map((d, i) => (
             <View style={styles.tableRow} key={i}>
@@ -126,20 +126,25 @@ const MonoPaystubDocument = (data: PayStubType) => {
           ))}
 
           <View style={[styles.tableRow, { marginTop: 6, borderTopWidth: 1, borderTopColor: '#eee', paddingTop: 6 }]}>
-            <Text style={styles.labelCol}>Net Pay</Text>
+            <Text style={[styles.labelCol, { fontWeight: 'bold' }]}>Deductions</Text>
+            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>{formatCurrency(deductionsTotal)}</Text>
+            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>{formatCurrency(ytdDeductions)}</Text>
+          </View>
+          <View style={[styles.tableRow, { marginTop: 6, borderTopWidth: 1, borderTopColor: '#eee', paddingTop: 6 }]}>
+            <Text style={[styles.labelCol, { fontWeight: 'bold' }]}>Net Pay</Text>
+            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>{formatCurrency(netPay)}</Text>
             <Text style={styles.cell}></Text>
-            <Text style={[styles.cell, styles.right]}>{formatCurrency(netPay)}</Text>
           </View>
         </View>
 
         {/* YTD summary */}
         <View style={styles.ytdGrid}>
           <View style={styles.ytdBox}>
-            <Text style={styles.small}>YTD Gross</Text>
+            <Text style={styles.small}>Year to Date Gross</Text>
             <Text style={{ fontWeight: 'bold' }}>{formatCurrency(ytdPayments)}</Text>
           </View>
           <View style={styles.ytdBox}>
-            <Text style={styles.small}>YTD Deductions</Text>
+            <Text style={styles.small}>Year to Date Deductions</Text>
             <Text style={{ fontWeight: 'bold' }}>{formatCurrency(ytdDeductions)}</Text>
           </View>
           <View style={styles.ytdBox}>

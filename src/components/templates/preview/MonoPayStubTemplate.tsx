@@ -35,14 +35,14 @@ export default function MonoPayStubTemplate(data: PayStubType) {
           </div>
         </div>
 
-        <div className="text-right border p-3">
+        <div className="text-left border p-3">
           <div className="text-lg font-semibold">Earnings Statement</div>
           <div className="text-xs text-gray-600 mt-2">
-            {data.payment.periodEnd && (
-              <div>Period Ending: {new Date(data.payment.periodEnd).toLocaleDateString('en-US')}</div>
+            {data.payment.periodStart && data.payment.periodEnd && (
+              <div>Pay Period: {new Date(data.payment.periodStart).toLocaleDateString('en-US')} - {new Date(data.payment.periodEnd).toLocaleDateString('en-US')}</div>
             )}
             {data.payment.date && <div>Pay Date: {new Date(data.payment.date).toLocaleDateString('en-US')}</div>}
-            {data.payment.chequeNumber && <div>Payroll Check Number: {data.payment.chequeNumber}</div>}
+            {data.payment.chequeNumber && <div>Check #: {data.payment.chequeNumber}</div>}
           </div>
         </div>
       </div>
@@ -124,9 +124,14 @@ export default function MonoPayStubTemplate(data: PayStubType) {
                 </tr>
               ))}
               <tr className="border-t font-semibold">
-                <td className="py-2">Net Pay</td>
-                <td></td>
+                <td className="py-2">Decutions</td>
+                <td className="text-right py-2">{formatCurrency(deductionsTotal)}</td>
+                <td className="text-right py-2">{formatCurrency(ytdDeductions)}</td>
+              </tr>
+              <tr className="border-t font-semibold">
+                <td className="py-2">Net pay</td>
                 <td className="text-right py-2">{formatCurrency(netPay)}</td>
+                <td className="text-right py-2"></td>
               </tr>
             </tbody>
           </table>
@@ -136,11 +141,11 @@ export default function MonoPayStubTemplate(data: PayStubType) {
       {/* Bottom YTD summary */}
       <div className="mt-6 grid grid-cols-3 gap-4 text-sm">
         <div className="bg-gray-50 p-3 rounded">
-          <div className="text-gray-500">YTD Gross</div>
+          <div className="text-gray-500">Year to Date Gross</div>
           <div className="font-semibold">{formatCurrency(ytdPayments)}</div>
         </div>
         <div className="bg-gray-50 p-3 rounded">
-          <div className="text-gray-500">YTD Deductions</div>
+          <div className="text-gray-500">Year to Date Deductions</div>
           <div className="font-semibold">{formatCurrency(ytdDeductions)}</div>
         </div>
         <div className="bg-gray-50 p-3 rounded">
