@@ -185,16 +185,13 @@ export const PaystubForm = () => {
     }
   };
 
-  const onDownload = async (data: PayStubType) => {
-    // Keep formData in state for the confirm flow
-    setFormData(data);
-    // Delegate to shared helper which performs auth check and download
-    await performDownload(data);
-  };
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onDownload, onInvalid)}>
+      <form onSubmit={form.handleSubmit((data) => {
+        setFormData(data);
+        setConfirmAction('download');
+        setConfirmOpen(true);
+      }, onInvalid)}>
         <Tabs defaultValue={PAYSTUB_STEPS[0].value}>
           <PaystubFormHeader />
 
