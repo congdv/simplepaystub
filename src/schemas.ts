@@ -116,6 +116,8 @@ export const PayStubSchema = z
     payment: PaymentSchema,
     deductions: z.array(DynamicFieldSchema),
     benefits: z.array(DynamicFieldSchema),
+    // optional template selector: defaults handled in UI
+    template: z.enum(['NOVA', 'MONO']).optional(),
   })
   .refine(
     (data) => {

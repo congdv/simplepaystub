@@ -9,9 +9,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../ui/table';
+} from '../../ui/table';
 
-export default function PayStubTemplate(data: PayStubType) {
+export default function NovaPayStubTemplate(data: PayStubType) {
   const maxRows = Math.max(data.deductions?.length || 0, data.benefits?.length || 0);
   const regularPay =
     data.payment.type === DEFAULT_PAYMENT_TYPE

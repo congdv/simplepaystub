@@ -48,8 +48,17 @@ export async function POST(req: NextRequest) {
 
     const body: ExtendedPayStubType = await req.json();
 
-    // Generate PDF
-    const { default: PaystubDocument } = await import('@/components/templates/PaystubDocument');
+    // Generate PDF (allow selecting template via body.template: 'NOVA' | 'MONO')
+    const requestedTemplate = (body as any).template || (body as any).templateType || 'NOVA';
+
+    let PaystubDocumentModule: { default: React.ComponentType<any> };
+    if (requestedTemplate === 'MONO') {
+      PaystubDocumentModule = await import('@/components/templates/pdf/MonoPaystubDocument');
+    } else {
+      PaystubDocumentModule = await import('@/components/templates/pdf/NovaPaystubDocument');
+    }
+
+    const PaystubDocument = PaystubDocumentModule.default;
     const pdfBuffer = await renderToBuffer(
       React.createElement(PaystubDocument as React.ComponentType<any>, { ...body })
     );

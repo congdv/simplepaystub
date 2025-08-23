@@ -32,6 +32,8 @@ export const PAYMENT_FREQUENCIES = [
 
 export const DEFAULT_PAYMENT_TYPE = 'Hourly';
 export const PAYMENT_TYPE = ['Hourly', 'Salary'];
+export const DEFAULT_TEMPLATE = 'NOVA' as const;
+
 const PAYER_DEFAULT_VALUES = {
   logo: '',
   name: '',
@@ -79,6 +81,7 @@ export const PAY_STUB_FORM_DEFAULT_VALUES = {
   payment: PAYMENT_DEFAULT_VALUES,
   deductions: [],
   benefits: [],
+  template: DEFAULT_TEMPLATE,
 };
 
 export const COUNTRIES = [

@@ -11,7 +11,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export async function renderTemplate() {
   try {
-    const myModule = await import(`@/components/templates/PayStubTemplate`);
+    const myModule = await import(`@/components/templates/preview/NovaPayStubTemplate`);
     return myModule.default;
   } catch (error) {
     console.log(error);

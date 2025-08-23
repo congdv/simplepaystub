@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const PaystubDocument = (data: PayStubType) => {
+const NovaPaystubDocument = (data: PayStubType) => {
   const maxRows = Math.max(data.deductions?.length || 0, data.benefits?.length || 0);
   const regularPay =
     data.payment.type === DEFAULT_PAYMENT_TYPE
@@ -224,4 +224,4 @@ const PaystubDocument = (data: PayStubType) => {
   );
 };
 
-export default PaystubDocument;
+export default NovaPaystubDocument;

@@ -7,3 +7,5 @@ export type Country = {
   name: string;
   slug: string;
 };
+
+export type TemplateType = 'NOVA' | 'MONO';

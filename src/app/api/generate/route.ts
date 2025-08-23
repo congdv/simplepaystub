@@ -6,7 +6,17 @@ import React from 'react';
 export async function POST(req: NextRequest, res: NextResponse) {
   const body: PayStubType = await req.json();
   try {
-    const { default: PaystubDocument } = await import('@/components/templates/PaystubDocument');
+    // allow optional template selection in the request body: { template: 'NOVA' | 'MONO' }
+    const requestedTemplate = (body as any).template || (body as any).templateType || 'NOVA';
+
+    let PaystubDocumentModule: { default: React.ComponentType<any> };
+    if (requestedTemplate === 'MONO') {
+      PaystubDocumentModule = await import('@/components/templates/pdf/MonoPaystubDocument');
+    } else {
+      PaystubDocumentModule = await import('@/components/templates/pdf/NovaPaystubDocument');
+    }
+
+    const PaystubDocument = PaystubDocumentModule.default;
     const pdfBuffer = await renderToBuffer(
       React.createElement(PaystubDocument as React.ComponentType<any>, { ...body })
     );
@@ -17,7 +27,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     console.log(`[${timestamp}] /api/generate called`);
 
     // Return the PDF as a response
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(new Uint8Array(pdfBuffer), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `inline; filename=paystub_${timestamp}.pdf`,

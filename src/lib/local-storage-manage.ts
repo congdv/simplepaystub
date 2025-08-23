@@ -2,7 +2,8 @@
 export const APP_KEY = 'SimplePaystub.com';
 export const STORAGE_KEYS = {
   FORM_DATA: `${APP_KEY}.form`,
-  PAYSTUB_HISTORY: `${APP_KEY}.history`
+  PAYSTUB_HISTORY: `${APP_KEY}.history`,
+  TEMPLATE: `${APP_KEY}.template`
 }
 
 const FIVE_MB = 5 * 1024 * 1024;
