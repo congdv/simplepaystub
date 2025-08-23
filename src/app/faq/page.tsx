@@ -67,7 +67,7 @@ export default function FAQ() {
               <p className="text-blue-700">
                 Your privacy and security are our commitment.
                 <br />
-                If you have any questions about privacy or data security, please contact us at{' '}
+                If you have any questions, please contact us at{' '}
                 <a href="mailto:support@simplepaystub.com" className="underline">
                   support@simplepaystub.com
                 </a>
