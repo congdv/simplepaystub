@@ -13,12 +13,14 @@ interface DownloadConfirmationModalProps {
   onClose: () => void;
   onConfirm: () => void;
   open: boolean;
+  confirmLabel?: string;
 }
 
 export function DownloadConfirmationModal({
   open,
   onClose,
   onConfirm,
+  confirmLabel = 'Agree & Download',
 }: DownloadConfirmationModalProps) {
   const [agreed, setAgreed] = useState(false);
 
@@ -57,7 +59,7 @@ export function DownloadConfirmationModal({
         </div>
         <DialogFooter>
           <Button onClick={onConfirm} disabled={!agreed} className='bg-blue-500 text-white hover:text-white hover:bg-blue-700'>
-            Agree & Download
+            {confirmLabel}
           </Button>
         </DialogFooter>
       </DialogContent>

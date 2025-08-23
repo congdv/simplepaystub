@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
       from: `Otto from SimplePaystub.com <otto@${process.env.MAILGUN_DOMAIN}>`,
       to: toEmail,
       ...(ccEmail ? { cc: ccEmail } : {}),
-      subject: 'Your generator paystub',
+      subject: 'Your generated paystub',
       text: 'Please find your paystub attached.',
       html: `
         <p>Hey ${recipientName},</p>

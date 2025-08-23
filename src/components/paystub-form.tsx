@@ -22,6 +22,7 @@ export const PaystubForm = () => {
   const form = useFormContext<PayStubType>();
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<'download' | 'send' | null>(null);
   const [formData, setFormData] = useState<PayStubType>(PAY_STUB_FORM_DEFAULT_VALUES);
   const [showSendEmailDialog, setShowSendEmailDialog] = useState(false);
 
@@ -29,7 +30,14 @@ export const PaystubForm = () => {
   const { setLoadingState, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail } = useToolbar();
   const { savePaystub, getPaystub } = usePaystub();
 
-  const onSubmit = async () => {
+  // Consolidated download helper: checks auth and requests PDF generation
+  const performDownload = async (data: PayStubType) => {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error || !user) {
+      setShowLoginDialog(true);
+      return;
+    }
+
     setConfirmOpen(false);
     setLoadingState(LOADING_STATES.DOWNLOADING);
     try {
@@ -38,7 +46,7 @@ export const PaystubForm = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(data),
       });
       if (!res.ok) {
         throw new Error('Failed to generate paystub PDF.');
@@ -64,6 +72,22 @@ export const PaystubForm = () => {
     toast.warning('Please review invalid fields!');
   };
 
+  // Check auth first, then open confirmation modal for download
+  const handleDownload = async () => {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error || !user) {
+      setShowLoginDialog(true);
+      return;
+    }
+
+    // require confirmation before downloading
+    form.handleSubmit((data) => {
+      setFormData(data);
+      setConfirmAction('download');
+      setConfirmOpen(true);
+    }, onInvalid)();
+  };
+
   useEffect(() => {
     const handleReset = () => {
       form.reset({ ...PAY_STUB_FORM_DEFAULT_VALUES, template: form.getValues("template") });
@@ -74,10 +98,7 @@ export const PaystubForm = () => {
 
     };
 
-    const handleDownload = () => {
-      form.handleSubmit(onDownload, onInvalid)();
-
-    };
+    // ... handleDownload is defined in component scope
     const handleViewPaystub = (id: string) => {
       const paystub = getPaystub(id);
       form.reset(paystub?.data)
@@ -105,13 +126,24 @@ export const PaystubForm = () => {
     }
 
     const handleSendEmail = async () => {
+      const isValid = await form.trigger();
+
+      if (!isValid) {
+        onInvalid();
+        return;
+      }
+
       const { data: { user }, error } = await supabase.auth.getUser();
 
       if (error || !user) {
         setShowLoginDialog(true);
         return;
       }
-      setShowSendEmailDialog(true);
+      // require confirmation before sending
+      const current = form.getValues();
+      setFormData(current as PayStubType);
+      setConfirmAction('send');
+      setConfirmOpen(true);
 
     }
 
@@ -154,13 +186,10 @@ export const PaystubForm = () => {
   };
 
   const onDownload = async (data: PayStubType) => {
-    const { data: { user }, error } = await supabase.auth.getUser();
-    if (error || !user) {
-      setShowLoginDialog(true);
-      return;
-    }
-    setConfirmOpen(true);
+    // Keep formData in state for the confirm flow
     setFormData(data);
+    // Delegate to shared helper which performs auth check and download
+    await performDownload(data);
   };
 
   return (
@@ -174,7 +203,18 @@ export const PaystubForm = () => {
         <DownloadConfirmationModal
           open={confirmOpen}
           onClose={() => setConfirmOpen(false)}
-          onConfirm={onSubmit}
+          onConfirm={() => {
+            setConfirmOpen(false);
+            if (confirmAction === 'download') {
+              // perform download using stored formData
+              performDownload(formData);
+            } else if (confirmAction === 'send') {
+              // open send dialog to collect recipient info
+              setShowSendEmailDialog(true);
+            }
+            setConfirmAction(null);
+          }}
+          confirmLabel={confirmAction === 'send' ? 'Agree & Send' : 'Agree & Download'}
         />
         <LoginDialog
           open={showLoginDialog}
@@ -189,6 +229,6 @@ export const PaystubForm = () => {
           onSend={actuallySendEmail}
         />
       </form>
-    </Form>
+    </Form >
   );
 };
