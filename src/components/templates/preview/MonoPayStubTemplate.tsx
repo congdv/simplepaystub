@@ -63,20 +63,20 @@ export default function MonoPayStubTemplate(data: PayStubType) {
       <div className="mt-6 space-y-6">
         {/* Earnings section */}
         <div>
-          <div className="text-sm font-medium mb-2">Earnings</div>
+          {/* <div className="text-sm font-medium mb-2">Earnings</div> */}
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b">
-                <th className="text-left py-2">Type</th>
-                <th className="text-right py-2">Rate</th>
-                <th className="text-right py-2">Hours</th>
-                <th className="text-right py-2">This Period</th>
-                <th className="text-right py-2">Year to Date</th>
+                <th className="text-left py-2 w-[40%]">Earnings</th>
+                <th className="text-right py-2 w-[10%]">Rate</th>
+                <th className="text-right py-2 w-[10%]">Hours</th>
+                <th className="text-right py-2 w-[20%]">This Period</th>
+                <th className="text-right py-2 w-[20%]">Year to Date</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="py-2">{data.payment.type === 'hourly' ? 'Regular' : 'Salary'}</td>
+                <td className="py-2">{data.payment.type === DEFAULT_PAYMENT_TYPE ? 'Regular' : 'Salary'}</td>
                 <td className="text-right py-2">
                   {data.payment.type === DEFAULT_PAYMENT_TYPE && formatCurrency(Number(data.payment.hourlyRate))}
                 </td>
@@ -94,7 +94,7 @@ export default function MonoPayStubTemplate(data: PayStubType) {
                 </tr>
               ))}
               <tr className="border-t font-semibold">
-                <td className="py-2">Gross</td>
+                <td className="py-2"></td>
                 <td></td>
                 <td></td>
                 <td className="text-right py-2">{formatCurrency(payments)}</td>
@@ -106,13 +106,13 @@ export default function MonoPayStubTemplate(data: PayStubType) {
 
         {/* Deductions section */}
         <div>
-          <div className="text-sm font-medium mb-2">Deductions</div>
+          {/* <div className="text-sm font-medium mb-2">Deductions</div> */}
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b">
-                <th className="text-left py-2">Type</th>
-                <th className="text-right py-2">This Period</th>
-                <th className="text-right py-2">Year to Date</th>
+                <th className="text-left py-2 w-[60%]">Deductions</th>
+                <th className="text-right py-2 w-[20%]">This Period</th>
+                <th className="text-right py-2 w-[20%]">Year to Date</th>
               </tr>
             </thead>
             <tbody>
@@ -124,7 +124,7 @@ export default function MonoPayStubTemplate(data: PayStubType) {
                 </tr>
               ))}
               <tr className="border-t font-semibold">
-                <td className="py-2">Deductions</td>
+                <td className="py-2"></td>
                 <td className="text-right py-2">{formatCurrency(deductionsTotal)}</td>
                 <td className="text-right py-2">{formatCurrency(ytdDeductions)}</td>
               </tr>

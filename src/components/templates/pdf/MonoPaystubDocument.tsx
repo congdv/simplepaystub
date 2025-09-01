@@ -39,9 +39,13 @@ const MonoPaystubDocument = (data: PayStubType) => {
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {data.payer.logo && <Image src={data.payer.logo} style={{ width: 56, height: 56, marginRight: 8 }} />}
             <View>
-              <Text style={styles.company}>{data.payer.name || 'Company'}</Text>
-              <Text style={styles.small}>{data.payer.address}</Text>
-              <Text style={styles.small}>{data.payer.city}, {data.payer.stateOrProvince} {data.payer.zipOrPostalCode}</Text>
+              <Text style={styles.company}>{data.payer.name || 'Acme Corporation'}</Text>
+              <Text style={styles.small}>{data.payer.address || '123 Street st '}</Text>
+              <Text style={styles.small}>{data.payer.addressSecond ? '# ' + data.payer.addressSecond : ''}</Text>
+              <Text style={styles.small}>
+                {data.payer.city ? data.payer.city + ', ' : 'ABC, '} {data.payer.stateOrProvince || 'YY'} {data.payer.zipOrPostalCode || 'XXX XXX'}
+              </Text>
+              <Text style={styles.small}>{data.payer.countryOrRegion || 'ZZ'}</Text>
             </View>
           </View>
 
@@ -49,7 +53,7 @@ const MonoPaystubDocument = (data: PayStubType) => {
             <Text style={{ fontWeight: 'bold' }}>Earnings Statement</Text>
             <Text style={styles.small}>
               {data.payment.periodStart && data.payment.periodEnd && (
-                <>Pay Period: {new Date(data.payment.periodStart).toLocaleDateString('en-US')}{' - '} {new Date(data.payment.periodEnd).toLocaleDateString('en-US')}</>
+                <>Pay Period: {new Date(data.payment.periodStart).toLocaleDateString('en-US')} - {new Date(data.payment.periodEnd).toLocaleDateString('en-US')}</>
               )}
             </Text>
             <Text style={styles.small}>{data.payment.date && `Pay Date: ${new Date(data.payment.date).toLocaleDateString('en-US')}`}</Text>
@@ -64,7 +68,7 @@ const MonoPaystubDocument = (data: PayStubType) => {
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View />
             <View style={{ alignItems: 'flex-end' }}>
-              <Text style={{ fontWeight: 'bold' }}>{data.payee.name}</Text>
+              <Text style={{ fontWeight: 'bold' }}>{data.payee.name || 'Employee Name'}</Text>
               <Text style={styles.small}>{data.payee.address}</Text>
               <Text style={styles.small}>{data.payee.city}, {data.payee.stateOrProvince} {data.payee.zipOrPostalCode}</Text>
             </View>
@@ -74,66 +78,74 @@ const MonoPaystubDocument = (data: PayStubType) => {
         {/* Earnings table */}
         <View>
           <View style={styles.tableHeader}>
-            <Text style={[styles.labelCol, { fontWeight: 'bold' }]}>Type</Text>
-            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>Rate</Text>
-            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>Hours</Text>
-            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>This Period</Text>
-            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>Year to Date</Text>
+            <Text style={[styles.labelCol, { fontWeight: 'bold', width: '40%' }]}>Earnings</Text>
+            <Text style={[styles.cell, styles.right, { fontWeight: 'bold', width: '10%' }]}>Rate</Text>
+            <Text style={[styles.cell, styles.right, { fontWeight: 'bold', width: '10%' }]}>Hours</Text>
+            <Text style={[styles.cell, styles.right, { fontWeight: 'bold', width: '20%' }]}>This Period</Text>
+            <Text style={[styles.cell, styles.right, { fontWeight: 'bold', width: '20%' }]}>Year to Date</Text>
           </View>
 
           <View style={styles.tableRow}>
-            <Text style={styles.labelCol}>{data.payment.type === DEFAULT_PAYMENT_TYPE ? 'Regular' : 'Salary'}</Text>
-            <Text style={[styles.cell, styles.right]}>
+            <Text style={[styles.labelCol, { width: '40%' }]}>{data.payment.type === DEFAULT_PAYMENT_TYPE ? 'Regular' : 'Salary'}</Text>
+            <Text style={[styles.cell, styles.right, { width: '10%' }]}>
               {data.payment.type === DEFAULT_PAYMENT_TYPE && data.payment.hourlyRate ? formatCurrency(Number(data.payment.hourlyRate)) : ''}
             </Text>
-            <Text style={[styles.cell, styles.right]}>{data.payment.type === DEFAULT_PAYMENT_TYPE ? data.payment.numOfHours : ''}</Text>
-            <Text style={[styles.cell, styles.right]}>{formatCurrency(regularPay)}</Text>
-            <Text style={[styles.cell, styles.right]}>{formatCurrency(Number(data.payment.ytd || 0))}</Text>
+            <Text style={[styles.cell, styles.right, { width: '10%' }]}>{data.payment.type === DEFAULT_PAYMENT_TYPE ? data.payment.numOfHours : ''}</Text>
+            <Text style={[styles.cell, styles.right, { width: '20%' }]}>{formatCurrency(regularPay)}</Text>
+            <Text style={[styles.cell, styles.right, { width: '20%' }]}>{formatCurrency(Number(data.payment.ytd || 0))}</Text>
           </View>
 
           {data.benefits.map((b, i) => (
             <View style={styles.tableRow} key={i}>
-              <Text style={styles.labelCol}>{b.label}</Text>
-              <Text style={[styles.cell, styles.right]}></Text>
-              <Text style={[styles.cell, styles.right]}></Text>
-              <Text style={[styles.cell, styles.right]}>{b.value ? formatCurrency(Number(b.value)) : ''}</Text>
-              <Text style={[styles.cell, styles.right]}>{b.ytd ? formatCurrency(Number(b.ytd)) : ''}</Text>
+              <Text style={[styles.labelCol, { width: '40%' }]}>{b.label}</Text>
+              <Text style={[styles.cell, styles.right, { width: '10%' }]}></Text>
+              <Text style={[styles.cell, styles.right, { width: '10%' }]}></Text>
+              <Text style={[styles.cell, styles.right, { width: '20%' }]}>{b.value ? formatCurrency(Number(b.value)) : ''}</Text>
+              <Text style={[styles.cell, styles.right, { width: '20%' }]}>{b.ytd ? formatCurrency(Number(b.ytd)) : ''}</Text>
             </View>
           ))}
 
           <View style={[styles.tableRow, { marginTop: 6, borderTopWidth: 1, borderTopColor: '#eee', paddingTop: 6 }]}>
-            <Text style={[styles.labelCol, { fontWeight: 'bold' }]}>Gross</Text>
-            <Text style={styles.cell}></Text>
-            <Text style={styles.cell}></Text>
-            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>{formatCurrency(payments)}</Text>
-            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>{formatCurrency(ytdPayments)}</Text>
+            <Text style={[styles.labelCol, { fontWeight: 'bold', width: '40%' }]}></Text>
+            <Text style={[styles.cell, { width: '10%' }]}></Text>
+            <Text style={[styles.cell, { width: '10%' }]}></Text>
+            <Text style={[styles.cell, styles.right, { fontWeight: 'bold', width: '20%' }]}>{formatCurrency(payments)}</Text>
+            <Text style={[styles.cell, styles.right, { fontWeight: 'bold', width: '20%' }]}>{formatCurrency(ytdPayments)}</Text>
           </View>
         </View>
 
         {/* Deductions table */}
         <View style={{ marginTop: 12 }}>
           <View style={[styles.tableHeader]}>
-            <Text style={[styles.labelCol, { fontWeight: 'bold' }]}>Deductions</Text>
-            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>This Period</Text>
-            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>Year to Date</Text>
+            <Text style={[styles.labelCol, { fontWeight: 'bold', width: '40%' }]}>Deductions</Text>
+            <Text style={[styles.cell, { width: '10%' }]}></Text>
+            <Text style={[styles.cell, { width: '10%' }]}></Text>
+            <Text style={[styles.cell, styles.right, { fontWeight: 'bold', width: '20%' }]}>This Period</Text>
+            <Text style={[styles.cell, styles.right, { fontWeight: 'bold', width: '20%' }]}>Year to Date</Text>
           </View>
           {data.deductions.map((d, i) => (
             <View style={styles.tableRow} key={i}>
-              <Text style={styles.labelCol}>{d.label}</Text>
-              <Text style={[styles.cell, styles.right]}>{d.value ? formatCurrency(Number(d.value)) : ''}</Text>
-              <Text style={[styles.cell, styles.right]}>{d.ytd ? formatCurrency(Number(d.ytd)) : ''}</Text>
+              <Text style={[styles.labelCol, { width: '40%' }]}>{d.label}</Text>
+              <Text style={[styles.cell, { width: '10%' }]}></Text>
+              <Text style={[styles.cell, { width: '10%' }]}></Text>
+              <Text style={[styles.cell, styles.right, { width: '20%' }]}>{d.value ? formatCurrency(Number(d.value)) : ''}</Text>
+              <Text style={[styles.cell, styles.right, { width: '20%' }]}>{d.ytd ? formatCurrency(Number(d.ytd)) : ''}</Text>
             </View>
           ))}
 
           <View style={[styles.tableRow, { marginTop: 6, borderTopWidth: 1, borderTopColor: '#eee', paddingTop: 6 }]}>
-            <Text style={[styles.labelCol, { fontWeight: 'bold' }]}>Deductions</Text>
-            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>{formatCurrency(deductionsTotal)}</Text>
-            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>{formatCurrency(ytdDeductions)}</Text>
+            <Text style={[styles.labelCol, { fontWeight: 'bold', width: '40%' }]}></Text>
+            <Text style={[styles.cell, { width: '10%' }]}></Text>
+            <Text style={[styles.cell, { width: '10%' }]}></Text>
+            <Text style={[styles.cell, styles.right, { fontWeight: 'bold', width: '20%' }]}>{formatCurrency(deductionsTotal)}</Text>
+            <Text style={[styles.cell, styles.right, { fontWeight: 'bold', width: '20%' }]}>{formatCurrency(ytdDeductions)}</Text>
           </View>
           <View style={[styles.tableRow, { marginTop: 6, borderTopWidth: 1, borderTopColor: '#eee', paddingTop: 6 }]}>
-            <Text style={[styles.labelCol, { fontWeight: 'bold' }]}>Net Pay</Text>
-            <Text style={[styles.cell, styles.right, { fontWeight: 'bold' }]}>{formatCurrency(netPay)}</Text>
-            <Text style={styles.cell}></Text>
+            <Text style={[styles.labelCol, { fontWeight: 'bold', width: '40%' }]}>Net pay</Text>
+            <Text style={[styles.cell, { width: '10%' }]}></Text>
+            <Text style={[styles.cell, { width: '10%' }]}></Text>
+            <Text style={[styles.cell, styles.right, { fontWeight: 'bold', width: '20%' }]}>{formatCurrency(netPay)}</Text>
+            <Text style={[styles.cell, { width: '20%' }]}></Text>
           </View>
         </View>
 
@@ -153,7 +165,7 @@ const MonoPaystubDocument = (data: PayStubType) => {
           </View>
         </View>
       </Page>
-    </Document>
+    </Document >
   );
 };
 
