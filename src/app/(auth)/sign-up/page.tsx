@@ -212,7 +212,7 @@ export default function SignUpPage() {
           {error && <p className="text-red-600 text-sm text-center">{error}</p>}
           <Button
             type="submit"
-            className="w-full mt-2 bg-blue-500 text-white hover:text-white hover:bg-blue-700 font-semibold rounded-lg "
+            className="w-full mt-2  font-semibold rounded-lg "
             disabled={signing || !email || !password || !confirmPassword || !firstName || !lastName}
           >
             {signing ? 'Signing up...' : 'Sign up'}

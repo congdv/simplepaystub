@@ -58,7 +58,7 @@ export function DownloadConfirmationModal({
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={onConfirm} disabled={!agreed} className='bg-blue-500 text-white hover:text-white hover:bg-blue-700'>
+          <Button onClick={onConfirm} disabled={!agreed}>
             {confirmLabel}
           </Button>
         </DialogFooter>
