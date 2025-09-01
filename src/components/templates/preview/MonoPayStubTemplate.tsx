@@ -124,7 +124,7 @@ export default function MonoPayStubTemplate(data: PayStubType) {
                 </tr>
               ))}
               <tr className="border-t font-semibold">
-                <td className="py-2">Decutions</td>
+                <td className="py-2">Deductions</td>
                 <td className="text-right py-2">{formatCurrency(deductionsTotal)}</td>
                 <td className="text-right py-2">{formatCurrency(ytdDeductions)}</td>
               </tr>
