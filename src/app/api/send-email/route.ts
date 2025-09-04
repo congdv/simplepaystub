@@ -5,6 +5,7 @@ import formData from 'form-data';
 import Mailgun from 'mailgun.js';
 import { NextRequest, NextResponse } from 'next/server';
 import React from 'react';
+import * as Sentry from "@sentry/nextjs";
 
 const mailgun = new Mailgun(formData);
 const mg = mailgun.client({
@@ -95,7 +96,7 @@ export async function POST(req: NextRequest) {
 
     await mg.messages.create(process.env.MAILGUN_DOMAIN!, emailData);
 
-    console.log(`[${timestamp}] PDF sent to ${user.email}`);
+    Sentry.logger.info(`[${timestamp}] /api/send-email called`, { log_source: 'server' });
 
     return NextResponse.json({
       message: 'Email sent successfully',
@@ -104,6 +105,7 @@ export async function POST(req: NextRequest) {
 
   } catch (error) {
     console.error('Error sending email:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: 'Failed to send email' },
       { status: 500 }

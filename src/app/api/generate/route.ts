@@ -2,6 +2,8 @@ import { PayStubType } from '@/types';
 import { renderToBuffer } from '@react-pdf/renderer';
 import { NextRequest, NextResponse } from 'next/server';
 import React from 'react';
+import * as Sentry from "@sentry/nextjs";
+
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const body: PayStubType = await req.json();
@@ -24,7 +26,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const now = new Date();
     const timestamp = now.toISOString().replace(/[:.]/g, '-').replace('T', '_').slice(0, 19);
 
-    console.log(`[${timestamp}] /api/generate called`);
+    Sentry.logger.info(`[${timestamp}] /api/generate called`, { log_source: 'server' })
 
     // Return the PDF as a response
     return new NextResponse(new Uint8Array(pdfBuffer), {
@@ -36,6 +38,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     return new NextResponse('Internal Server Error', { status: 500 });
   }
 }
