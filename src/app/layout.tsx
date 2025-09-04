@@ -1,6 +1,7 @@
 import localFont from 'next/font/local';
 import './globals.css';
 import Script from 'next/script';
+import { FeedbackButton } from '@/components/feedback-button';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -52,7 +53,7 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
-        {/* <Analytics /> */}
+        <FeedbackButton />
       </body>
     </html>
   );

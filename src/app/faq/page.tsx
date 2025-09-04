@@ -1,5 +1,6 @@
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
+import { FeedbackSection } from '@/components/feedback-examples';
 
 export default function FAQ() {
   const faqs = [
@@ -61,18 +62,22 @@ export default function FAQ() {
             ))}
           </div>
 
-          <div className="mt-12 text-center">
-            <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-              <h3 className="text-lg font-semibold text-blue-900 mb-2">Still have questions?</h3>
-              <p className="text-blue-700">
-                Your privacy and security are our commitment.
-                <br />
-                If you have any questions, please contact us at{' '}
-                <a href="mailto:support@simplepaystub.com" className="underline">
-                  support@simplepaystub.com
-                </a>
-              </p>
+          <div className="mt-12 space-y-6">
+            <div className="text-center">
+              <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
+                <h3 className="text-lg font-semibold text-blue-900 mb-2">Still have questions?</h3>
+                <p className="text-blue-700">
+                  Your privacy and security are our commitment.
+                  <br />
+                  If you have any questions, please contact us at{' '}
+                  <a href="mailto:support@simplepaystub.com" className="underline">
+                    support@simplepaystub.com
+                  </a>
+                </p>
+              </div>
             </div>
+
+            <FeedbackSection />
           </div>
         </div>
       </div>
