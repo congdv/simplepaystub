@@ -98,7 +98,7 @@ const PaymentSchema = z
   )
   .refine(
     (data) => {
-      if (data.type === 'Salary' && !data.hourlyRate) {
+      if (data.type === 'Salary' && !data.annualSalary) {
         return false;
       }
       return true;
