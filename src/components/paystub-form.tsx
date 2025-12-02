@@ -51,7 +51,7 @@ export const PaystubForm = () => {
     setOnLoadSample(() => actions.loadSample.execute.bind(actions.loadSample));
     setOnDownload(() => actions.download.execute.bind(actions.download));
     setOnSave(() => actions.save.execute.bind(actions.save));
-    setOnViewPaystub((id: string) => actions.viewPaystub.execute.bind(actions.viewPaystub)(id));
+    setOnViewPaystub(() => (id: string) => actions.viewPaystub.execute.bind(actions.viewPaystub)(id));
     setOnSendEmail(() => actions.sendEmail.execute.bind(actions.sendEmail));
   }, [actions, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail]);
 
