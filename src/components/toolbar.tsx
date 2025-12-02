@@ -1,19 +1,41 @@
 import { LOADING_STATES } from '@/constants';
 import { useToolbar } from '@/contexts/toolbar-context';
+import {
+  DownloadCommand,
+  LoadSampleCommand,
+  ResetCommand,
+  SaveCommand,
+  SendEmailCommand,
+} from '@/lib/commands/toolbar-commands';
 import { DownloadCloud, FilePlus2, ListRestart, Loader2, Mail, Save } from 'lucide-react';
+import { useMemo } from 'react';
 import { Button } from './ui/button';
 
 export default function Toolbar() {
   const { onReset, onLoadSample, loadingState, onDownload, onSave, onSendEmail } = useToolbar();
+
+  // Create command instances
+  const commands = useMemo(() => {
+    const isDisabled = !!loadingState;
+    
+    return {
+      loadSample: new LoadSampleCommand(onLoadSample, isDisabled),
+      reset: new ResetCommand(onReset, isDisabled),
+      save: new SaveCommand(onSave, isDisabled),
+      download: new DownloadCommand(onDownload, isDisabled),
+      sendEmail: new SendEmailCommand(onSendEmail, isDisabled),
+    };
+  }, [onReset, onLoadSample, onDownload, onSave, onSendEmail, loadingState]);
+
   return (
     <div className="flex flex-row gap-2">
       <Button
         type="button"
         variant="outline"
         title="Load sample data"
-        onClick={onLoadSample}
+        onClick={() => commands.loadSample.execute()}
         className="items-center justify-center px-2 py-2"
-        disabled={!!loadingState}
+        disabled={!commands.loadSample.canExecute()}
       >
         <FilePlus2 className="w-5 h-5" />
         <span className="hidden lg:inline">Sample Data</span>
@@ -22,8 +44,8 @@ export default function Toolbar() {
         type="button"
         variant="outline"
         title="Reset paystub"
-        onClick={onReset}
-        disabled={!!loadingState}
+        onClick={() => commands.reset.execute()}
+        disabled={!commands.reset.canExecute()}
         className="items-center justify-center px-2 py-2"
       >
         <ListRestart className="w-5 h-5" />
@@ -32,9 +54,9 @@ export default function Toolbar() {
       <Button
         type="button"
         variant="outline"
-        title="Reset paystub"
-        onClick={onSave}
-        disabled={!!loadingState}
+        title="Save paystub"
+        onClick={() => commands.save.execute()}
+        disabled={!commands.save.canExecute()}
         className="items-center justify-center px-2 py-2"
       >
         <Save className="w-5 h-5" />
@@ -45,8 +67,8 @@ export default function Toolbar() {
         variant="outline"
         title="Download paystub"
         className="items-center justify-center px-2 py-2"
-        disabled={!!loadingState}
-        onClick={onDownload}
+        disabled={!commands.download.canExecute()}
+        onClick={() => commands.download.execute()}
       >
         {loadingState && loadingState === LOADING_STATES.DOWNLOADING ? (
           <>
@@ -64,8 +86,8 @@ export default function Toolbar() {
         type="button"
         variant="outline"
         title="Send PDF to email"
-        onClick={onSendEmail}
-        disabled={!!loadingState}
+        onClick={() => commands.sendEmail.execute()}
+        disabled={!commands.sendEmail.canExecute()}
         className="items-center justify-center px-2 py-2"
       >
         {loadingState && loadingState === LOADING_STATES.SENDING_EMAIL ? (
