@@ -85,7 +85,7 @@ export default function DashboardPage() {
         <SimpleBarChart
           data={metrics.weeklyUsers}
           color="purple"
-          title="Very Active Users"
+          title="Total Users"
           total={metrics.totalUsers}
           weeklyAvg={metrics.weeklyAvgUsers}
         />

@@ -46,7 +46,10 @@ export function SimpleBarChart({ data, color, title, total, weeklyAvg }: SimpleB
             {total.toLocaleString()}
           </div>
           <div className="text-sm text-gray-500">
-            ~{weeklyAvg.toLocaleString()} / week
+            {color === 'purple' 
+              ? `${weeklyAvg.toLocaleString()} avg` 
+              : `~${weeklyAvg.toLocaleString()} / week`
+            }
           </div>
         </div>
       </div>
