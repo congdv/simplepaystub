@@ -12,6 +12,9 @@ const getPool = () => {
     }
     pool = new Pool({
       connectionString: databaseUrl,
+      max: 15, // maximum number of clients in the pool, when update need to change in supabase dashboard too
+      idleTimeoutMillis: 30000, // close idle clients after 30 seconds
+      connectionTimeoutMillis: 2000, // return an error after 2 seconds if connection cannot be established
     });
   }
   return pool;
@@ -70,22 +73,43 @@ export const incrementDailyCounter = async (
   const pool = getPool();
   const today = new Date().toISOString().split('T')[0];
 
+  // Validate and map the counter type to prevent SQL injection
+  const validColumns = {
+    'pdf_downloads': 'pdf_downloads',
+    'emails_sent': 'emails_sent'
+  } as const;
+
+  const column = validColumns[type];
+  if (!column) {
+    throw new Error(`Invalid counter type: ${type}`);
+  }
+
   try {
     // Get current total users count
     const totalUsers = await getTotalUserCount();
 
-    // Increment the appropriate counter using raw SQL
-    const column = type === 'pdf_downloads' ? 'pdf_downloads' : 'emails_sent';
-    
-    await pool.query(
-      `INSERT INTO public.daily_stats (date, total_users, ${column})
-       VALUES ($1, $2, 1)
-       ON CONFLICT (date) DO UPDATE SET
-         total_users = $2,
-         ${column} = daily_stats.${column} + 1,
-         updated_at = NOW()`,
-      [today, totalUsers]
-    );
+    // Use parameterized queries with explicit column names for security
+    if (type === 'pdf_downloads') {
+      await pool.query(
+        `INSERT INTO public.daily_stats (date, total_users, pdf_downloads)
+         VALUES ($1, $2, 1)
+         ON CONFLICT (date) DO UPDATE SET
+           total_users = $2,
+           pdf_downloads = daily_stats.pdf_downloads + 1,
+           updated_at = NOW()`,
+        [today, totalUsers]
+      );
+    } else {
+      await pool.query(
+        `INSERT INTO public.daily_stats (date, total_users, emails_sent)
+         VALUES ($1, $2, 1)
+         ON CONFLICT (date) DO UPDATE SET
+           total_users = $2,
+           emails_sent = daily_stats.emails_sent + 1,
+           updated_at = NOW()`,
+        [today, totalUsers]
+      );
+    }
   } catch (error) {
     console.error('Error incrementing daily counter:', error);
     Sentry.captureException(error, { tags: { function: 'incrementDailyCounter' }, extra: { type, date: today } });

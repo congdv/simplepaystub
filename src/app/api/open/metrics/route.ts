@@ -1,4 +1,5 @@
 import { getTotalUserCount, getDailyStats, getAggregatedMetrics } from '@/lib/supabase/admin';
+import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 
@@ -23,9 +24,16 @@ type DashboardMetrics = {
 
 export async function GET(req: NextRequest) {
   try {
-    // No authentication required - this endpoint is public
+    // Require authentication to view metrics
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const timestamp = new Date().toISOString();
-    Sentry.logger.info(`[${timestamp}] /api/open/metrics called`, { log_source: 'server' });
+    Sentry.logger.info(`[${timestamp}] /api/open/metrics called`, { log_source: 'server', user_id: user.id });
 
     // Calculate date ranges
     const today = new Date();
