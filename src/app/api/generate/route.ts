@@ -3,6 +3,7 @@ import { renderToBuffer } from '@react-pdf/renderer';
 import { NextRequest, NextResponse } from 'next/server';
 import React from 'react';
 import * as Sentry from "@sentry/nextjs";
+import { incrementDailyCounter } from '@/lib/supabase/admin';
 
 
 export async function POST(req: NextRequest, res: NextResponse) {
@@ -27,6 +28,14 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const timestamp = now.toISOString().replace(/[:.]/g, '-').replace('T', '_').slice(0, 19);
 
     Sentry.logger.info(`[${timestamp}] /api/generate called`, { log_source: 'server' })
+
+    // Track PDF download in daily stats
+    try {
+      await incrementDailyCounter('pdf_downloads');
+    } catch (error) {
+      console.error('Failed to track PDF download:', error);
+      // Don't fail the request if tracking fails
+    }
 
     // Return the PDF as a response
     return new NextResponse(new Uint8Array(pdfBuffer), {

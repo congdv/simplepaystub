@@ -6,6 +6,7 @@ import Mailgun from 'mailgun.js';
 import { NextRequest, NextResponse } from 'next/server';
 import React from 'react';
 import * as Sentry from "@sentry/nextjs";
+import { incrementDailyCounter } from '@/lib/supabase/admin';
 
 const mailgun = new Mailgun(formData);
 const mg = mailgun.client({
@@ -97,6 +98,14 @@ export async function POST(req: NextRequest) {
     await mg.messages.create(process.env.MAILGUN_DOMAIN!, emailData);
 
     Sentry.logger.info(`[${timestamp}] /api/send-email called`, { log_source: 'server' });
+
+    // Track email sent in daily stats
+    try {
+      await incrementDailyCounter('emails_sent');
+    } catch (error) {
+      console.error('Failed to track email send:', error);
+      // Don't fail the request if tracking fails
+    }
 
     return NextResponse.json({
       message: 'Email sent successfully',

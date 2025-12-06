@@ -1,6 +1,6 @@
 const paths = {
   home: '/',
-  dashboard: '/dashboard',
+  dashboard: '/open',
   signIn: '/sign-in',
   signUp: '/sign-up',
   faq: '/faq',
