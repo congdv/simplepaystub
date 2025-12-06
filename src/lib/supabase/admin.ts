@@ -1,4 +1,3 @@
-import { createClient } from '@supabase/supabase-js';
 import { Pool } from 'pg';
 import * as Sentry from '@sentry/nextjs';
 
@@ -16,24 +15,6 @@ const getPool = () => {
     });
   }
   return pool;
-};
-
-// Create a Supabase client with service role key for admin operations
-// This bypasses RLS and should only be used in server-side API routes
-export const createAdminClient = () => {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!supabaseUrl || !supabaseServiceKey) {
-    throw new Error('Missing Supabase environment variables for admin client');
-  }
-
-  return createClient(supabaseUrl, supabaseServiceKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  });
 };
 
 // Helper function to get total user count from auth.users (verified only)

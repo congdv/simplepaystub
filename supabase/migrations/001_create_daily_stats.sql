@@ -23,6 +23,7 @@ CREATE POLICY "Allow authenticated users to read stats"
   USING (true);
 
 -- Create policy to allow service role to insert/update stats
+-- The service role is the client with secrite key access
 CREATE POLICY "Allow service role to manage stats"
   ON public.daily_stats
   FOR ALL
