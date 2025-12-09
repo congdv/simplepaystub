@@ -1,20 +1,23 @@
 'use client';
 
-import { SimpleBarChart } from '@/components/dashboard/simple-bar-chart';
+import { RechartsLineHistorical } from '@/components/dashboard/recharts-line-historical';
+import { RechartsHistorical } from '@/components/dashboard/recharts-historical';
 import { StatCard } from '@/components/dashboard/stat-card';
 import { Download, Mail, Users, TrendingUp, Send } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-type WeeklyData = {
-  week: number;
+type DailyData = {
+  date: string;
   value: number;
 };
 
-type DashboardMetrics = {
-  weeklyUsers: WeeklyData[];
-  weeklyDownloads: WeeklyData[];
-  weeklyAvgUsers: number;
-  weeklyAvgDownloads: number;
+type HistoricalData = {
+  dailyData: DailyData[];
+  dailyAvg: number;
+  total: number;
+};
+
+type StatsMetrics = {
   thirtyDayDownloads: number;
   thirtyDayEmails: number;
   totalDownloads: number;
@@ -23,19 +26,70 @@ type DashboardMetrics = {
 };
 
 export default function DashboardPage() {
-  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
+  const [usersHistorical, setUsersHistorical] = useState<HistoricalData | null>(null);
+  const [downloadsHistorical, setDownloadsHistorical] = useState<HistoricalData | null>(null);
+  const [stats, setStats] = useState<StatsMetrics | null>(null);
   const [loading, setLoading] = useState(true);
+  const [usersLoading, setUsersLoading] = useState(false);
+  const [downloadsLoading, setDownloadsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const fetchUsersData = async (days: number) => {
+    setUsersLoading(true);
+    try {
+      const response = await fetch(`/api/open/metrics/historical?type=users&days=${days}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch users data');
+      }
+      const data = await response.json();
+      setUsersHistorical(data);
+    } catch (err) {
+      console.error('Error fetching users data:', err);
+      setError('Failed to load users data');
+    } finally {
+      setUsersLoading(false);
+    }
+  };
+
+  const fetchDownloadsData = async (days: number) => {
+    setDownloadsLoading(true);
+    try {
+      const response = await fetch(`/api/open/metrics/historical?type=downloads&days=${days}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch downloads data');
+      }
+      const data = await response.json();
+      setDownloadsHistorical(data);
+    } catch (err) {
+      console.error('Error fetching downloads data:', err);
+      setError('Failed to load downloads data');
+    } finally {
+      setDownloadsLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const response = await fetch('/api/open/metrics');
-        if (!response.ok) {
+        const [usersResponse, downloadsResponse, statsResponse] = await Promise.all([
+          fetch('/api/open/metrics/historical?type=users&days=7'),
+          fetch('/api/open/metrics/historical?type=downloads&days=7'),
+          fetch('/api/open/metrics/stats'),
+        ]);
+
+        if (!usersResponse.ok || !downloadsResponse.ok || !statsResponse.ok) {
           throw new Error('Failed to fetch metrics');
         }
-        const data = await response.json();
-        setMetrics(data);
+
+        const [usersData, downloadsData, statsData] = await Promise.all([
+          usersResponse.json(),
+          downloadsResponse.json(),
+          statsResponse.json(),
+        ]);
+
+        setUsersHistorical(usersData);
+        setDownloadsHistorical(downloadsData);
+        setStats(statsData);
       } catch (err) {
         console.error('Error fetching metrics:', err);
         setError('Failed to load dashboard metrics');
@@ -66,7 +120,7 @@ export default function DashboardPage() {
     );
   }
 
-  if (error || !metrics) {
+  if (error || !usersHistorical || !downloadsHistorical || !stats) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
@@ -80,21 +134,25 @@ export default function DashboardPage() {
     <div className="container mx-auto px-4 py-8 max-w-7xl min-h-screen">
       <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
 
-      {/* Weekly Charts */}
+      {/* Daily Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <SimpleBarChart
-          data={metrics.weeklyUsers}
+        <RechartsLineHistorical
+          data={usersHistorical.dailyData}
           color="purple"
           title="Total Users"
-          total={metrics.totalUsers}
-          weeklyAvg={metrics.weeklyAvgUsers}
+          total={usersHistorical.total}
+          dailyAvg={usersHistorical.dailyAvg}
+          onFilterChange={fetchUsersData}
+          isLoading={usersLoading}
         />
-        <SimpleBarChart
-          data={metrics.weeklyDownloads}
+        <RechartsHistorical
+          data={downloadsHistorical.dailyData}
           color="blue"
-          title="Downloads"
-          total={metrics.totalDownloads}
-          weeklyAvg={metrics.weeklyAvgDownloads}
+          title="Downloads History"
+          total={downloadsHistorical.total}
+          dailyAvg={downloadsHistorical.dailyAvg}
+          onFilterChange={fetchDownloadsData}
+          isLoading={downloadsLoading}
         />
       </div>
 
@@ -102,35 +160,35 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <StatCard
           title="30-Day Downloads"
-          value={metrics.thirtyDayDownloads}
+          value={stats.thirtyDayDownloads}
           icon={Download}
           iconColor="text-blue-600"
           bgColor="bg-blue-50"
         />
         <StatCard
           title="30-Day Emails"
-          value={metrics.thirtyDayEmails}
+          value={stats.thirtyDayEmails}
           icon={Mail}
           iconColor="text-green-600"
           bgColor="bg-green-50"
         />
         <StatCard
           title="Total Downloads"
-          value={metrics.totalDownloads}
+          value={stats.totalDownloads}
           icon={TrendingUp}
           iconColor="text-blue-600"
           bgColor="bg-blue-50"
         />
         <StatCard
           title="Total Emails"
-          value={metrics.totalEmails}
+          value={stats.totalEmails}
           icon={Send}
           iconColor="text-green-600"
           bgColor="bg-green-50"
         />
         <StatCard
           title="Total Users"
-          value={metrics.totalUsers}
+          value={stats.totalUsers}
           icon={Users}
           iconColor="text-purple-600"
           bgColor="bg-purple-50"
