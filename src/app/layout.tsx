@@ -15,7 +15,11 @@ const geistMono = localFont({
 });
 
 export const metadata = {
-  title: 'Simple Paystub',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://simplepaystub.com'),
+  title: {
+    default: 'Simple Paystub - Free Paystub Generator',
+    template: '%s | Simple Paystub'
+  },
   description: 'Easily create and generate professional paystubs as PDF files.',
   keywords: [
     'free payslip',
@@ -33,6 +37,47 @@ export const metadata = {
     'DIY Payroll',
     'bookkeeping'
   ],
+  authors: [{ name: 'Simple Paystub' }],
+  creator: 'Simple Paystub',
+  publisher: 'Simple Paystub',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: '/',
+    title: 'Simple Paystub - Free Paystub Generator',
+    description: 'Easily create and generate professional paystubs as PDF files.',
+    siteName: 'Simple Paystub',
+    images: [
+      {
+        url: '/logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Simple Paystub Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Simple Paystub - Free Paystub Generator',
+    description: 'Easily create and generate professional paystubs as PDF files.',
+    images: ['/logo.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  icons: {
+    icon: '/images/favicon.ico',
+    shortcut: '/images/favicon.ico',
+    apple: '/logo.png',
+  },
 };
 
 export default function RootLayout({
