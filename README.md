@@ -1,36 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Paystub Generator
+
+A modern web application for generating professional paystub documents with PDF export capabilities. Built with Next.js 14, TypeScript, and Supabase.
+
+## Features
+
+- **Paystub Generation**: Create customized paystubs with comprehensive employee and business information
+- **PDF Export**: Generate professional PDF documents from paystub data
+- **Authentication**: Secure user authentication and authorization with Supabase
+- **Dashboard & Metrics**: View historical data and analytics
+- **Storage Management**: Save and retrieve paystub history
+- **Email Integration**: Send paystubs via email
+- **Template System**: Multiple template options for paystub layouts
+- **Responsive Design**: Mobile-friendly interface with Tailwind CSS
+
+## Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **Monitoring**: Sentry
+- **Forms**: React Hook Form + Zod validation
+
+## Project Structure
+
+```
+src/
+├── app/                    # Next.js app router pages
+│   ├── (auth)/            # Authentication routes
+│   ├── (landing)/         # Public landing pages
+│   ├── (protected)/       # Protected routes (dashboard, account)
+│   └── api/               # API routes
+├── components/            # React components
+│   ├── sections/         # Form sections (employee, business, etc.)
+│   ├── templates/        # Paystub templates (PDF & preview)
+│   ├── ui/               # Reusable UI components
+│   └── dashboard/        # Dashboard-specific components
+├── contexts/             # React contexts
+├── hooks/                # Custom React hooks
+├── lib/                  # Utility functions and commands
+└── schemas.ts            # Zod validation schemas
+```
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- npm/yarn/pnpm/bun
+- Supabase account and project
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd paystub
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables:
+Create a `.env.local` file in the root directory with the following variables:
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SENTRY_DSN=your_sentry_dsn (optional)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Run database migrations:
+```bash
+# Apply Supabase migrations
+npx supabase db push
+```
 
-## Learn More
+5. Start the development server:
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Available Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
 
-## Deploy on Vercel
+## Key Features & Components
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Paystub Form
+Multi-step form with sections for:
+- Employee information
+- Business information
+- Payment details
+- Benefits and deductions
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Templates
+Customizable paystub templates with PDF generation capabilities located in [src/components/templates](src/components/templates).
+
+### Dashboard
+Analytics and historical data visualization with chart components.
+
+## Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | Yes |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key | Yes |
+| `SENTRY_DSN` | Sentry error tracking DSN | No |
+
+## License
+
+Copyright © 2025. All rights reserved.
+
+This project is proprietary and confidential. Unauthorized copying, distribution, or use of this software is strictly prohibited.
+
+## Support
+
+For questions or issues, please [open an issue](https://github.com/congdv/paystub/issues) on GitHub.
