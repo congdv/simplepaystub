@@ -1,6 +1,5 @@
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
-import { FeedbackSection } from '@/components/feedback-examples';
 
 export default function FAQ() {
   const faqs = [
@@ -62,7 +61,7 @@ export default function FAQ() {
             ))}
           </div>
 
-          <div className="mt-12 space-y-6">
+          <div className="mt-12">
             <div className="text-center">
               <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
                 <h3 className="text-lg font-semibold text-blue-900 mb-2">Still have questions?</h3>
@@ -76,8 +75,6 @@ export default function FAQ() {
                 </p>
               </div>
             </div>
-
-            <FeedbackSection />
           </div>
         </div>
       </div>

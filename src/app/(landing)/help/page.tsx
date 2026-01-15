@@ -1,5 +1,3 @@
-import { FeedbackSection } from '@/components/feedback-examples';
-
 export default function HelpPage() {
   return (
     <main className="max-w-2xl mx-auto px-4 min-h-screen mt-32">
@@ -12,10 +10,6 @@ export default function HelpPage() {
         <li><strong>Didn't receive your email?</strong> Please check your spam or junk folder.</li>
         <li><strong>Still need help?</strong> Contact us at <a href="mailto:support@simplepaystub.com" className="underline">support@simplepaystub.com</a>.</li>
       </ul>
-
-      <div className="mt-8">
-        <FeedbackSection />
-      </div>
     </main>
   )
 }
