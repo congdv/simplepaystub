@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import React from 'react';
 import * as Sentry from "@sentry/nextjs";
 import { incrementDailyCounter } from '@/lib/supabase/admin';
+import { createClient } from '@/lib/supabase/server';
+import { upsertUserActivity } from '@/lib/supabase/admin';
 
 
 export async function POST(req: NextRequest, res: NextResponse) {
@@ -28,6 +30,19 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const timestamp = now.toISOString().replace(/[:.]/g, '-').replace('T', '_').slice(0, 19);
 
     Sentry.logger.info(`[${timestamp}] /api/generate called`, { log_source: 'server' })
+
+    // If the caller is authenticated, record per-user activity for retention tracking.
+    // This route remains callable without auth; we only track activity when we can tie it to a user.
+    try {
+      const supabase = await createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await upsertUserActivity({ userId: user.id, event: 'generate_pdf' });
+      }
+    } catch (error) {
+      console.error('Failed to track user activity (generate):', error);
+      // Don't fail the request if tracking fails
+    }
 
     // Track PDF download in daily stats
     try {

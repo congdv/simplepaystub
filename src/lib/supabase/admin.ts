@@ -162,3 +162,57 @@ export const getAggregatedMetrics = async (startDate: string) => {
     throw error;
   }
 };
+
+type ActivityEvent = 'generate_pdf' | 'send_email';
+
+export const upsertUserActivity = async (params: {
+  userId: string;
+  event: ActivityEvent;
+}) => {
+  const pool = getPool();
+  const { userId, event } = params;
+
+  const counterColumn = event === 'generate_pdf' ? 'total_generates' : 'total_emails';
+
+  try {
+    await pool.query(
+      `INSERT INTO public.user_activity (user_id, last_seen_at, last_event, last_event_at, ${counterColumn})
+       VALUES ($1, NOW(), $2, NOW(), 1)
+       ON CONFLICT (user_id) DO UPDATE SET
+         last_seen_at = NOW(),
+         last_event = EXCLUDED.last_event,
+         last_event_at = NOW(),
+         ${counterColumn} = public.user_activity.${counterColumn} + 1,
+         updated_at = NOW()`,
+      [userId, event]
+    );
+  } catch (error) {
+    console.error('Error upserting user activity:', error);
+    Sentry.captureException(error, {
+      tags: { function: 'upsertUserActivity' },
+      extra: { userId, event },
+    });
+    throw error;
+  }
+};
+
+export const getActiveUsersCount = async (days: number): Promise<number> => {
+  const pool = getPool();
+
+  // Guardrails
+  const safeDays = Number.isFinite(days) ? Math.max(1, Math.min(365, Math.floor(days))) : 30;
+
+  try {
+    const result = await pool.query(
+      `SELECT COUNT(*)::int AS count
+       FROM public.user_activity
+       WHERE last_seen_at >= NOW() - ($1 || ' days')::interval`,
+      [safeDays]
+    );
+    return result.rows?.[0]?.count ?? 0;
+  } catch (error) {
+    console.error('Error fetching active users count:', error);
+    Sentry.captureException(error, { tags: { function: 'getActiveUsersCount' }, extra: { days: safeDays } });
+    return 0;
+  }
+};

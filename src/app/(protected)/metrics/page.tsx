@@ -23,6 +23,7 @@ type StatsMetrics = {
   totalDownloads: number;
   totalEmails: number;
   totalUsers: number;
+  activeUsers30d?: number;
 };
 
 export default function DashboardPage() {
@@ -157,7 +158,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
         <StatCard
           title="30-Day Downloads"
           value={stats.thirtyDayDownloads}
@@ -171,6 +172,14 @@ export default function DashboardPage() {
           icon={Mail}
           iconColor="text-green-600"
           bgColor="bg-green-50"
+        />
+        <StatCard
+          title="Active (30d)"
+          value={stats.activeUsers30d ?? 0}
+          icon={Users}
+          iconColor="text-purple-600"
+          bgColor="bg-purple-50"
+          tooltip="Unique logged-in users who generated a PDF or sent an email in the last 30 days."
         />
         <StatCard
           title="Total Downloads"

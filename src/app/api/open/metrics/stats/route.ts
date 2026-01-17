@@ -1,4 +1,4 @@
-import { getTotalUserCount, getAggregatedMetrics, getDailyStats } from '@/lib/supabase/admin';
+import { getTotalUserCount, getAggregatedMetrics, getDailyStats, getActiveUsersCount } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
@@ -11,6 +11,8 @@ type StatsMetrics = {
   totalDownloads: number;
   totalEmails: number;
   totalUsers: number;
+  activeUsers7d?: number;
+  activeUsers30d?: number;
 };
 
 export async function GET(req: NextRequest) {
@@ -48,12 +50,20 @@ export async function GET(req: NextRequest) {
     const totalDownloads = dailyStats.reduce((sum: number, stat: any) => sum + (stat.pdf_downloads || 0), 0);
     const totalEmails = dailyStats.reduce((sum: number, stat: any) => sum + (stat.emails_sent || 0), 0);
 
+    // Lightweight retention: active users based on last_seen_at (requires user_activity table)
+    const [activeUsers7d, activeUsers30d] = await Promise.all([
+      getActiveUsersCount(7),
+      getActiveUsersCount(30),
+    ]);
+
     const stats: StatsMetrics = {
       thirtyDayDownloads,
       thirtyDayEmails,
       totalDownloads,
       totalEmails,
       totalUsers,
+      activeUsers7d,
+      activeUsers30d,
     };
 
     return NextResponse.json(stats, {
