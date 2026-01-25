@@ -15,6 +15,17 @@ export const Footer = () => (
         Help
       </Link>
     </div>
+    <div>
+      Made with <span className="text-red-500">♥</span> &middot;{' '}
+      <a
+        href="https://x.com/CongDao9"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-500 hover:underline"
+      >
+        Come say hi on X <span role="img" aria-label="waving hand">👋</span>
+      </a>
+    </div>
     <div>&copy; {new Date().getFullYear()} SimplePaystub.com. All rights reserved.</div>
   </footer>
 );
