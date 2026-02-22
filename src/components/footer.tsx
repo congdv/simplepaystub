@@ -26,6 +26,6 @@ export const Footer = () => (
         Follow me on Twitter<span role="img" aria-label="waving hand">👋</span>
       </a>
     </div>
-    <div>&copy; {new Date().getFullYear()} SimplePaystub.com. All rights reserved.</div>
+    <div>&copy; 2024 - {new Date().getFullYear()} SimplePaystub.com</div>
   </footer>
 );
