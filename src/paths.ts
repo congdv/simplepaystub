@@ -6,6 +6,7 @@ const paths = {
   faq: '/faq',
   privacy: '/privacy',
   help: '/help',
+  feedback: '/feedback',
   terms: '/terms',
   auth: '/auth',
   authCallback: '/auth-callback',

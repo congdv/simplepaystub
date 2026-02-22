@@ -14,6 +14,10 @@ export const Footer = () => (
       <Link href="/help" className="hover:underline" rel="noopener noreferrer">
         Help
       </Link>
+      <span>|</span>
+      <Link href="/feedback" className="hover:underline" rel="noopener noreferrer">
+        Feedback
+      </Link>
     </div>
     <div>
       Made with <span className="text-red-500">♥</span> &middot;

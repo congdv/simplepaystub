@@ -2,7 +2,7 @@ import paths from '@/paths';
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-const PUBLIC_PATHS = [paths.home, paths.signIn, paths.signUp, paths.forgotPassword, paths.resetPassword, paths.auth, paths.authCallback, paths.faq, paths.terms, paths.help, paths.privacy, paths.dashboard];
+const PUBLIC_PATHS = [paths.home, paths.signIn, paths.signUp, paths.forgotPassword, paths.resetPassword, paths.auth, paths.authCallback, paths.faq, paths.terms, paths.help, paths.feedback, paths.privacy, paths.dashboard];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
