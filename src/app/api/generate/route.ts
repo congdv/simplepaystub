@@ -6,6 +6,7 @@ import * as Sentry from "@sentry/nextjs";
 import { incrementDailyCounter } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { upsertUserActivity } from '@/lib/supabase/admin';
+import { trackAnalyticsEvent } from '@/lib/track-analytics';
 
 
 export async function POST(req: NextRequest, res: NextResponse) {
@@ -38,6 +39,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         await upsertUserActivity({ userId: user.id, event: 'generate_pdf' });
+        void trackAnalyticsEvent(user.id, 'DOWNLOAD_PAYSTUB', `TEMPLATE-${requestedTemplate}`);
       }
     } catch (error) {
       console.error('Failed to track user activity (generate):', error);
