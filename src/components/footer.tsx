@@ -19,17 +19,6 @@ export const Footer = () => (
         Feedback
       </Link>
     </div>
-    <div>
-      Made with <span className="text-red-500">♥</span> &middot;
-      <a
-        href="https://x.com/CongDao9"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-500 hover:underline"
-      >
-        Follow me on Twitter<span role="img" aria-label="waving hand">👋</span>
-      </a>
-    </div>
     <div>&copy; 2024 - {new Date().getFullYear()} SimplePaystub.com</div>
   </footer>
 );
