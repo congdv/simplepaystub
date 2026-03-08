@@ -3,9 +3,7 @@ import { renderToBuffer } from '@react-pdf/renderer';
 import { NextRequest, NextResponse } from 'next/server';
 import React from 'react';
 import * as Sentry from "@sentry/nextjs";
-import { incrementDailyCounter } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
-import { upsertUserActivity } from '@/lib/supabase/admin';
 import { trackAnalyticsEvent } from '@/lib/track-analytics';
 
 
@@ -38,19 +36,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
       const supabase = await createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        await upsertUserActivity({ userId: user.id, event: 'generate_pdf' });
         void trackAnalyticsEvent(user.id, 'DOWNLOAD_PAYSTUB', `TEMPLATE-${requestedTemplate}`);
       }
     } catch (error) {
       console.error('Failed to track user activity (generate):', error);
-      // Don't fail the request if tracking fails
-    }
-
-    // Track PDF download in daily stats
-    try {
-      await incrementDailyCounter('pdf_downloads');
-    } catch (error) {
-      console.error('Failed to track PDF download:', error);
       // Don't fail the request if tracking fails
     }
 

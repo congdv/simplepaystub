@@ -7,7 +7,6 @@ A modern web application for generating professional paystub documents with PDF 
 - **Paystub Generation**: Create customized paystubs with comprehensive employee and business information
 - **PDF Export**: Generate professional PDF documents from paystub data
 - **Authentication**: Secure user authentication and authorization with Supabase
-- **Dashboard & Metrics**: View historical data and analytics
 - **Storage Management**: Save and retrieve paystub history
 - **Email Integration**: Send paystubs via email
 - **Template System**: Multiple template options for paystub layouts

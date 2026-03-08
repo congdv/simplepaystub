@@ -6,7 +6,6 @@ import Mailgun from 'mailgun.js';
 import { NextRequest, NextResponse } from 'next/server';
 import React from 'react';
 import * as Sentry from "@sentry/nextjs";
-import { incrementDailyCounter, upsertUserActivity } from '@/lib/supabase/admin';
 import { trackAnalyticsEvent } from '@/lib/track-analytics';
 
 const mailgun = new Mailgun(formData);
@@ -101,22 +100,6 @@ export async function POST(req: NextRequest) {
     Sentry.logger.info(`[${timestamp}] /api/send-email called`, { log_source: 'server' });
 
     void trackAnalyticsEvent(user.id, 'SEND_EMAIL_PAYSTUB', `TEMPLATE-${requestedTemplate}`);
-
-    // Record per-user activity for retention tracking
-    try {
-      await upsertUserActivity({ userId: user.id, event: 'send_email' });
-    } catch (error) {
-      console.error('Failed to track user activity (send email):', error);
-      // Don't fail the request if tracking fails
-    }
-
-    // Track email sent in daily stats
-    try {
-      await incrementDailyCounter('emails_sent');
-    } catch (error) {
-      console.error('Failed to track email send:', error);
-      // Don't fail the request if tracking fails
-    }
 
     return NextResponse.json({
       message: 'Email sent successfully',
