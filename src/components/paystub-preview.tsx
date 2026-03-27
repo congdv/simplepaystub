@@ -43,7 +43,7 @@ export default function PaystubPreview() {
       {/* Header row */}
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-slate-900">Live Preview</h2>
-        <div className="w-48">
+        <div className="w-56">
           <Select value={template} onValueChange={(v) => setValue('template' as any, v as any, { shouldDirty: true })}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select template" />
