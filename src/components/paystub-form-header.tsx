@@ -31,24 +31,22 @@ export const PaystubFormHeader = memo(() => {
         value={step.value}
         key={step.value}
         className={cn(
-          'text-center text-xs px-2 py-2',
-          'lg:w-full lg:text-left lg:justify-start lg:text-sm lg:px-4 lg:py-3 text-black',
-          'data-[state=active]:text-blue-500 data-[state=active]:bg-white w-24 hover:text-blue-500',
+          'flex flex-col items-center justify-center min-w-[72px] px-3 py-2 rounded-lg text-xs font-medium transition-all',
+          'text-slate-500 hover:text-slate-800',
+          'data-[state=active]:bg-blue-50 data-[state=active]:text-primary data-[state=active]:border data-[state=active]:border-blue-100 data-[state=active]:font-semibold',
           getVariant(step.value) && 'text-red-500'
         )}
       >
-        <div className="flex lg:flex-col lg:items-center lg:w-full">
-          <step.icon className="w-4 h-4" />
-          <span className="hidden lg:inline mt-2">{step.label}</span>
-        </div>
+        <step.icon className="w-5 h-5 mb-1" />
+        <span>{step.label}</span>
       </TabsTrigger>
     ));
   }, [getVariant]);
 
   return (
-    <TabsList className="flex-row bg-transparent lg:items-center gap-2 h-auto w-full lg:w-fit p-2 overflow-x-auto  lg:overflow-x-hidden">
+    <TabsList className="bg-white p-1 rounded-lg flex border border-slate-200 h-auto w-full overflow-x-auto gap-1 mb-4">
       {renderedSteps}
     </TabsList>
   );
-})
+});
 PaystubFormHeader.displayName = 'PaystubFormHeader';

@@ -109,11 +109,11 @@ export default function PaystubFormContent({ currentTab, setCurrentTab }: Props)
   };
 
   return (
-    <div className="pb-2 px-1 md:px-2">
+    <div>
       <div className="md:min-h-[645px]" ref={rootRef}>
         {PAYSTUB_STEPS.map((step, idx) => (
           <TabsContent value={step.value} key={step.value} onKeyDown={(e) => onKeyDown(e, idx)}>
-            <div className="rounded-lg bg-white shadow-sm p-2 md:p-4">
+            <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
               <step.component />
             </div>
           </TabsContent>

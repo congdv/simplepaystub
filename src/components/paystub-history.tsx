@@ -7,14 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { usePaystub } from '@/contexts/paystub-context';
 import { useToolbar } from '@/contexts/toolbar-context';
 import { formatDate, getTimeAgo } from '@/lib/utils';
@@ -24,8 +16,8 @@ import {
   Eye,
   Loader2,
   MoreVertical,
-  Shield,
-  Trash2
+  ShieldCheck,
+  Trash2,
 } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -33,7 +25,7 @@ import { DeleteConfirmationDialog } from './delete-confirmation-dialog';
 
 
 export default function PaystubHistory() {
-  const { history, deletePaystub, getPaystub, isLoading } = usePaystub();
+  const { history, deletePaystub, isLoading } = usePaystub();
   const { onViewPaystub } = useToolbar();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteDialog, setDeleteDialog] = useState<{
@@ -50,33 +42,23 @@ export default function PaystubHistory() {
 
   const paginatedPaystubs = useMemo(() => {
     const sortedHistory = [...history].sort((a, b) => {
-      const aDate = new Date(a.createdAt).getTime();
-      const bDate = new Date(b.createdAt).getTime();
-      return bDate - aDate;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
     const start = (currentPage - 1) * pageSize;
     return sortedHistory.slice(start, start + pageSize);
-  }, [history, currentPage, pageSize])
+  }, [history, currentPage, pageSize]);
 
   const totalPages = Math.ceil(history.length / pageSize);
 
   const handleDeleteClick = useCallback((paystubId: string, employeeName: string) => {
-    setDeleteDialog({
-      open: true,
-      paystubId,
-      employeeName,
-    });
+    setDeleteDialog({ open: true, paystubId, employeeName });
   }, []);
-
 
   const handleDeleteConfirm = useCallback(async () => {
     try {
       setDeletingId(deleteDialog.paystubId);
-
       deletePaystub(deleteDialog.paystubId);
-
       toast.success(`Paystub for ${deleteDialog.employeeName} deleted successfully`);
-
       setDeleteDialog({ open: false, paystubId: '', employeeName: '' });
     } catch (error) {
       console.error('Error deleting paystub:', error);
@@ -87,128 +69,114 @@ export default function PaystubHistory() {
   }, [deleteDialog, deletePaystub]);
 
   const calculateNetPay = useCallback((data: PayStubType): number => {
-    // Calculate gross pay
     const regularPay = Number(data.payment.numOfHours || 0) * Number(data.payment.hourlyRate || 0);
-
-    const totalDeductions = data.deductions.reduce((sum, deduction) => {
-      return sum + (Number(deduction.value) || 0);
-    }, 0);
-
-    const totalBenefits = data.benefits.reduce((sum, benefit) => {
-      return sum + (Number(benefit.value) || 0);
-    }, 0);
-
-    // Net pay = Gross pay + Benefits - Deductions
+    const totalDeductions = data.deductions.reduce((sum, d) => sum + (Number(d.value) || 0), 0);
+    const totalBenefits = data.benefits.reduce((sum, b) => sum + (Number(b.value) || 0), 0);
     return regularPay + totalBenefits - totalDeductions;
   }, []);
 
-  const getTimeAgoCallback = useCallback(getTimeAgo, []);
-
-  const formatDateCallback = useCallback(formatDate, []);
-
-
   if (isLoading) {
     return (
-      <div className="mt-8 w-full max-w-7xl mx-auto px-6">
+      <div className="mt-12 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin" />
-          <span className="ml-2">Loading paystub history...</span>
+          <Loader2 className="h-6 w-6 animate-spin text-slate-400" />
+          <span className="ml-2 text-sm text-slate-500">Loading paystub history...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="mt-8 w-full max-w-7xl mx-auto px-6">
-      {/* Simple Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Clock className="h-5 w-5 text-gray-500" />
-          <h2 className="text-lg font-semibold text-gray-900">Recent Paystubs</h2>
-          <span className="text-sm text-gray-500">({history.length})</span>
-        </div>
-        <Button variant="outline" size="sm" className='hidden'>
-          View All
-        </Button>
+    <section className="mt-12 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      {/* Section header */}
+      <div className="flex items-center gap-2 mb-6">
+        <Clock className="w-5 h-5 text-slate-400" />
+        <h2 className="text-lg font-bold text-slate-800">
+          Recent Paystubs{' '}
+          <span className="text-slate-400 font-normal">({history.length})</span>
+        </h2>
       </div>
 
+      {/* Table */}
+      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm mb-4">
+        {/* Table header */}
+        <div className="grid grid-cols-4 px-6 py-4 bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <div>Employee</div>
+          <div>Pay Date</div>
+          <div>Net Pay</div>
+          <div className="flex justify-between">
+            <span>Created</span>
+            <div className="w-4" />
+          </div>
+        </div>
 
-
-      {/* Compact Table */}
-      <div className="bg-white rounded-lg border shadow-sm">
-        <Table>
-          <TableHeader>
-            <TableRow className="border-b">
-              <TableHead className="font-medium">Employee</TableHead>
-              <TableHead className="font-medium">Pay Date</TableHead>
-              <TableHead className="text-right font-medium">Net Pay</TableHead>
-              <TableHead className="text-right font-medium">Created</TableHead>
-              <TableHead className="w-[70px]"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {history.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center py-8">
-                  <div className="text-gray-500">
-                    <p className="text-sm">No paystubs created yet</p>
-                    <p className="text-xs text-gray-400">Your generated paystubs will appear here</p>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ) : (
-              paginatedPaystubs.map((paystub) => ( // Show only 5 recent
-                <TableRow key={paystub.id} className="hover:bg-gray-50/50" onClick={() => onViewPaystub(paystub.id)}>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium text-gray-900 text-sm">{paystub.data.payee.name}</div>
-                      <div className="text-xs text-gray-500">{paystub.data.payer.name}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm text-gray-900">{formatDateCallback(paystub.data.payment.date)}</div>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="font-semibold text-gray-900">${calculateNetPay(paystub.data)}</div>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="text-xs text-gray-500">{getTimeAgoCallback(paystub.createdAt)}</div>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-36">
-                        <DropdownMenuItem className="text-sm" onClick={() => { onViewPaystub(paystub.id) }}>
-                          <Eye className="mr-2 h-3 w-3" />
-                          View
-                        </DropdownMenuItem>
-                        {/* <DropdownMenuItem className="text-sm" disabled>
-                          <Download className="mr-2 h-3 w-3" />
-                          Download
-                        </DropdownMenuItem> */}
-                        <DropdownMenuItem className="text-sm" onClick={() => handleDeleteClick(paystub.id, paystub.data.payee.name || 'Unknown Employee')}
-                          disabled={!!deletingId}>
-                          <Trash2 className="mr-2 h-3 w-3 " />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-
-        </Table>
+        {/* Rows */}
+        <div className="divide-y divide-slate-100">
+          {history.length === 0 ? (
+            <div className="px-6 py-10 text-center">
+              <p className="text-sm text-slate-500">No paystubs created yet</p>
+              <p className="text-xs text-slate-400 mt-1">Your generated paystubs will appear here</p>
+            </div>
+          ) : (
+            paginatedPaystubs.map((paystub) => (
+              <div
+                key={paystub.id}
+                className="grid grid-cols-4 px-6 py-4 items-center hover:bg-slate-50 transition-colors cursor-pointer"
+                onClick={() => onViewPaystub(paystub.id)}
+              >
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-slate-900">
+                    {paystub.data.payee.name || '—'}
+                  </span>
+                  <span className="text-xs text-slate-500">{paystub.data.payer.name}</span>
+                </div>
+                <div className="text-sm text-slate-600 font-medium">
+                  {formatDate(paystub.data.payment.date)}
+                </div>
+                <div className="text-sm font-bold text-slate-900">
+                  ${calculateNetPay(paystub.data).toLocaleString()}
+                </div>
+                <div
+                  className="flex justify-between items-center text-xs text-slate-500"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <span>{getTimeAgo(paystub.createdAt)}</span>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="p-1 hover:bg-slate-200 rounded-full transition-colors text-slate-400">
+                        <MoreVertical className="w-4 h-4" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-36">
+                      <DropdownMenuItem
+                        className="text-sm"
+                        onClick={() => onViewPaystub(paystub.id)}
+                      >
+                        <Eye className="mr-2 h-3 w-3" />
+                        View
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="text-sm"
+                        onClick={() =>
+                          handleDeleteClick(paystub.id, paystub.data.payee.name || 'Unknown Employee')
+                        }
+                        disabled={!!deletingId}
+                      >
+                        <Trash2 className="mr-2 h-3 w-3" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-2 mt-4">
+        <div className="flex justify-center items-center gap-2 mb-4">
           <Button
             variant="outline"
             size="sm"
@@ -217,7 +185,7 @@ export default function PaystubHistory() {
           >
             Previous
           </Button>
-          <span className="text-sm text-gray-700">
+          <span className="text-sm text-slate-700">
             Page {currentPage} of {totalPages}
           </span>
           <Button
@@ -230,17 +198,17 @@ export default function PaystubHistory() {
           </Button>
         </div>
       )}
-      <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-        <div className="flex items-start gap-3">
-          <Shield className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-          <div className="text-sm text-blue-800">
-            <p className="text-blue-700">
-              These paystubs are stored on your device only. Clearing your browser's history will erase these records.
-              We recommend downloading and saving a copy of each paystub you generate.
-            </p>
-          </div>
-        </div>
+
+      {/* Info banner */}
+      <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-start gap-3">
+        <ShieldCheck className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+        <p className="text-xs text-blue-800 leading-relaxed">
+          These paystubs are stored on your device only. Clearing your browser&apos;s history will
+          erase these records. We recommend downloading and saving a copy of each paystub you
+          generate.
+        </p>
       </div>
+
       <DeleteConfirmationDialog
         open={deleteDialog.open}
         onClose={() => setDeleteDialog({ open: false, paystubId: '', employeeName: '' })}
@@ -248,6 +216,6 @@ export default function PaystubHistory() {
         employeeName={deleteDialog.employeeName}
         isDeleting={deletingId === deleteDialog.paystubId}
       />
-    </div>
+    </section>
   );
 }
