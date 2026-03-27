@@ -60,7 +60,7 @@ export default function PaystubPreview() {
       </div>
 
       {/* Preview card */}
-      <div className="bg-white w-full rounded-sm overflow-hidden p-8 md:p-12 min-h-[700px] border border-slate-100 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)]">
+      <div className="bg-white w-full rounded-sm overflow-hidden p-4 md:p-6 min-h-[700px] border border-slate-100 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)]">
         <TemplateComponent {...formValues} />
       </div>
     </div>
