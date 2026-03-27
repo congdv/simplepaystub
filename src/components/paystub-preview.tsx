@@ -1,7 +1,6 @@
 import { PayStubType, TemplateType } from '@/types';
 import { useFormContext } from 'react-hook-form';
 import { useEffect } from 'react';
-// template components
 import {
   Select,
   SelectContent,
@@ -23,11 +22,9 @@ export default function PaystubPreview() {
   const { watch, setValue } = useFormContext<PayStubType>();
   const formValues = watch();
 
-  // use the form's `template` field as the source of truth
   const watchedTemplate = watch('template') as TemplateType | undefined;
   const template: TemplateType = watchedTemplate === 'NOVA' || watchedTemplate === 'MONO' ? watchedTemplate : DEFAULT_TEMPLATE;
 
-  // keep form value in sync if it's missing
   useEffect(() => {
     try {
       if (!watchedTemplate) {
@@ -42,11 +39,13 @@ export default function PaystubPreview() {
   const TemplateComponent = selected.Component;
 
   return (
-    <div>
-      <div className="mb-4 flex items-center justify-end md:h-[76px]">
-        <div className="w-48">
+    <div className="sticky top-24">
+      {/* Header row */}
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-slate-900">Live Preview</h2>
+        <div className="w-56">
           <Select value={template} onValueChange={(v) => setValue('template' as any, v as any, { shouldDirty: true })}>
-            <SelectTrigger className="mt-1 w-full">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Select template" />
             </SelectTrigger>
             <SelectContent>
@@ -60,7 +59,10 @@ export default function PaystubPreview() {
         </div>
       </div>
 
-      <TemplateComponent {...formValues} />
+      {/* Preview card */}
+      <div className="bg-white w-full rounded-sm overflow-hidden p-4 md:p-6 min-h-[700px] border border-slate-100 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)]">
+        <TemplateComponent {...formValues} />
+      </div>
     </div>
   );
 }

@@ -29,7 +29,7 @@ export default function NovaPayStubTemplate(data: PayStubType) {
     0
   );
   return (
-    <div className="px-8 py-4 shadow-sm rounded-lg">
+    <div>
       {data.payer.logo && (
         <div>
           <img

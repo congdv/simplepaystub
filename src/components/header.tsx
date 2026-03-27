@@ -3,7 +3,6 @@ import { cn } from '@/lib/utils';
 import { Montserrat } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Button } from './ui/button';
 import UserButton from './user-button';
 
 const font = Montserrat({
@@ -12,37 +11,29 @@ const font = Montserrat({
 });
 
 export const Header = ({ showAuth = true }: { showAuth?: boolean }) => {
-
-
   return (
-    <nav className="p-4 border-gray-200 border-b">
-      <div className="mx-auto max-w-screen-xl w-full flex justify-between items-center">
-        <Link href={'/'} className="flex items-center">
+    <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2">
           <Image
             src="/logo.png"
             alt="Pay Stub Generator Logo"
-            width={40}
-            height={40}
-            className="rounded mr-2"
+            width={32}
+            height={32}
+            className="rounded"
             priority
           />
-          <h1 className={cn('text-2xl font-bold text-blue-700', font.className)}>SimplePaystub</h1>
+          <span className={cn('text-xl font-bold text-primary tracking-tight', font.className)}>
+            SimplePaystub
+          </span>
         </Link>
 
-        <div className="flex items-center space-x-2">
-          <Link
-            href="/faq"
-          >
-            <Button
-              variant={"ghost"}
-              className="px-2 py-2 rounded text-black"
-            >
-              FAQ
-            </Button>
-          </Link>
+        {/* Right: Auth */}
+        <div className="flex items-center gap-2">
           {showAuth && <UserButton />}
         </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 };

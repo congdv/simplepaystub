@@ -1,6 +1,3 @@
-import { Footer } from '@/components/footer';
-import { Header } from '@/components/header';
-
 export default function FAQ() {
   const faqs = [
     {
@@ -31,7 +28,7 @@ export default function FAQ() {
     {
       question: 'Can I access my data from different devices?',
       answer:
-        'Currently, since data is stored locally in your browser, you cannot access the same data from different devices. Each device has its own separate local storage',
+        'Currently, since data is stored locally in your browser, you cannot access the same data from different devices. Each device has its own separate local storage.',
     },
     {
       question: 'How do I delete my data?',
@@ -41,44 +38,30 @@ export default function FAQ() {
   ];
 
   return (
-    <div className="bg-gray-50">
-      <Header />
-      <div className="min-h-screen py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h1>
-            <p className="text-lg text-gray-600">
-              Everything you need to know about privacy and data security
-            </p>
-          </div>
-
-          <div className="space-y-6">
-            {faqs.map((faq, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">{faq.question}</h3>
-                <p className="text-gray-700 leading-relaxed">{faq.answer}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12">
-            <div className="text-center">
-              <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                <h3 className="text-lg font-semibold text-blue-900 mb-2">Still have questions?</h3>
-                <p className="text-blue-700">
-                  Your privacy and security are our commitment.
-                  <br />
-                  If you have any questions, please contact us at{' '}
-                  <a href="mailto:support@simplepaystub.com" className="underline">
-                    support@simplepaystub.com
-                  </a>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">Frequently Asked Questions</h1>
+        <p className="text-slate-500">Everything you need to know about privacy and data security</p>
       </div>
-      <Footer />
+
+      <div className="space-y-4">
+        {faqs.map((faq, index) => (
+          <div key={index} className="bg-white rounded-lg border border-slate-200 p-6">
+            <h3 className="text-base font-semibold text-slate-900 mb-2">{faq.question}</h3>
+            <p className="text-slate-600 leading-relaxed text-sm">{faq.answer}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-8 bg-white rounded-lg border border-slate-200 p-6 text-center">
+        <h3 className="text-base font-semibold text-slate-900 mb-1">Still have questions?</h3>
+        <p className="text-slate-500 text-sm">
+          Your privacy and security are our commitment. Contact us at{' '}
+          <a href="mailto:support@simplepaystub.com" className="text-primary hover:underline">
+            support@simplepaystub.com
+          </a>
+        </p>
+      </div>
     </div>
   );
 }

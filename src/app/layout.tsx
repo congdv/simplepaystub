@@ -1,4 +1,5 @@
 import localFont from 'next/font/local';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import Script from 'next/script';
 import { StorageConsentBanner } from '@/components/storage-consent-banner';
@@ -12,6 +13,10 @@ const geistMono = localFont({
   src: './fonts/GeistMonoVF.woff',
   variable: '--font-geist-mono',
   weight: '100 900',
+});
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
 });
 
 export const metadata = {
@@ -96,7 +101,7 @@ export default function RootLayout({
           defer
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased font-sans`}>
         {children}
         <StorageConsentBanner />
       </body>
