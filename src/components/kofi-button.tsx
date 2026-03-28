@@ -24,7 +24,7 @@ export const KofiButton = () => {
                         src="https://ko-fi.com/simplepaystub?hidefeed=true&widget=true&embed=true"
                         title="Support me on Ko-fi"
                         className="w-full border-none"
-                        style={{ height: '712px' }}
+                        style={{ height: '600px' }}
                     />
                     <div className="px-4 py-2 text-center text-xs text-gray-500">
                         <a
