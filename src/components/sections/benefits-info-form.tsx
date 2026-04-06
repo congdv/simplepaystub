@@ -19,8 +19,8 @@ export default function BenefitsInfoForm() {
       <div className="space-y-4 max-w-3xl mx-auto py-4">
         {fields.map((field, index) => {
           return (
-            <div className="grid grid-cols-12 gap-2" key={field.id}>
-              <div className="col-span-4">
+            <div className="grid grid-cols-[1fr_1fr_auto] sm:grid-cols-12 gap-2" key={field.id}>
+              <div className="col-span-3 sm:col-span-4">
                 <FormField
                   control={control}
                   name={`benefits[${index}].label`}
@@ -37,7 +37,7 @@ export default function BenefitsInfoForm() {
                 />
               </div>
 
-              <div className="col-span-3">
+              <div className="col-span-1 sm:col-span-3">
                 <FormField
                   control={control}
                   name={`benefits[${index}].value`}
@@ -51,7 +51,7 @@ export default function BenefitsInfoForm() {
                   )}
                 />
               </div>
-              <div className="col-span-4">
+              <div className="col-span-1 sm:col-span-4">
                 <FormField
                   control={control}
                   name={`benefits[${index}].ytd`}
@@ -65,7 +65,7 @@ export default function BenefitsInfoForm() {
                   )}
                 />
               </div>
-              <div className="col-span-1">
+              <div className="col-span-1 sm:col-span-1">
                 <div className="flex flex-col h-full justify-end">
                   <Button
                     className="text-red-400 hover:text-red-500"
