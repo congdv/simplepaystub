@@ -11,6 +11,8 @@ import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { DownloadConfirmationModal } from './download-confirmation-modal';
 import { LoginDialog } from './login-dialog';
+import { UpgradeModal } from './upgrade-modal';
+import { useSubscription } from '@/hooks/use-subscription';
 import PaystubFormContent, { PAYSTUB_STEPS } from './paystub-form-content';
 import { PaystubFormHeader } from './paystub-form-header';
 import { SendEmailDialog } from './send-email-dialog';
@@ -26,9 +28,13 @@ export const PaystubForm = () => {
   const [formData, setFormData] = useState<PayStubType>(PAY_STUB_FORM_DEFAULT_VALUES);
   const [showSendEmailDialog, setShowSendEmailDialog] = useState(false);
   const [currentTab, setCurrentTab] = useState(PAYSTUB_STEPS[0].value);
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
+  const [upgradeFeatureName, setUpgradeFeatureName] = useState<string | undefined>();
+
+  const { isPro } = useSubscription();
 
   // Use toolbar context
-  const { setLoadingState, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail } = useToolbar();
+  const { setLoadingState, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail, setOnAutoTax, setOnBatchGenerate } = useToolbar();
   const { savePaystub, getPaystub } = usePaystub();
 
   // Initialize actions
@@ -53,7 +59,23 @@ export const PaystubForm = () => {
     setOnSave(() => actions.save.execute.bind(actions.save));
     setOnViewPaystub(() => (id: string) => actions.viewPaystub.execute.bind(actions.viewPaystub)(id));
     setOnSendEmail(() => actions.sendEmail.execute.bind(actions.sendEmail));
-  }, [actions, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail]);
+    setOnAutoTax(() => () => {
+      if (isPro) {
+        // Auto tax feature coming soon
+      } else {
+        setUpgradeFeatureName('Auto Tax Calculations');
+        setUpgradeModalOpen(true);
+      }
+    });
+    setOnBatchGenerate(() => () => {
+      if (isPro) {
+        // Batch generate feature coming soon
+      } else {
+        setUpgradeFeatureName('Batch Generation');
+        setUpgradeModalOpen(true);
+      }
+    });
+  }, [actions, isPro, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail, setOnAutoTax, setOnBatchGenerate]);
 
   return (
     <Form {...form}>
@@ -83,6 +105,11 @@ export const PaystubForm = () => {
           onLoginSuccess={() => {
             setShowLoginDialog(false);
           }}
+        />
+        <UpgradeModal
+          open={upgradeModalOpen}
+          onClose={() => setUpgradeModalOpen(false)}
+          featureName={upgradeFeatureName}
         />
         <SendEmailDialog
           open={showSendEmailDialog}

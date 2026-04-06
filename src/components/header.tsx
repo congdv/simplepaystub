@@ -29,8 +29,11 @@ export const Header = ({ showAuth = true }: { showAuth?: boolean }) => {
           </span>
         </Link>
 
-        {/* Right: Auth */}
-        <div className="flex items-center gap-2">
+        {/* Right: Nav + Auth */}
+        <div className="flex items-center gap-4">
+          <Link href="/pricing" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+            Pricing
+          </Link>
           {showAuth && <UserButton />}
         </div>
       </nav>
