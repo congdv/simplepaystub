@@ -17,6 +17,10 @@ interface ToolbarContextType {
   setOnViewPaystub: (fn: (id: string) => void) => void;
   onSendEmail: () => void;
   setOnSendEmail: (fn: () => void) => void;
+  onAutoTax: () => void;
+  setOnAutoTax: (fn: () => void) => void;
+  onBatchGenerate: () => void;
+  setOnBatchGenerate: (fn: () => void) => void;
 }
 
 const ToolbarContext = createContext<ToolbarContextType | undefined>(undefined);
@@ -33,6 +37,8 @@ export function ToolbarProvider({ children }: ToolbarProviderProps) {
   const [onSave, setOnSave] = useState<() => void>(() => () => { });
   const [onViewPaystub, setOnViewPaystub] = useState<(id: string) => void>((_id: string) => { });
   const [onSendEmail, setOnSendEmail] = useState<() => void>(() => { });
+  const [onAutoTax, setOnAutoTax] = useState<() => void>(() => () => { });
+  const [onBatchGenerate, setOnBatchGenerate] = useState<() => void>(() => () => { });
 
   return (
     <ToolbarContext.Provider
@@ -50,7 +56,11 @@ export function ToolbarProvider({ children }: ToolbarProviderProps) {
         onViewPaystub,
         setOnViewPaystub,
         onSendEmail,
-        setOnSendEmail
+        setOnSendEmail,
+        onAutoTax,
+        setOnAutoTax,
+        onBatchGenerate,
+        setOnBatchGenerate,
       }}
     >
       {children}

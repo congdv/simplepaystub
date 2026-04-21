@@ -2,7 +2,7 @@
 import { AppLoading } from '@/components/app-loading';
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
-import { KofiButton } from '@/components/kofi-button';
+import { CreditsProvider } from '@/contexts/credits-context';
 import { PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
 import { LocalStorageManager, STORAGE_KEYS } from '@/lib/local-storage-manage';
 import { PayStubSchema } from '@/schemas';
@@ -55,14 +55,13 @@ export default function LandingLayout({ children }: { children: React.ReactNode 
   }
 
   return (
-    <>
+    <CreditsProvider>
       <Header />
       <main>
         <Toaster position="top-center" richColors />
         <FormProvider {...form}>{children}</FormProvider>
       </main>
       <Footer />
-      <KofiButton />
-    </>
+    </CreditsProvider>
   );
 }

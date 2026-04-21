@@ -90,3 +90,19 @@ export class SendEmailCommand extends ToolbarCommand {
     }
   }
 }
+
+// Generic command for Pro feature placeholders
+export class SimpleCommand extends ToolbarCommand {
+  constructor(
+    private handler: () => void,
+    isDisabled: boolean = false
+  ) {
+    super(isDisabled);
+  }
+
+  execute(): void {
+    if (this.canExecute()) {
+      this.handler();
+    }
+  }
+}

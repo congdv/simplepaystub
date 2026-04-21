@@ -84,6 +84,12 @@ export const PAYMENT_FREQUENCIES = [
   'Annually',
 ];
 
+export const FILING_STATUSES = [
+  { value: 'single', label: 'Single' },
+  { value: 'married', label: 'Married filing jointly' },
+  { value: 'head_of_household', label: 'Head of household' },
+];
+
 export const DEFAULT_PAYMENT_TYPE = 'Hourly';
 export const PAYMENT_TYPE = ['Hourly', 'Salary'];
 export const DEFAULT_TEMPLATE = 'NOVA' as const;
@@ -113,6 +119,7 @@ const PAYEE_DEFAULT_VALUES = {
   phoneNumber: '',
   extNo: '',
   email: '',
+  filingStatus: 'single' as const,
 };
 
 const PAYMENT_DEFAULT_VALUES = {
@@ -124,7 +131,7 @@ const PAYMENT_DEFAULT_VALUES = {
   date: new Date(),
   periodStart: new Date(),
   periodEnd: new Date(),
-  frequency: '',
+  frequency: DEFAULT_PAYMENT_FREQUENCY,
   chequeNumber: '',
   ytd: '',
 };

@@ -4,6 +4,7 @@ import { Montserrat } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
 import UserButton from './user-button';
+import { CreditBalance } from './credit-balance';
 
 const font = Montserrat({
   weight: '600',
@@ -29,8 +30,9 @@ export const Header = ({ showAuth = true }: { showAuth?: boolean }) => {
           </span>
         </Link>
 
-        {/* Right: Auth */}
-        <div className="flex items-center gap-2">
+        {/* Right: Credits + Auth */}
+        <div className="flex items-center gap-3">
+          <CreditBalance />
           {showAuth && <UserButton />}
         </div>
       </nav>

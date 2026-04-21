@@ -12,6 +12,7 @@ const paths = {
   authCallback: '/auth-callback',
   forgotPassword: '/forgot-password',
   resetPassword: '/reset-password',
+  pricing: '/pricing',
 };
 
 export default paths;

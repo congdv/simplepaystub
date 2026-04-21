@@ -11,7 +11,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { DEFAULT_PAYMENT_TYPE, PAYMENT_TYPE } from '@/constants';
+import { DEFAULT_PAYMENT_FREQUENCY, DEFAULT_PAYMENT_TYPE, PAYMENT_FREQUENCIES, PAYMENT_TYPE } from '@/constants';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { PayStubType } from '@/types';
 import { format } from 'date-fns';
@@ -124,7 +125,7 @@ export default function PaymentSection() {
             </div>
           </div>
         )}
-        {/* <div className="grid grid-cols-12">
+        <div className="grid grid-cols-12">
           <div className="col-span-4">
             <FormField
               control={form.control}
@@ -134,7 +135,7 @@ export default function PaymentSection() {
                   <FormLabel className="after:content-['*'] after:text-red-500">
                     How often do you pay?
                   </FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={DEFAULT_PAYMENT_FREQUENCY}>
+                  <Select onValueChange={field.onChange} value={field.value} defaultValue={DEFAULT_PAYMENT_FREQUENCY}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="" />
@@ -154,7 +155,7 @@ export default function PaymentSection() {
               )}
             />
           </div>
-        </div> */}
+        </div>
         <FormField
           control={form.control}
           name="payment.date"

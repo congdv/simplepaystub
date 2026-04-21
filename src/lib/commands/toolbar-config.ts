@@ -1,4 +1,4 @@
-import { LucideIcon, FilePlus2, ListRestart, Save, DownloadCloud, Mail } from 'lucide-react';
+import { LucideIcon, FilePlus2, ListRestart, Save, DownloadCloud, Mail, Calculator } from 'lucide-react';
 import { LOADING_STATES } from '@/constants';
 import { Command } from './toolbar-commands';
 
@@ -10,6 +10,7 @@ export interface ToolbarButtonConfig {
   loadingState?: string;
   loadingIcon?: LucideIcon;
   loadingLabel?: string;
+  isPro?: boolean;
 }
 
 export const TOOLBAR_BUTTONS: ToolbarButtonConfig[] = [
@@ -46,5 +47,12 @@ export const TOOLBAR_BUTTONS: ToolbarButtonConfig[] = [
     label: 'Send PDF to Email',
     loadingState: LOADING_STATES.SENDING_EMAIL,
     loadingLabel: 'Sending...',
+  },
+  {
+    id: 'autoTax',
+    title: 'Auto-fill payroll contributions (Pro)',
+    icon: Calculator,
+    label: 'Auto Tax',
+    isPro: true,
   },
 ];

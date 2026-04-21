@@ -1,7 +1,7 @@
 'use client';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { COUNTRIES, PROVINCES, US_STATES } from '@/constants';
+import { COUNTRIES, FILING_STATUSES, PROVINCES, US_STATES } from '@/constants';
 import { useFormContext } from 'react-hook-form';
 import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from '../ui/select';
 
@@ -147,6 +147,33 @@ export default function EmployeeInfoForm() {
           />
         </div>
       </div>
+
+      {(country === 'United States' || country === 'Canada') && (
+        <FormField
+          control={form.control}
+          name="payee.filingStatus"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Filing Status</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select filing status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {FILING_STATUSES.map((s) => (
+                    <SelectItem value={s.value} key={s.value}>
+                      {s.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
 
       <div className="grid grid-cols-12">
         <div className="col-span-12">
