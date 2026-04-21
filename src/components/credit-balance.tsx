@@ -1,6 +1,6 @@
 'use client';
 
-import { useCredits } from '@/hooks/use-credits';
+import { useCreditsContext } from '@/contexts/credits-context';
 import { createClient } from '@/lib/supabase/client';
 import { CircleDollarSign } from 'lucide-react';
 import Link from 'next/link';
@@ -10,7 +10,7 @@ import paths from '@/paths';
 export function CreditBalance() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
-  const { balance, isLoading } = useCredits();
+  const { balance, isLoading } = useCreditsContext();
 
   useEffect(() => {
     const supabase = createClient();

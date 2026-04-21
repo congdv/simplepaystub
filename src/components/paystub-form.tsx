@@ -4,7 +4,7 @@ import { DEFAULT_PAYMENT_TYPE, PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants'
 import { usePaystub } from '@/contexts/paystub-context';
 import { useToolbar } from '@/contexts/toolbar-context';
 import { usePaystubActions } from '@/hooks/use-paystub-actions';
-import { useCredits } from '@/hooks/use-credits';
+import { useCreditsContext } from '@/contexts/credits-context';
 import { calculateAutoTax, TaxRow } from '@/lib/tax';
 import { mockPayStub } from '@/lib/mock';
 import { createClient } from '@/lib/supabase/client';
@@ -47,8 +47,8 @@ export const PaystubForm = () => {
   const [unsupportedGeoOpen, setUnsupportedGeoOpen] = useState(false);
   const [unsupportedGeoReason, setUnsupportedGeoReason] = useState('');
 
-  const { balance, refresh: refreshCredits } = useCredits();
-  const { setLoadingState, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail, setOnAutoTax, setOnBatchGenerate } = useToolbar();
+  const { balance, refresh: refreshCredits } = useCreditsContext();
+  const { setLoadingState, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail, setOnAutoTax } = useToolbar();
   const { savePaystub, getPaystub } = usePaystub();
 
   const actions = usePaystubActions({
@@ -78,7 +78,7 @@ export const PaystubForm = () => {
     setOnSave(() => actions.save.execute.bind(actions.save));
     setOnViewPaystub(() => (id: string) => actions.viewPaystub.execute.bind(actions.viewPaystub)(id));
     setOnSendEmail(() => actions.sendEmail.execute.bind(actions.sendEmail));
-    setOnAutoTax(() => async () => {
+    setOnAutoTax(() => () => {
       if (balance < 1) {
         setUpgradeFeatureName('Auto Tax');
         setUpgradeModalOpen(true);
@@ -103,34 +103,10 @@ export const PaystubForm = () => {
         setUnsupportedGeoOpen(true);
         return;
       }
-      // Deduct credit before applying
-      const res = await fetch('/api/credits/deduct', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'auto_tax' }),
-      });
-      if (!res.ok) {
-        setUpgradeFeatureName('Auto Tax');
-        setUpgradeModalOpen(true);
-        return;
-      }
-      refreshCredits();
-      if (!sessionStorage.getItem('autoTaxDisclaimerShown')) {
-        setPendingAutoTaxRows(result.rows);
-        setAutoTaxDisclaimerOpen(true);
-      } else {
-        applyAutoTaxRows(result.rows);
-      }
+      setPendingAutoTaxRows(result.rows);
+      setAutoTaxDisclaimerOpen(true);
     });
-    setOnBatchGenerate(() => () => {
-      if (balance < 1) {
-        setUpgradeFeatureName('Batch Generation');
-        setUpgradeModalOpen(true);
-        return;
-      }
-      // Batch generate feature coming soon
-    });
-  }, [actions, balance, refreshCredits, applyAutoTaxRows, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail, setOnAutoTax, setOnBatchGenerate]);
+  }, [actions, balance, refreshCredits, applyAutoTaxRows, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail, setOnAutoTax]);
 
   return (
     <Form {...form}>
@@ -172,11 +148,21 @@ export const PaystubForm = () => {
         <Dialog open={autoTaxDisclaimerOpen} onOpenChange={(v) => !v && setAutoTaxDisclaimerOpen(false)}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Estimates Only</DialogTitle>
-              <DialogDescription>
-                Auto Tax fills in payroll contributions using 2025 rates (US FICA or Canadian CPP/EI).
-                These are estimates and may differ from your actual withholdings. Social Security and
-                CPP wage-base caps are not applied. Always verify with your employer or a tax professional.
+              <DialogTitle>Auto Tax — 1 Credit</DialogTitle>
+              <DialogDescription asChild>
+                <div className="space-y-2 text-sm text-slate-600">
+                  <p>
+                    Auto Tax fills in payroll contributions using 2025 rates for US (Social Security,
+                    Medicare) and Canada (CPP, EI, excluding Quebec).
+                  </p>
+                  <p>
+                    These are <strong>estimates</strong> and may differ from your actual withholdings.
+                    Wage-base caps are not applied. Always verify with your employer or a tax professional.
+                  </p>
+                  <p className="text-slate-500">
+                    This action costs <strong>1 credit</strong>. You have <strong>{balance} credit{balance !== 1 ? 's' : ''}</strong> remaining.
+                  </p>
+                </div>
               </DialogDescription>
             </DialogHeader>
             <div className="flex gap-3 mt-2">
@@ -185,16 +171,26 @@ export const PaystubForm = () => {
               </Button>
               <Button
                 className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-                onClick={() => {
-                  sessionStorage.setItem('autoTaxDisclaimerShown', '1');
+                onClick={async () => {
+                  setAutoTaxDisclaimerOpen(false);
+                  const res = await fetch('/api/credits/deduct', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'auto_tax' }),
+                  });
+                  if (!res.ok) {
+                    setUpgradeFeatureName('Auto Tax');
+                    setUpgradeModalOpen(true);
+                    return;
+                  }
+                  refreshCredits();
                   if (pendingAutoTaxRows) {
                     applyAutoTaxRows(pendingAutoTaxRows);
                     setPendingAutoTaxRows(null);
                   }
-                  setAutoTaxDisclaimerOpen(false);
                 }}
               >
-                Understood, apply
+                Use 1 credit
               </Button>
             </div>
           </DialogContent>

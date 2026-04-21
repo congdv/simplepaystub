@@ -16,10 +16,10 @@ import { Button } from './ui/button';
 
 const LEFT_BUTTONS = ['loadSample', 'reset', 'save'];
 const RIGHT_BUTTONS = ['download', 'sendEmail'];
-const PRO_BUTTONS = ['autoTax', 'batchGenerate'];
+const PRO_BUTTONS = ['autoTax'];
 
 export default function Toolbar() {
-  const { onReset, onLoadSample, loadingState, onDownload, onSave, onSendEmail, onAutoTax, onBatchGenerate } = useToolbar();
+  const { onReset, onLoadSample, loadingState, onDownload, onSave, onSendEmail, onAutoTax } = useToolbar();
 
   const commands = useMemo(() => {
     const isDisabled = !!loadingState;
@@ -30,9 +30,8 @@ export default function Toolbar() {
       download: new DownloadCommand(onDownload, isDisabled),
       sendEmail: new SendEmailCommand(onSendEmail, isDisabled),
       autoTax: new SimpleCommand(onAutoTax, isDisabled),
-      batchGenerate: new SimpleCommand(onBatchGenerate, isDisabled),
     };
-  }, [onReset, onLoadSample, onDownload, onSave, onSendEmail, onAutoTax, onBatchGenerate, loadingState]);
+  }, [onReset, onLoadSample, onDownload, onSave, onSendEmail, onAutoTax, loadingState]);
 
   const renderButton = (config: ToolbarButtonConfig) => {
     const command = commands[config.id as keyof typeof commands] as Command;

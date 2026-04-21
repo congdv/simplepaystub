@@ -1,4 +1,4 @@
-import { LucideIcon, FilePlus2, ListRestart, Save, DownloadCloud, Mail, Calculator, Layers } from 'lucide-react';
+import { LucideIcon, FilePlus2, ListRestart, Save, DownloadCloud, Mail, Calculator } from 'lucide-react';
 import { LOADING_STATES } from '@/constants';
 import { Command } from './toolbar-commands';
 
@@ -53,13 +53,6 @@ export const TOOLBAR_BUTTONS: ToolbarButtonConfig[] = [
     title: 'Auto-fill payroll contributions (Pro)',
     icon: Calculator,
     label: 'Auto Tax',
-    isPro: true,
-  },
-  {
-    id: 'batchGenerate',
-    title: 'Batch generate from CSV (Pro)',
-    icon: Layers,
-    label: 'Batch Generate',
     isPro: true,
   },
 ];
