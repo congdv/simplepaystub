@@ -1,6 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
 import { stripe } from '@/lib/stripe';
-import { getSubscription } from '@/lib/subscription';
 import { NextResponse } from 'next/server';
 
 export async function POST() {
@@ -8,19 +7,18 @@ export async function POST() {
     const supabase = await createClient();
     const { data: { user }, error } = await supabase.auth.getUser();
 
-    if (error || !user) {
+    if (error || !user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const subscription = await getSubscription(user.id);
-    if (!subscription?.stripe_customer_id) {
-      return NextResponse.json({ error: 'No subscription found' }, { status: 404 });
+    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    if (!customers.data.length) {
+      return NextResponse.json({ error: 'No billing account found' }, { status: 404 });
     }
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://simplepaystub.com';
-
     const session = await stripe.billingPortal.sessions.create({
-      customer: subscription.stripe_customer_id,
+      customer: customers.data[0].id,
       return_url: `${siteUrl}/account`,
     });
 

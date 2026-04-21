@@ -1,106 +1,190 @@
-'use client';
-
-import { Skeleton } from '@/components/ui/skeleton';
-import { createClient } from '@/lib/supabase/client';
-import { useEffect, useMemo, useState } from 'react';
-import { useCredits } from '@/hooks/use-credits';
-import { Button } from '@/components/ui/button';
+import { createClient } from '@/lib/supabase/server';
+import { getCredits, getRecentTransactions } from '@/lib/credits';
+import { stripe } from '@/lib/stripe';
+import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { CircleDollarSign } from 'lucide-react';
+import { Suspense } from 'react';
 import paths from '@/paths';
-import { useSearchParams } from 'next/navigation';
-import { toast } from 'sonner';
-import { Zap } from 'lucide-react';
+import { PurchaseSuccessHandler } from './purchase-success-handler';
+import { UpdatePaymentButton } from './account-actions';
+import { type PurchaseRow } from './account-actions';
+import { HistoryTabs, type UsageRow } from './history-tabs';
 
-export default function AccountPage() {
-  const [user, setUser] = useState<any>(null);
-  const [userLoading, setUserLoading] = useState(true);
-  const { balance, isLoading: creditsLoading, refresh: refreshCredits } = useCredits();
-  const searchParams = useSearchParams();
+const PACK_INFO: Record<string, { label: string; credits: number; amount: string }> = {
+  purchase_starter: { label: 'Starter Pack', credits: 5, amount: '$4.99' },
+  purchase_value: { label: 'Value Pack', credits: 20, amount: '$14.99' },
+  purchase_pro: { label: 'Pro Pack', credits: 50, amount: '$29.99' },
+};
 
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user);
-      setUserLoading(false);
-    });
-  }, []);
+const ACTION_LABELS: Record<string, string> = {
+  auto_tax: 'Auto Tax',
+  batch_generate: 'Batch Generate',
+};
 
-  useEffect(() => {
-    if (searchParams.get('purchase') === 'success') {
-      const pack = searchParams.get('pack');
-      const packNames: Record<string, string> = { starter: '5', value: '20', pro: '50' };
-      const credits = pack ? packNames[pack] : null;
-      toast.success(credits ? `${credits} credits added to your account!` : 'Credits added successfully!');
-      refreshCredits();
+function formatInvoiceId(id: string) {
+  return 'inv-' + id.replace(/-/g, '').slice(0, 5).toUpperCase();
+}
+
+function formatDate(date: Date) {
+  return new Intl.DateTimeFormat('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).format(date);
+}
+
+function CardBrandBadge({ brand }: { brand: string }) {
+  const b = brand.toLowerCase();
+  const cls: Record<string, string> = {
+    visa: 'bg-blue-700 text-white',
+    mastercard: 'bg-red-600 text-white',
+    amex: 'bg-blue-400 text-white',
+    discover: 'bg-orange-500 text-white',
+  };
+  return (
+    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${cls[b] ?? 'bg-slate-600 text-white'}`}>
+      {brand.toUpperCase()}
+    </span>
+  );
+}
+
+async function getStripeData(email: string) {
+  try {
+    const customers = await stripe.customers.list({ email, limit: 1 });
+    if (!customers.data.length) return null;
+
+    const customer = customers.data[0];
+    const charges = await stripe.charges.list({ customer: customer.id, limit: 20 });
+
+    const receiptUrlMap: Record<string, string> = {};
+    for (const charge of charges.data) {
+      if (charge.payment_intent && typeof charge.payment_intent === 'string' && charge.receipt_url) {
+        receiptUrlMap[charge.payment_intent] = charge.receipt_url;
+      }
     }
-  }, [searchParams, refreshCredits]);
 
-  const userFullName = useMemo(() => {
-    if (user?.user_metadata?.full_name) return user.user_metadata.full_name;
-    if (user?.user_metadata?.first_name && user?.user_metadata?.last_name) {
-      return `${user.user_metadata.first_name} ${user.user_metadata.last_name}`;
-    }
-    return 'Unknown';
-  }, [user]);
+    const lastCharge = charges.data.find(c => c.payment_method_details?.card);
+    const card = lastCharge?.payment_method_details?.card
+      ? {
+          brand: lastCharge.payment_method_details.card.brand ?? 'card',
+          last4: lastCharge.payment_method_details.card.last4 ?? '****',
+          exp_month: lastCharge.payment_method_details.card.exp_month ?? 0,
+          exp_year: lastCharge.payment_method_details.card.exp_year ?? 0,
+        }
+      : null;
 
-  const loading = userLoading || creditsLoading;
-
-  if (loading) {
-    return (
-      <div className="min-h-screen">
-        <div className="max-w-md bg-white p-8 rounded-xl shadow-lg border mt-32 mx-auto">
-          <Skeleton className="h-8 w-32 mb-4" />
-          <Skeleton className="h-6 w-48 mb-2" />
-          <Skeleton className="h-6 w-48 mb-2" />
-          <Skeleton className="h-6 w-48 mb-4" />
-          <Skeleton className="h-10 w-full" />
-        </div>
-      </div>
-    );
+    return { card, billingEmail: customer.email ?? email, receiptUrlMap };
+  } catch {
+    return null;
   }
+}
+
+export default async function AccountPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect(paths.signIn);
+
+  const [balance, transactions, stripeData] = await Promise.all([
+    getCredits(user.id),
+    getRecentTransactions(user.id, 50),
+    user.email ? getStripeData(user.email) : Promise.resolve(null),
+  ]);
+
+  const purchases: PurchaseRow[] = transactions
+    .filter(t => t.action.startsWith('purchase_'))
+    .map(t => {
+      const pack = PACK_INFO[t.action];
+      return {
+        invoice: formatInvoiceId(t.id),
+        date: formatDate(new Date(t.created_at)),
+        description: pack ? `${pack.label} · ${pack.credits} credits` : t.action,
+        amount: pack?.amount ?? '—',
+        receiptUrl: t.stripe_payment_intent_id
+          ? (stripeData?.receiptUrlMap[t.stripe_payment_intent_id] ?? null)
+          : null,
+      };
+    });
+
+  const usage: UsageRow[] = transactions
+    .filter(t => t.amount < 0)
+    .map(t => ({
+      date: formatDate(new Date(t.created_at)),
+      action: ACTION_LABELS[t.action] ?? t.action,
+      credits: t.amount,
+    }));
+
+  const card = stripeData?.card ?? null;
+  const billingEmail = stripeData?.billingEmail ?? user.email;
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-lg bg-white p-8 rounded-xl shadow-lg border mt-32 mx-auto space-y-6">
-        {/* Account info */}
-        <div>
-          <h2 className="text-2xl font-bold mb-6 text-blue-700">Account Information</h2>
-          <div className="mb-4">
-            <span className="font-medium text-gray-700">Full Name:</span>
-            <span className="ml-2 text-gray-900">{userFullName}</span>
+    <div className="min-h-screen bg-slate-50 py-10">
+      <Suspense fallback={null}>
+        <PurchaseSuccessHandler />
+      </Suspense>
+
+      <div className="max-w-3xl mx-auto px-4 sm:px-6">
+        {/* Page header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-slate-900">Account &amp; Billing</h1>
+          <p className="text-sm text-slate-500 mt-1">Manage credits, payment methods, and invoices.</p>
+        </div>
+
+        {/* Top cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          {/* Credits balance card */}
+          <div className="bg-white rounded-xl border border-slate-200 p-5 flex flex-col gap-4">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Credits Balance</p>
+                <p className="text-4xl font-bold text-slate-900 mt-1">{balance}</p>
+                <p className="text-sm text-slate-400 mt-1">
+                  Enough for {balance} paystub PDF{balance === 1 ? '' : 's'}
+                </p>
+              </div>
+              <div className="bg-indigo-50 rounded-full p-2">
+                <CircleDollarSign className="h-5 w-5 text-indigo-500" />
+              </div>
+            </div>
+            <Link
+              href={paths.pricing}
+              className="w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg py-2.5 transition-colors"
+            >
+              + Buy credits
+            </Link>
           </div>
-          <div className="mb-4">
-            <span className="font-medium text-gray-700">Email:</span>
-            <span className="ml-2 text-gray-900">{user?.email || 'N/A'}</span>
+
+          {/* Payment method card */}
+          <div className="bg-white rounded-xl border border-slate-200 p-5 flex flex-col gap-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Payment Method</p>
+
+            {card ? (
+              <div className="flex items-center justify-between border border-slate-200 rounded-lg px-3 py-2.5">
+                <div className="flex items-center gap-2.5">
+                  <CardBrandBadge brand={card.brand} />
+                  <span className="text-sm text-slate-700 font-medium tracking-widest">
+                    &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; {card.last4}
+                  </span>
+                </div>
+                <UpdatePaymentButton />
+              </div>
+            ) : (
+              <div className="flex items-center justify-between border border-slate-200 rounded-lg px-3 py-2.5">
+                <span className="text-sm text-slate-400">No payment method on file</span>
+                <UpdatePaymentButton />
+              </div>
+            )}
+
+            {card && (
+              <p className="text-xs text-slate-500">
+                Expires {String(card.exp_month).padStart(2, '0')}/{String(card.exp_year).slice(-2)}
+              </p>
+            )}
+
+            {billingEmail && (
+              <p className="text-xs text-slate-500">Billing email: {billingEmail}</p>
+            )}
           </div>
         </div>
 
-        {/* Credits */}
-        <div className="border-t pt-6">
-          <div className="flex items-center gap-2 mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Credits</h3>
-            <div className="flex items-center gap-1 bg-blue-50 text-blue-700 text-xs font-semibold px-2 py-0.5 rounded-full">
-              <Zap className="h-3 w-3" />
-              {balance}
-            </div>
-          </div>
-
-          <p className="text-sm text-gray-500 mb-4">
-            Credits are used for Auto Tax and bulk generation. They never expire.
-          </p>
-
-          <div className="mb-4 p-4 bg-slate-50 rounded-lg flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-700">Available balance</p>
-              <p className="text-2xl font-bold text-gray-900">{balance} credit{balance === 1 ? '' : 's'}</p>
-            </div>
-            <Zap className="h-8 w-8 text-blue-200" />
-          </div>
-
-          <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-            <Link href={paths.pricing}>Buy more credits</Link>
-          </Button>
-        </div>
+        {/* History tabs */}
+        <HistoryTabs purchases={purchases} usage={usage} pricingHref={paths.pricing} />
       </div>
     </div>
   );
