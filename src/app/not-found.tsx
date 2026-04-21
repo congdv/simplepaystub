@@ -17,7 +17,7 @@ export default function NotFound() {
 
           {/* Description */}
           <p className="text-muted-foreground">
-            Sorry, we couldn't find the page you're looking for. The page might have been moved,
+            Sorry, we couldn&apos;t find the page you&apos;re looking for. The page might have been moved,
             deleted, or you may have entered an incorrect URL.
           </p>
 

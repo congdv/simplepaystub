@@ -88,7 +88,7 @@ export default function SignInPage() {
       <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg border flex flex-col items-center">
         <h2 className="text-2xl font-bold mb-1 text-center">Sign in</h2>
         <p className="text-gray-500 text-sm mb-6 text-center">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link href={paths.signUp} className="text-blue-600 hover:underline">Sign up</Link>
         </p>
 
