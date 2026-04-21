@@ -5,16 +5,18 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { COUNTRIES } from '@/constants';
+import { COUNTRIES, PROVINCES, US_STATES } from '@/constants';
 import { useFormContext } from 'react-hook-form';
 import { LogoUpload } from '../ui/logo-upload';
 
 export default function BusinessInfoForm() {
   const form = useFormContext();
   const logoUrl = form.watch('payer.logo');
+  const country = form.watch('payer.countryOrRegion');
 
   return (
     <div className="space-y-4 max-w-3xl mx-auto py-4">
@@ -104,9 +106,41 @@ export default function BusinessInfoForm() {
                 <FormLabel className="after:content-['*'] after:text-red-500">
                   State/Province
                 </FormLabel>
-                <FormControl>
-                  <Input placeholder="NY" type="text" {...field} />
-                </FormControl>
+                {country === 'Canada' ? (
+                  <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select province" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {PROVINCES.map((p) => (
+                        <SelectItem value={p.abbreviation} key={p.abbreviation}>
+                          {p.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : country === 'United States' ? (
+                  <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select state" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {US_STATES.map((s) => (
+                        <SelectItem value={s.abbreviation} key={s.abbreviation}>
+                          {s.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <FormControl>
+                    <Input placeholder="NY" type="text" {...field} />
+                  </FormControl>
+                )}
                 <FormMessage />
               </FormItem>
             )}
@@ -155,7 +189,13 @@ export default function BusinessInfoForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {COUNTRIES.map((c) => (
+                      {COUNTRIES.slice(0, 2).map((c) => (
+                        <SelectItem value={c.name} key={c.slug}>
+                          {c.name}
+                        </SelectItem>
+                      ))}
+                      <SelectSeparator />
+                      {COUNTRIES.slice(2).map((c) => (
                         <SelectItem value={c.name} key={c.slug}>
                           {c.name}
                         </SelectItem>
