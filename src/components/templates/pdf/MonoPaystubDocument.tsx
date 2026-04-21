@@ -41,7 +41,7 @@ const MonoPaystubDocument = (data: PayStubType) => {
             <View>
               <Text style={styles.company}>{data.payer.name || 'Acme Corporation'}</Text>
               <Text style={styles.small}>{data.payer.address || '123 Street st '}</Text>
-              <Text style={styles.small}>{data.payer.addressSecond ? '# ' + data.payer.addressSecond : ''}</Text>
+              <Text style={styles.small}>{data.payer.addressSecond || ''}</Text>
               <Text style={styles.small}>
                 {data.payer.city ? data.payer.city + ', ' : 'ABC, '} {data.payer.stateOrProvince || 'YY'} {data.payer.zipOrPostalCode || 'XXX XXX'}
               </Text>
@@ -70,6 +70,7 @@ const MonoPaystubDocument = (data: PayStubType) => {
             <View style={{ alignItems: 'flex-end' }}>
               <Text style={{ fontWeight: 'bold' }}>{data.payee.name || 'Employee Name'}</Text>
               <Text style={styles.small}>{data.payee.address}</Text>
+              {data.payee.addressSecond ? <Text style={styles.small}>{data.payee.addressSecond}</Text> : null}
               <Text style={styles.small}>{data.payee.city}, {data.payee.stateOrProvince} {data.payee.zipOrPostalCode}</Text>
             </View>
           </View>

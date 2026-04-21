@@ -72,10 +72,8 @@ const NovaPaystubDocument = (data: PayStubType) => {
         <View style={styles.header}>
           <View>
             <Text style={styles.company}>{data.payer.name || 'Acme Corporation'}</Text>
-            <Text>
-              {data.payer.address || '123 Street st'}{' '}
-              {data.payer.addressSecond ? '# ' + data.payer.addressSecond : ''}
-            </Text>
+            <Text>{data.payer.address || '123 Street st'}</Text>
+            {data.payer.addressSecond ? <Text>{data.payer.addressSecond}</Text> : null}
             <Text>
               {data.payer.city ? data.payer.city + ', ' : 'ABC, '}
               {data.payer.stateOrProvince || 'YY'} {data.payer.zipOrPostalCode || 'XXX XXX'}
@@ -83,27 +81,25 @@ const NovaPaystubDocument = (data: PayStubType) => {
             <Text>{data.payer.countryOrRegion || 'ZZ'}</Text>
             <Text>
               {data.payer.phoneNumber || '(123) 456-7890'}
-              {data.payer.extNo ? '# ' + data.payer.extNo : ''}
+              {data.payer.extNo ? ' Ext. ' + data.payer.extNo : ''}
             </Text>
             <Text>{data.payer.email}</Text>
           </View>
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={styles.company}>{data.payee.name || 'John Doe'}</Text>
-            <Text>
-              {data.payee.address || '123 Street st'}{' '}
-              {data.payee.addressSecond ? '# ' + data.payee.addressSecond : ''}
-            </Text>
+            <Text>{data.payee.address || '123 Street st'}</Text>
+            {data.payee.addressSecond ? <Text>{data.payee.addressSecond}</Text> : null}
             <Text>
               {data.payee.city ? data.payee.city + ', ' : 'ABC, '}
               {data.payee.stateOrProvince || 'YY'} {data.payee.zipOrPostalCode || 'XXX XXX'}
             </Text>
             <Text>{data.payee.countryOrRegion || 'ZZ'}</Text>
-            {
-              data.payee.phoneNumber && <Text>
-                {data.payee.phoneNumber || ''}{' '}
-                {data.payee.extNo ? '# ' + data.payee.extNo : ''}
+            {data.payee.phoneNumber && (
+              <Text>
+                {data.payee.phoneNumber}
+                {data.payee.extNo ? ' Ext. ' + data.payee.extNo : ''}
               </Text>
-            }
+            )}
             <Text>{data.payee.email}</Text>
           </View>
         </View>

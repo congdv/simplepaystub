@@ -44,7 +44,7 @@ export default function NovaPayStubTemplate(data: PayStubType) {
           <h2 className="font-semibold text-xl">{data.payer.name || 'Acme Corporation'}</h2>
           <p>
             {data.payer.address || '123 Street st '}
-            {data.payer.addressSecond ? '# ' + data.payer.addressSecond : ''}
+            {data.payer.addressSecond && <><br />{data.payer.addressSecond}</>}
             <br />
             {data.payer.city ? data.payer.city + ', ' : 'ABC, '}
             {data.payer.stateOrProvince || 'YY'} {data.payer.zipOrPostalCode || 'XXX XXX'}
@@ -52,7 +52,7 @@ export default function NovaPayStubTemplate(data: PayStubType) {
             {data.payer.countryOrRegion || 'ZZ'}
             <br />
             {data.payer.phoneNumber || '(123) 456-7890'}
-            {data.payer.extNo ? '# ' + data.payer.extNo : ''}
+            {data.payer.extNo ? ' Ext. ' + data.payer.extNo : ''}
             <br />
             {data.payer.email}
           </p>
@@ -60,9 +60,9 @@ export default function NovaPayStubTemplate(data: PayStubType) {
         <div className="text-right text-sm">
           <h2 className="font-semibold text-xl">{data.payee.name || 'John Doe'}</h2>
           <p>
-            {data.payee.address || '123 Street st'}{' '}
-            {data.payee.addressSecond ? '# ' + data.payee.addressSecond : ''}
-            <br /> {data.payee.city ? data.payee.city + ', ' : 'ABC, '}
+            {data.payee.address || '123 Street st'}
+            {data.payee.addressSecond && <><br />{data.payee.addressSecond}</>}
+            <br />{data.payee.city ? data.payee.city + ', ' : 'ABC, '}
             {data.payee.stateOrProvince || 'YY'} {data.payee.zipOrPostalCode || 'XXX XXX'}
             <br />
             {data.payee.countryOrRegion || 'ZZ'}
@@ -70,7 +70,7 @@ export default function NovaPayStubTemplate(data: PayStubType) {
               <>
                 <br />
                 {data.payee.phoneNumber}
-                {data.payee.extNo ? '# ' + data.payee.extNo : ''}
+                {data.payee.extNo ? ' Ext. ' + data.payee.extNo : ''}
               </>
             ) : ''}
             <br />

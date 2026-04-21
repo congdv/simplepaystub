@@ -27,7 +27,7 @@ export default function MonoPayStubTemplate(data: PayStubType) {
           <div className="text-xs text-gray-700">
             <div className="font-semibold">{data.payer.name || 'Acme Corporation'}</div>
             <div>{data.payer.address || '123 Street st '}</div>
-            <div>{data.payer.addressSecond ? '# ' + data.payer.addressSecond : ''}</div>
+            <div>{data.payer.addressSecond || ''}</div>
             <div>
               {data.payer.city ? data.payer.city + ', ' : 'ABC, '} {data.payer.stateOrProvince || 'YY'} {data.payer.zipOrPostalCode || 'XXX XXX'}
             </div>
@@ -55,6 +55,7 @@ export default function MonoPayStubTemplate(data: PayStubType) {
         <div className="text-right text-xs">
           <div className="font-semibold">{data.payee.name || 'Employee Name'}</div>
           <div>{data.payee.address}</div>
+          {data.payee.addressSecond && <div>{data.payee.addressSecond}</div>}
           <div>{data.payee.city}, {data.payee.stateOrProvince} {data.payee.zipOrPostalCode}</div>
         </div>
       </div>
