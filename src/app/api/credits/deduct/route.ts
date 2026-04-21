@@ -1,6 +1,11 @@
 import { createClient } from '@/lib/supabase/server';
 import { deductCredit } from '@/lib/credits';
+import { trackAnalyticsEvent } from '@/lib/track-analytics';
 import { NextRequest, NextResponse } from 'next/server';
+
+const ACTION_EVENT_MAP: Record<string, string> = {
+  auto_tax: 'USE_AUTO_TAX',
+};
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,6 +22,12 @@ export async function POST(req: NextRequest) {
     }
 
     const balance = await deductCredit(user.id, action);
+
+    const eventName = ACTION_EVENT_MAP[action];
+    if (eventName) {
+      void trackAnalyticsEvent(user.id, eventName, action);
+    }
+
     return NextResponse.json({ balance });
   } catch (error: any) {
     if (error?.message === 'Insufficient credits') {
