@@ -42,9 +42,9 @@ const CREDIT_PACKS = [
   },
 ] as const;
 
-const CREDIT_FEATURES = [
-  'Auto-fill payroll contributions (US FICA, Canada CPP/EI)',
-  'Bulk generation via CSV upload',
+const PREMIUM_FEATURES = [
+  'Auto Tax — US & Canada payroll withholding',
+  'New premium features as they launch',
   'Credits never expire',
 ];
 
@@ -81,7 +81,7 @@ export default function PricingPage() {
       <div className="text-center mb-10">
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Simple, pay-as-you-go pricing</h1>
         <p className="text-slate-500 text-base sm:text-lg max-w-xl mx-auto">
-          All core features are free. Buy credits only when you need Auto Tax or bulk generation.
+          All core features are free. Buy credits to unlock premium features like Auto Tax.
         </p>
       </div>
 
@@ -118,57 +118,48 @@ export default function PricingPage() {
 
       {/* Credit packs */}
       <div className="text-center mb-6">
-        <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-sm font-medium px-3 py-1.5 rounded-full">
+        <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-sm font-medium px-3 py-1.5 rounded-full">
           <Zap className="h-3.5 w-3.5" />
           Credits unlock premium features
         </div>
-      </div>
-
-      <div className="mb-4 max-w-3xl mx-auto">
-        <ul className="flex flex-wrap justify-center gap-x-6 gap-y-1">
-          {CREDIT_FEATURES.map((f) => (
-            <li key={f} className="flex items-center gap-1.5 text-sm text-slate-600">
-              <Check className="h-3.5 w-3.5 text-blue-500 shrink-0" />
-              {f}
-            </li>
-          ))}
-        </ul>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
         {CREDIT_PACKS.map((pack) => (
           <div
             key={pack.id}
-            className={`rounded-2xl border p-6 flex flex-col ${
+            className={`relative rounded-2xl bg-white p-6 flex flex-col ${
               pack.highlight
-                ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-200'
-                : 'bg-white border-slate-200'
+                ? 'border-2 border-primary shadow-lg shadow-primary/10'
+                : 'border border-slate-200'
             }`}
           >
-            <div className="mb-1">
-              {pack.highlight && (
-                <span className="text-xs font-semibold bg-white/20 text-white px-2 py-0.5 rounded-full">
-                  Most popular
-                </span>
-              )}
-            </div>
-            <p className={`text-sm font-semibold uppercase tracking-wide mb-1 ${pack.highlight ? 'text-blue-200' : 'text-slate-500'}`}>
+            {pack.highlight && (
+              <span className="absolute -top-2.5 right-4 text-xs font-semibold bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+                Most popular
+              </span>
+            )}
+            <p className="text-sm font-semibold uppercase tracking-wide mb-1 text-slate-500">
               {pack.name}
             </p>
             <div className="flex items-end gap-1 mb-1">
               <span className="text-3xl font-bold">{pack.price}</span>
             </div>
-            <p className={`text-sm mb-4 ${pack.highlight ? 'text-blue-100' : 'text-slate-500'}`}>
+            <p className="text-sm mb-4 text-slate-500">
               {pack.credits} credits · {pack.perCredit} each
             </p>
+            <ul className="space-y-2 mb-6">
+              {PREMIUM_FEATURES.map((f) => (
+                <li key={f} className="flex items-start gap-2 text-sm text-slate-700">
+                  <Check className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
+                  {f}
+                </li>
+              ))}
+            </ul>
             <button
               onClick={() => handleBuy(pack.id)}
               disabled={loading === pack.id}
-              className={`mt-auto w-full rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors disabled:opacity-60 ${
-                pack.highlight
-                  ? 'bg-white text-blue-600 hover:bg-blue-50'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
+              className="mt-auto w-full rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors disabled:opacity-60 bg-primary text-primary-foreground hover:bg-primary/90"
             >
               {loading === pack.id ? 'Redirecting…' : `Buy ${pack.credits} credits`}
             </button>

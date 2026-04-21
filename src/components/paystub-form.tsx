@@ -5,7 +5,7 @@ import { usePaystub } from '@/contexts/paystub-context';
 import { useToolbar } from '@/contexts/toolbar-context';
 import { usePaystubActions } from '@/hooks/use-paystub-actions';
 import { useCreditsContext } from '@/contexts/credits-context';
-import { calculateAutoTax, TaxRow } from '@/lib/tax';
+import { AUTO_TAX_LABELS, calculateAutoTax, FREQUENCY_PERIODS, TaxRow } from '@/lib/tax';
 import { mockPayStub } from '@/lib/mock';
 import { createClient } from '@/lib/supabase/client';
 import { PayStubType } from '@/types';
@@ -28,8 +28,6 @@ import {
 } from './ui/dialog';
 import { Form } from './ui/form';
 import { Tabs } from './ui/tabs';
-
-const AUTO_TAX_LABELS = new Set(['Social Security', 'Medicare', 'Additional Medicare', 'CPP', 'EI']);
 
 export const PaystubForm = () => {
   const supabase = createClient();
@@ -64,6 +62,13 @@ export const PaystubForm = () => {
     mockPayStub,
   });
 
+  const calcPeriodsElapsed = useCallback((paymentDate: Date, frequency: string): number => {
+    const startOfYear = new Date(paymentDate.getFullYear(), 0, 1);
+    const daysElapsed = Math.round((paymentDate.getTime() - startOfYear.getTime()) / 86_400_000) + 1;
+    const totalPeriods = FREQUENCY_PERIODS[frequency] ?? 26;
+    return Math.max(1, Math.min(Math.round(daysElapsed / (365 / totalPeriods)), totalPeriods));
+  }, []);
+
   const applyAutoTaxRows = useCallback((rows: TaxRow[]) => {
     const current = form.getValues('deductions');
     const filtered = current.filter((d: { label: string }) => !AUTO_TAX_LABELS.has(d.label));
@@ -86,27 +91,35 @@ export const PaystubForm = () => {
       }
       const values = form.getValues();
       const country = values.payee.countryOrRegion ?? '';
-      const province = values.payee.stateOrProvince ?? '';
-      const gross =
-        values.payment.type === DEFAULT_PAYMENT_TYPE
-          ? Number(values.payment.hourlyRate) * Number(values.payment.numOfHours)
-          : Number(values.payment.annualSalary);
+      const stateOrProvinceAbbr = values.payee.stateOrProvince ?? '';
+      const filingStatus = values.payee.filingStatus ?? 'single';
       const frequency = values.payment.frequency;
-      const result = calculateAutoTax({ country, province, gross, frequency });
-      if (result.unsupportedReason === 'unsupported_province') {
-        setUnsupportedGeoReason('Auto Tax does not currently support Quebec payroll.');
+      const periods = FREQUENCY_PERIODS[frequency] ?? 26;
+      const annualGross =
+        values.payment.type === DEFAULT_PAYMENT_TYPE
+          ? Number(values.payment.hourlyRate) * Number(values.payment.numOfHours) * periods
+          : Number(values.payment.annualSalary);
+      if (!country) {
+        setUnsupportedGeoReason("Please fill in the employee's Country/Region on the Employee Info tab before using Auto Tax.");
         setUnsupportedGeoOpen(true);
         return;
       }
+      const result = calculateAutoTax({ country, stateOrProvinceAbbr, annualGross, frequency, filingStatus });
       if (result.unsupportedReason === 'unsupported_country') {
-        setUnsupportedGeoReason('Auto Tax is available for United States and Canada (excluding Quebec) payroll only.');
+        setUnsupportedGeoReason(`Auto Tax supports United States and Canada payroll only. "${country}" is not currently supported.`);
         setUnsupportedGeoOpen(true);
         return;
       }
-      setPendingAutoTaxRows(result.rows);
+      const paymentDate = values.payment.date instanceof Date ? values.payment.date : new Date(values.payment.date);
+      const periodsElapsed = calcPeriodsElapsed(paymentDate, frequency);
+      const rowsWithYTD = result.rows.map((r) => ({
+        ...r,
+        ytd: (parseFloat(r.value) * periodsElapsed).toFixed(2),
+      }));
+      setPendingAutoTaxRows(rowsWithYTD);
       setAutoTaxDisclaimerOpen(true);
     });
-  }, [actions, balance, refreshCredits, applyAutoTaxRows, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail, setOnAutoTax]);
+  }, [actions, balance, refreshCredits, applyAutoTaxRows, calcPeriodsElapsed, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail, setOnAutoTax]);
 
   return (
     <Form {...form}>
@@ -152,12 +165,15 @@ export const PaystubForm = () => {
               <DialogDescription asChild>
                 <div className="space-y-2 text-sm text-slate-600">
                   <p>
-                    Auto Tax fills in payroll contributions using 2025 rates for US (Social Security,
-                    Medicare) and Canada (CPP, EI, excluding Quebec).
+                    Auto Tax fills in payroll contributions using 2025 rates. For the US: FICA (Social
+                    Security, Medicare) plus federal and state income tax withholding. For Canada: CPP/QPP,
+                    EI/QPIP, plus federal and provincial income tax withholding — all provinces including
+                    Quebec.
                   </p>
                   <p>
                     These are <strong>estimates</strong> and may differ from your actual withholdings.
-                    Wage-base caps are not applied. Always verify with your employer or a tax professional.
+                    Wage-base caps are not applied. Canadian rates use the basic personal amount only.
+                    Always verify with your employer or a tax professional.
                   </p>
                   <p className="text-slate-500">
                     This action costs <strong>1 credit</strong>. You have <strong>{balance} credit{balance !== 1 ? 's' : ''}</strong> remaining.

@@ -56,6 +56,7 @@ const PayeeSchema = z.object({
   phoneNumber: z.string().optional(),
   extNo: z.string().optional(),
   email: z.string().optional(),
+  filingStatus: z.enum(['single', 'married', 'head_of_household']).catch('single'),
 });
 
 const PaymentSchema = z

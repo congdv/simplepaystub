@@ -135,7 +135,7 @@ export default async function AccountPage() {
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Credits Balance</p>
                 <p className="text-4xl font-bold text-slate-900 mt-1">{balance}</p>
                 <p className="text-sm text-slate-400 mt-1">
-                  Enough for {balance} paystub PDF{balance === 1 ? '' : 's'}
+                  Use credits to unlock premium features
                 </p>
               </div>
               <div className="bg-primary/10 rounded-full p-2">

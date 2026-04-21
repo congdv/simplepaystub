@@ -1,36 +1,86 @@
-import { TaxRow, calculateFICA } from './us';
-import { calculateCPP, calculateEI } from './ca';
-import { DEFAULT_YEAR, RatesYear } from './rates';
+import { FilingStatus } from './brackets';
+import { FREQUENCY_PERIODS } from './periods';
+import {
+  TaxRow,
+  calculateFICA,
+  calculateUSFederalIncomeTax,
+  calculateUSStateIncomeTax,
+} from './us';
+import {
+  calculateCPP,
+  calculateQPP,
+  calculateEIStandard,
+  calculateEIQuebec,
+  calculateQPIP,
+  calculateCAFederalIncomeTax,
+  calculateProvincialIncomeTax,
+} from './ca';
 
 export type { TaxRow };
-export type AutoTaxUnsupportedReason = 'unsupported_country' | 'unsupported_province';
+export type { FilingStatus };
+export type AutoTaxUnsupportedReason = 'unsupported_country';
 
 export interface AutoTaxResult {
   rows: TaxRow[];
   unsupportedReason?: AutoTaxUnsupportedReason;
 }
 
+export const AUTO_TAX_LABELS = new Set([
+  'Social Security',
+  'Medicare',
+  'Additional Medicare',
+  'Federal Income Tax',
+  'State Income Tax',
+  'CPP',
+  'QPP',
+  'EI',
+  'QPIP',
+  'Provincial Income Tax',
+]);
+
+export { FREQUENCY_PERIODS };
+
 export function calculateAutoTax({
   country,
-  province,
-  gross,
+  stateOrProvinceAbbr,
+  annualGross,
   frequency,
-  year = DEFAULT_YEAR,
+  filingStatus,
 }: {
   country: string;
-  province: string;
-  gross: number;
+  stateOrProvinceAbbr: string;
+  annualGross: number;
   frequency: string;
-  year?: RatesYear;
+  filingStatus: FilingStatus;
 }): AutoTaxResult {
+  const periods = FREQUENCY_PERIODS[frequency] ?? 26;
+
   if (country === 'United States') {
-    return { rows: calculateFICA(gross, year) };
+    return {
+      rows: [
+        ...calculateFICA(annualGross, periods),
+        ...calculateUSFederalIncomeTax(annualGross, periods, filingStatus),
+        ...calculateUSStateIncomeTax(annualGross, periods, stateOrProvinceAbbr, filingStatus),
+      ],
+    };
   }
+
   if (country === 'Canada') {
-    if (province === 'Quebec') {
-      return { rows: [], unsupportedReason: 'unsupported_province' };
-    }
-    return { rows: [calculateCPP(gross, frequency, year), calculateEI(gross, year)] };
+    const isQuebec = stateOrProvinceAbbr === 'QC';
+    return {
+      rows: [
+        isQuebec
+          ? calculateQPP(annualGross, frequency)
+          : calculateCPP(annualGross, frequency),
+        isQuebec
+          ? calculateEIQuebec(annualGross, frequency)
+          : calculateEIStandard(annualGross, frequency),
+        ...(isQuebec ? [calculateQPIP(annualGross, frequency)] : []),
+        ...calculateCAFederalIncomeTax(annualGross, periods, isQuebec),
+        ...calculateProvincialIncomeTax(annualGross, periods, stateOrProvinceAbbr),
+      ],
+    };
   }
+
   return { rows: [], unsupportedReason: 'unsupported_country' };
 }

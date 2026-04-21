@@ -25,6 +25,7 @@ export const mockPayStub = {
     phoneNumber: '555-987-6543',
     extNo: '',
     email: 'john.doe@email.com',
+    filingStatus: 'single' as const,
   },
   payment: {
     name: 'Regular Pay',
