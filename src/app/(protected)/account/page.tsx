@@ -138,13 +138,13 @@ export default async function AccountPage() {
                   Enough for {balance} paystub PDF{balance === 1 ? '' : 's'}
                 </p>
               </div>
-              <div className="bg-indigo-50 rounded-full p-2">
-                <CircleDollarSign className="h-5 w-5 text-indigo-500" />
+              <div className="bg-primary/10 rounded-full p-2">
+                <CircleDollarSign className="h-5 w-5 text-primary" />
               </div>
             </div>
             <Link
               href={paths.pricing}
-              className="w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg py-2.5 transition-colors"
+              className="w-full text-center bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold rounded-lg py-2.5 transition-colors"
             >
               + Buy credits
             </Link>
