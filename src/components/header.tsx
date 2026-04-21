@@ -4,6 +4,7 @@ import { Montserrat } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
 import UserButton from './user-button';
+import { CreditBalance } from './credit-balance';
 
 const font = Montserrat({
   weight: '600',
@@ -34,6 +35,7 @@ export const Header = ({ showAuth = true }: { showAuth?: boolean }) => {
           <Link href="/pricing" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
             Pricing
           </Link>
+          <CreditBalance />
           {showAuth && <UserButton />}
         </div>
       </nav>
