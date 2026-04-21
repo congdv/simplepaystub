@@ -2,7 +2,7 @@ import { stripe } from '@/lib/stripe';
 import { addCredits } from '@/lib/credits';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { CREDIT_PACKS, PackId } from '@/app/api/credits/checkout/route';
+import { CREDIT_PACKS, PackId } from '@/lib/credits';
 
 export const runtime = 'nodejs';
 

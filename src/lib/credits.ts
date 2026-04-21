@@ -1,6 +1,26 @@
 import { Pool } from 'pg';
 import * as Sentry from '@sentry/nextjs';
 
+export const CREDIT_PACKS = {
+  starter: {
+    priceId: process.env.STRIPE_CREDITS_STARTER_PRICE_ID!,
+    credits: 5,
+    label: 'Starter Pack',
+  },
+  value: {
+    priceId: process.env.STRIPE_CREDITS_VALUE_PRICE_ID!,
+    credits: 20,
+    label: 'Value Pack',
+  },
+  pro: {
+    priceId: process.env.STRIPE_CREDITS_PRO_PRICE_ID!,
+    credits: 50,
+    label: 'Pro Pack',
+  },
+} as const;
+
+export type PackId = keyof typeof CREDIT_PACKS;
+
 const SIGNUP_BONUS = 3;
 
 let pool: Pool | null = null;
