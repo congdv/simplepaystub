@@ -1,26 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { stripe } from '@/lib/stripe';
+import { CREDIT_PACKS, PackId } from '@/lib/credits';
 import { NextRequest, NextResponse } from 'next/server';
-
-export const CREDIT_PACKS = {
-  starter: {
-    priceId: process.env.STRIPE_CREDITS_STARTER_PRICE_ID!,
-    credits: 5,
-    label: 'Starter Pack',
-  },
-  value: {
-    priceId: process.env.STRIPE_CREDITS_VALUE_PRICE_ID!,
-    credits: 20,
-    label: 'Value Pack',
-  },
-  pro: {
-    priceId: process.env.STRIPE_CREDITS_PRO_PRICE_ID!,
-    credits: 50,
-    label: 'Pro Pack',
-  },
-} as const;
-
-export type PackId = keyof typeof CREDIT_PACKS;
 
 export async function POST(req: NextRequest) {
   try {
