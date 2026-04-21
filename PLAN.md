@@ -1,139 +1,143 @@
-# Stripe Pricing & Paywall Integration Plan
+# Credit-Based Monetization Plan
 
 ## Context
 
-simplepaystub.com is currently a free paystub generator with no monetization. The `next/payment` branch was created to add payment features. This plan implements Stripe subscription billing with free/pro tiers.
+simplepaystub.com is a free paystub generator. The `next/payment` branch adds monetization via a **credit-based** system — users buy credit packs and spend credits on premium actions. No recurring subscriptions.
 
-**All current features remain free**: preview, PDF download, email sending, both templates, history.
+**All current free features stay free**: preview, PDF download, email sending (attachment), both templates (Nova & Mono), paystub history.
 
-**Pro tier unlocks new features** (to be built in subsequent work):
-- Auto tax calculations (federal, FICA, state)
-- Bulk/batch generation (CSV upload)
-- Premium templates (beyond Nova and Mono)
-- Secure email delivery (expiring links, portal inboxes)
+**Credits unlock premium actions:**
+- Auto Tax — auto-fill payroll contributions (US FICA, Canada CPP/EI) — **1 credit per use**
+- Batch Generate — bulk generation from CSV — **1 credit per paystub generated**
 
-This phase builds the billing infrastructure (Stripe Checkout, webhooks, subscription tracking, pricing page) and adds Pro entry points (upgrade modal, locked feature buttons) for the new Pro features.
+**Deferred (revisit later):**
+- Secure email with expiring links (replace attachment email with signed storage URLs)
+- Premium templates
+
+---
+
+## Credit Packs (Stripe one-time payments)
+
+| Pack | Credits | Price | Per credit |
+|------|---------|-------|------------|
+| Starter | 5 | $4.99 | $1.00 |
+| Value | 20 | $14.99 | $0.75 |
+| Pro | 50 | $29.99 | $0.60 |
+
+New users receive **3 free credits** on first sign-in.
 
 ---
 
 ## Phase 1: Foundation
 
-### 1.1 Install Stripe
-- `npm install stripe`
+### 1.1 Database migration
+- **New**: `db/migrations/YYYYMMDD_create_credits.sql`
+- Table `credits`: `id`, `user_id`, `balance` (int, default 0), `created_at`, `updated_at`
+- Table `credit_transactions`: `id`, `user_id`, `amount` (positive = top-up, negative = spend), `action` (e.g. `auto_tax`, `batch_generate`, `purchase`, `signup_bonus`), `stripe_payment_intent_id` (nullable), `created_at`
+- Unique index on `credits.user_id`
+- RLS: users read own row; service_role manages all
 
 ### 1.2 Stripe server client
-- **New**: `src/lib/stripe.ts` — singleton `stripe` instance using `STRIPE_SECRET_KEY`
+- **Existing**: `src/lib/stripe.ts` — singleton `stripe` instance (already done)
 
-### 1.3 Database migration
-- **New**: `supabase/migrations/003_create_subscriptions.sql`
-- Table `subscriptions`: `id`, `user_id` (FK → auth.users), `stripe_customer_id`, `stripe_subscription_id`, `status` (active/trialing/past_due/canceled/inactive/unpaid), `plan` (free/pro), `price_id`, `interval` (month/year), `current_period_start`, `current_period_end`, `cancel_at_period_end`, `created_at`, `updated_at`
-- Unique indexes on `user_id` and `stripe_customer_id`
-- RLS: users read own row, service_role manages all
-- Reuse `update_updated_at_column()` trigger already defined in `supabase/migrations/001_create_daily_stats.sql`
+### 1.3 Credits helpers
+- **New**: `src/lib/credits.ts`
+  - `getCredits(userId)` — returns current balance from `credits` table
+  - `deductCredit(userId, action)` — deducts 1 credit, inserts transaction row; throws if balance < 1
+  - `addCredits(userId, amount, action, paymentIntentId?)` — adds credits, inserts transaction row
 
-### 1.4 Subscription helpers
-- **New**: `src/lib/subscription.ts`
-  - `getSubscription(userId)` — queries subscriptions table via `pg` Pool (same pattern as `src/lib/supabase/admin.ts`)
-  - `isProUser(subscription)` — returns `true` if status is `active` or `trialing`
-  - `checkProAccess(userId)` — combines both
+### 1.4 Credits status API
+- **New**: `src/app/api/credits/status/route.ts` — auth required, returns `{ balance: number }`
 
-### 1.5 Subscription status API route
-- **New**: `src/app/api/stripe/status/route.ts` — auth required, returns `{ isPro, subscription }` for current user
-
-### 1.6 Client-side subscription hook
-- **New**: `src/hooks/use-subscription.ts` — fetches `/api/stripe/status`, returns `{ isPro, isLoading, subscription }`
+### 1.5 Client-side credits hook
+- **New**: `src/hooks/use-credits.ts` — fetches `/api/credits/status`, returns `{ balance, isLoading, refresh }`
 
 ---
 
-## Phase 2: Payment Flow
+## Phase 2: Purchase Flow
 
 ### 2.1 Checkout session endpoint
-- **New**: `src/app/api/stripe/checkout/route.ts`
-- Auth required. Accepts `{ priceId }`. Looks up or creates Stripe customer linked to Supabase user. Creates Checkout Session with `client_reference_id = user.id`. Returns `{ url }`.
+- **New**: `src/app/api/credits/checkout/route.ts`
+- Auth required. Accepts `{ packId: 'starter' | 'value' | 'pro' }`. Creates Stripe Checkout Session (`mode: 'payment'`). Returns `{ url }`.
 
-### 2.2 Customer portal endpoint
-- **New**: `src/app/api/stripe/portal/route.ts`
-- Auth required. Looks up `stripe_customer_id` from DB. Creates Stripe billing portal session. Returns `{ url }`.
-
-### 2.3 Webhook handler
-- **New**: `src/app/api/stripe/webhook/route.ts`
-- No auth — verified via Stripe signature (`stripe.webhooks.constructEvent`)
-- Uses `pg` Pool (same pattern as `admin.ts`) for DB writes, bypassing RLS
+### 2.2 Webhook handler
+- **New** (or update existing): `src/app/api/stripe/webhook/route.ts`
 - Events handled:
-  - `checkout.session.completed` — upsert subscription row, link `stripe_customer_id` → `user_id` via `client_reference_id`
-  - `customer.subscription.created` / `updated` — sync status, plan, dates
-  - `customer.subscription.deleted` — set `status=canceled`, `plan=free`
-  - `invoice.payment_failed` — set `status=past_due`
+  - `checkout.session.completed` (mode=payment) — call `addCredits` with pack amount
+- Keep existing subscription events removed (no subscriptions in new model)
+
+### 2.3 Signup bonus
+- **Modify**: auth callback or user creation flow — call `addCredits(userId, 3, 'signup_bonus')` on first sign-in
 
 ---
 
 ## Phase 3: Pricing Page
 
-### 3.1 Route setup
-- **Modify**: `src/paths.ts` — add `pricing: '/pricing'`
-- **Modify**: `src/lib/supabase/middleware.ts` — add `paths.pricing` to `PUBLIC_PATHS`
-
-### 3.2 Pricing page
-- **New**: `src/app/(landing)/pricing/page.tsx`
-- Two-column comparison: Free vs Pro
-- Free tier: All current features (preview, download, email, 2 templates)
-- Pro tier: Auto tax calculations, batch generation, premium templates, secure delivery
-- Monthly ($9.99) and Annual ($79.99) toggle
-- CTA buttons call `/api/stripe/checkout`. If not logged in, redirect to sign-up with return URL.
-
-### 3.3 Navigation
-- **Modify**: `src/components/header.tsx` — add "Pricing" `<Link>` between logo and `<UserButton />`
+### 3.1 Pricing page
+- **Modify**: `src/app/(landing)/pricing/page.tsx`
+- Show credit pack cards (Starter / Value / Pro) with prices and credit amounts
+- Remove monthly/annual subscription toggle
+- CTA buttons call `/api/credits/checkout`. If not logged in, redirect to sign-up.
 
 ---
 
-## Phase 4: Pro Entry Points
+## Phase 4: Credit Gates
 
-> **No changes to existing download or email flows — they remain fully free.**
+> **No changes to download or email flows — they remain fully free.**
 
 ### 4.1 Upgrade modal
-- **New**: `src/components/upgrade-modal.tsx` — shown when a free user clicks a Pro feature. CTA links to `/pricing`.
+- **Modify**: `src/components/upgrade-modal.tsx`
+- Update copy to reference credits instead of Pro plan
+- Show current balance if user is signed in
+- CTA links to `/pricing` (credit packs)
 
-### 4.2 Pro feature placeholders
-- Add locked Pro feature buttons in the UI (e.g., "Auto Tax", "Batch Generate") that:
-  - Show `UpgradeModal` when clicked by a free user
-  - Are enabled (functional) for Pro users
-- These are placeholder entry points; the actual feature logic comes in later work.
+### 4.2 Credit deduction API
+- **New**: `src/app/api/credits/deduct/route.ts`
+- Auth required. Accepts `{ action: 'auto_tax' | 'batch_generate' }`. Calls `deductCredit`. Returns `{ balance: number }`.
 
-### 4.3 Wire up subscription in hooks
-- **Modify**: `src/hooks/use-paystub-actions.ts` — add `isPro: boolean` and `setShowUpgradeModal: (show: boolean) => void` to `UsePaystubActionsProps` for use by Pro feature actions
+### 4.3 Auto Tax gate
+- **Modify**: `src/components/paystub-form.tsx`
+- Replace `isPro` check with `balance > 0` check from `useCredits`
+- On click: call `/api/credits/deduct`, then run auto-tax logic on success
+- On insufficient credits: show upgrade modal
+
+### 4.4 Batch Generate gate
+- **Modify**: `src/components/paystub-form.tsx`
+- On batch submit: deduct 1 credit per paystub via `/api/credits/deduct` before generating each
+- On insufficient credits mid-batch: stop and inform user
 
 ---
 
 ## Phase 5: Account Integration
 
-### 5.1 Subscription info on account page
+### 5.1 Credits display on account page
 - **Modify**: `src/app/(protected)/account/page.tsx`
-  - Show current plan (Free/Pro), status, renewal date
-  - "Manage Subscription" button → calls `/api/stripe/portal` and redirects
-  - "Upgrade to Pro" button for free users → navigates to `/pricing`
+- Show current credit balance
+- "Buy more credits" button → navigates to `/pricing`
+- Show recent credit transaction history
 
-### 5.2 Pro badge
-- **New**: `src/components/pro-badge.tsx` — small "PRO" badge shown in header/account for subscribed users
+### 5.2 Remove subscription UI
+- Remove plan/status/renewal date display
+- Remove "Manage Subscription" portal button
+- Remove `useSubscription` hook usage
 
 ---
 
 ## Environment Variables
 
-Add to `.env.local` and Vercel:
-
 ```
 STRIPE_SECRET_KEY=sk_...
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_...
 STRIPE_WEBHOOK_SECRET=whsec_...
-STRIPE_PRO_MONTHLY_PRICE_ID=price_...
-STRIPE_PRO_ANNUAL_PRICE_ID=price_...
+NEXT_PUBLIC_STRIPE_CREDITS_STARTER_PRICE_ID=price_...   # $4.99 / 5 credits
+NEXT_PUBLIC_STRIPE_CREDITS_VALUE_PRICE_ID=price_...     # $14.99 / 20 credits
+NEXT_PUBLIC_STRIPE_CREDITS_PRO_PRICE_ID=price_...       # $29.99 / 50 credits
 ```
 
-**Stripe Dashboard setup required before running:**
-1. Create product "SimplePaystub Pro" with monthly ($9.99) and annual ($79.99) prices
-2. Note the two Price IDs
-3. Configure Customer Portal (allow cancel, plan switch, payment method update; return URL: `/account`)
-4. Create webhook endpoint at `https://simplepaystub.com/api/stripe/webhook` listening for: `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`
+**Stripe Dashboard setup:**
+1. Create product "SimplePaystub Credits" with three one-time prices ($4.99, $14.99, $29.99)
+2. Note the three Price IDs
+3. Create webhook endpoint at `https://simplepaystub.com/api/stripe/webhook` listening for: `checkout.session.completed`
 
 ---
 
@@ -142,37 +146,39 @@ STRIPE_PRO_ANNUAL_PRICE_ID=price_...
 ### Modified
 | File | Change |
 |------|--------|
-| `src/paths.ts` | Add `pricing` path |
-| `src/lib/supabase/middleware.ts` | Add `paths.pricing` to `PUBLIC_PATHS` |
-| `src/components/header.tsx` | Add Pricing nav link |
-| `src/hooks/use-paystub-actions.ts` | Add `isPro` + `setShowUpgradeModal` props |
-| `src/lib/commands/paystub-actions.ts` | Add `isPro` + `setShowUpgradeModal` to `PaystubActionDependencies` |
-| `src/app/(protected)/account/page.tsx` | Subscription info + portal/upgrade buttons |
-
-> `src/app/api/generate/route.ts` and `src/app/api/send-email/route.ts` are **not changed**.
+| `src/app/(landing)/pricing/page.tsx` | Credit packs UI, remove subscription toggle |
+| `src/components/upgrade-modal.tsx` | Credit-based copy and CTA |
+| `src/components/paystub-form.tsx` | Replace `isPro` gates with credit balance checks |
+| `src/app/api/stripe/webhook/route.ts` | Handle `checkout.session.completed` for one-time payments |
+| `src/app/(protected)/account/page.tsx` | Show credit balance + transaction history, remove subscription UI |
 
 ### New
 | File | Purpose |
 |------|---------|
-| `src/lib/stripe.ts` | Stripe client singleton |
-| `src/lib/subscription.ts` | Server-side subscription helpers |
-| `src/hooks/use-subscription.ts` | Client-side subscription hook |
-| `src/app/api/stripe/status/route.ts` | Get current user's subscription status |
-| `src/app/api/stripe/checkout/route.ts` | Create Stripe Checkout Session |
-| `src/app/api/stripe/portal/route.ts` | Create Stripe Customer Portal Session |
-| `src/app/api/stripe/webhook/route.ts` | Stripe webhook handler |
-| `src/app/(landing)/pricing/page.tsx` | Public pricing page |
-| `src/components/upgrade-modal.tsx` | Upgrade prompt modal |
-| `src/components/pro-badge.tsx` | Pro badge component |
-| `supabase/migrations/003_create_subscriptions.sql` | Subscriptions table |
+| `src/lib/credits.ts` | Server-side credit helpers (get, deduct, add) |
+| `src/hooks/use-credits.ts` | Client-side credits hook |
+| `src/app/api/credits/status/route.ts` | Get current user's credit balance |
+| `src/app/api/credits/checkout/route.ts` | Create Stripe Checkout Session for credit pack |
+| `src/app/api/credits/deduct/route.ts` | Deduct 1 credit for a premium action |
+| `db/migrations/YYYYMMDD_create_credits.sql` | Credits + credit_transactions tables |
+
+### Removed / Superseded
+| File | Reason |
+|------|--------|
+| `src/lib/subscription.ts` | No subscriptions in new model |
+| `src/hooks/use-subscription.ts` | Replaced by `use-credits.ts` |
+| `src/app/api/stripe/status/route.ts` | Replaced by `/api/credits/status` |
+| `src/app/api/stripe/checkout/route.ts` | Replaced by `/api/credits/checkout` |
+| `src/app/api/stripe/portal/route.ts` | No portal needed (no subscriptions) |
 
 ---
 
 ## Verification
 
 1. **Local webhooks**: `stripe listen --forward-to localhost:3000/api/stripe/webhook`
-2. **Checkout flow**: Sign up → `/pricing` → Subscribe → test card `4242 4242 4242 4242` → verify redirect back + `subscriptions` row created with `status=active`
-3. **Free features**: As any user, download PDF and send email — both work with no prompts or restrictions
-4. **Pro entry points**: As free user, click "Auto Tax" or "Batch Generate" → verify upgrade modal. As Pro user → verify button is enabled.
-5. **Account page**: Verify plan, status, renewal date shown. "Manage Subscription" opens Stripe portal.
-6. **Cancellation**: Cancel in portal → webhook fires → DB sets `cancel_at_period_end=true`
+2. **Purchase flow**: Sign in → `/pricing` → buy Starter pack → test card `4242 4242 4242 4242` → verify redirect back + balance = 5
+3. **Signup bonus**: New user signs in → verify balance = 3
+4. **Auto Tax gate**: With 0 credits, click Auto Tax → upgrade modal. With credits → deducts 1, runs calculation.
+5. **Batch Generate gate**: Upload CSV with 3 paystubs, 2 credits remaining → generates 2, stops with insufficient credit message.
+6. **Free features**: Download PDF and send email as any user — no credit check, no prompts.
+7. **Account page**: Verify balance and transaction history shown correctly.

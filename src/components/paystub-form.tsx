@@ -1,23 +1,35 @@
 'use client';
 
-import { PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
+import { DEFAULT_PAYMENT_TYPE, PAY_STUB_FORM_DEFAULT_VALUES } from '@/constants';
 import { usePaystub } from '@/contexts/paystub-context';
 import { useToolbar } from '@/contexts/toolbar-context';
 import { usePaystubActions } from '@/hooks/use-paystub-actions';
+import { useCredits } from '@/hooks/use-credits';
+import { calculateAutoTax, TaxRow } from '@/lib/tax';
 import { mockPayStub } from '@/lib/mock';
 import { createClient } from '@/lib/supabase/client';
 import { PayStubType } from '@/types';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { toast } from 'sonner';
 import { DownloadConfirmationModal } from './download-confirmation-modal';
 import { LoginDialog } from './login-dialog';
 import { UpgradeModal } from './upgrade-modal';
-import { useSubscription } from '@/hooks/use-subscription';
 import PaystubFormContent, { PAYSTUB_STEPS } from './paystub-form-content';
 import { PaystubFormHeader } from './paystub-form-header';
 import { SendEmailDialog } from './send-email-dialog';
+import { Button } from './ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from './ui/dialog';
 import { Form } from './ui/form';
 import { Tabs } from './ui/tabs';
+
+const AUTO_TAX_LABELS = new Set(['Social Security', 'Medicare', 'Additional Medicare', 'CPP', 'EI']);
 
 export const PaystubForm = () => {
   const supabase = createClient();
@@ -30,14 +42,15 @@ export const PaystubForm = () => {
   const [currentTab, setCurrentTab] = useState(PAYSTUB_STEPS[0].value);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const [upgradeFeatureName, setUpgradeFeatureName] = useState<string | undefined>();
+  const [autoTaxDisclaimerOpen, setAutoTaxDisclaimerOpen] = useState(false);
+  const [pendingAutoTaxRows, setPendingAutoTaxRows] = useState<TaxRow[] | null>(null);
+  const [unsupportedGeoOpen, setUnsupportedGeoOpen] = useState(false);
+  const [unsupportedGeoReason, setUnsupportedGeoReason] = useState('');
 
-  const { isPro } = useSubscription();
-
-  // Use toolbar context
+  const { balance, refresh: refreshCredits } = useCredits();
   const { setLoadingState, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail, setOnAutoTax, setOnBatchGenerate } = useToolbar();
   const { savePaystub, getPaystub } = usePaystub();
 
-  // Initialize actions
   const actions = usePaystubActions({
     form,
     supabase,
@@ -51,7 +64,13 @@ export const PaystubForm = () => {
     mockPayStub,
   });
 
-  // Register actions with toolbar
+  const applyAutoTaxRows = useCallback((rows: TaxRow[]) => {
+    const current = form.getValues('deductions');
+    const filtered = current.filter((d: { label: string }) => !AUTO_TAX_LABELS.has(d.label));
+    form.setValue('deductions', [...filtered, ...rows], { shouldDirty: true });
+    toast.success('Payroll contributions added. Review and adjust as needed.');
+  }, [form]);
+
   useEffect(() => {
     setOnReset(() => actions.reset.execute.bind(actions.reset));
     setOnLoadSample(() => actions.loadSample.execute.bind(actions.loadSample));
@@ -59,30 +78,65 @@ export const PaystubForm = () => {
     setOnSave(() => actions.save.execute.bind(actions.save));
     setOnViewPaystub(() => (id: string) => actions.viewPaystub.execute.bind(actions.viewPaystub)(id));
     setOnSendEmail(() => actions.sendEmail.execute.bind(actions.sendEmail));
-    setOnAutoTax(() => () => {
-      if (isPro) {
-        // Auto tax feature coming soon
-      } else {
-        setUpgradeFeatureName('Auto Tax Calculations');
+    setOnAutoTax(() => async () => {
+      if (balance < 1) {
+        setUpgradeFeatureName('Auto Tax');
         setUpgradeModalOpen(true);
+        return;
+      }
+      const values = form.getValues();
+      const country = values.payee.countryOrRegion ?? '';
+      const province = values.payee.stateOrProvince ?? '';
+      const gross =
+        values.payment.type === DEFAULT_PAYMENT_TYPE
+          ? Number(values.payment.hourlyRate) * Number(values.payment.numOfHours)
+          : Number(values.payment.annualSalary);
+      const frequency = values.payment.frequency;
+      const result = calculateAutoTax({ country, province, gross, frequency });
+      if (result.unsupportedReason === 'unsupported_province') {
+        setUnsupportedGeoReason('Auto Tax does not currently support Quebec payroll.');
+        setUnsupportedGeoOpen(true);
+        return;
+      }
+      if (result.unsupportedReason === 'unsupported_country') {
+        setUnsupportedGeoReason('Auto Tax is available for United States and Canada (excluding Quebec) payroll only.');
+        setUnsupportedGeoOpen(true);
+        return;
+      }
+      // Deduct credit before applying
+      const res = await fetch('/api/credits/deduct', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'auto_tax' }),
+      });
+      if (!res.ok) {
+        setUpgradeFeatureName('Auto Tax');
+        setUpgradeModalOpen(true);
+        return;
+      }
+      refreshCredits();
+      if (!sessionStorage.getItem('autoTaxDisclaimerShown')) {
+        setPendingAutoTaxRows(result.rows);
+        setAutoTaxDisclaimerOpen(true);
+      } else {
+        applyAutoTaxRows(result.rows);
       }
     });
     setOnBatchGenerate(() => () => {
-      if (isPro) {
-        // Batch generate feature coming soon
-      } else {
+      if (balance < 1) {
         setUpgradeFeatureName('Batch Generation');
         setUpgradeModalOpen(true);
+        return;
       }
+      // Batch generate feature coming soon
     });
-  }, [actions, isPro, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail, setOnAutoTax, setOnBatchGenerate]);
+  }, [actions, balance, refreshCredits, applyAutoTaxRows, setOnReset, setOnLoadSample, setOnDownload, setOnSave, setOnViewPaystub, setOnSendEmail, setOnAutoTax, setOnBatchGenerate]);
 
   return (
     <Form {...form}>
       <form onSubmit={(e) => { e.preventDefault(); actions.download.execute(); }}>
         <Tabs value={currentTab} onValueChange={setCurrentTab}>
           <PaystubFormHeader />
-
           <PaystubFormContent currentTab={currentTab} setCurrentTab={setCurrentTab} />
         </Tabs>
         <DownloadConfirmationModal
@@ -102,21 +156,61 @@ export const PaystubForm = () => {
         <LoginDialog
           open={showLoginDialog}
           onClose={() => setShowLoginDialog(false)}
-          onLoginSuccess={() => {
-            setShowLoginDialog(false);
-          }}
+          onLoginSuccess={() => setShowLoginDialog(false)}
         />
         <UpgradeModal
           open={upgradeModalOpen}
           onClose={() => setUpgradeModalOpen(false)}
           featureName={upgradeFeatureName}
+          balance={balance}
         />
         <SendEmailDialog
           open={showSendEmailDialog}
           onClose={() => setShowSendEmailDialog(false)}
           onSend={(email, name) => actions.actuallySendEmail.execute(email, name)}
         />
+        <Dialog open={autoTaxDisclaimerOpen} onOpenChange={(v) => !v && setAutoTaxDisclaimerOpen(false)}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Estimates Only</DialogTitle>
+              <DialogDescription>
+                Auto Tax fills in payroll contributions using 2025 rates (US FICA or Canadian CPP/EI).
+                These are estimates and may differ from your actual withholdings. Social Security and
+                CPP wage-base caps are not applied. Always verify with your employer or a tax professional.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex gap-3 mt-2">
+              <Button variant="outline" onClick={() => setAutoTaxDisclaimerOpen(false)} className="flex-1">
+                Cancel
+              </Button>
+              <Button
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={() => {
+                  sessionStorage.setItem('autoTaxDisclaimerShown', '1');
+                  if (pendingAutoTaxRows) {
+                    applyAutoTaxRows(pendingAutoTaxRows);
+                    setPendingAutoTaxRows(null);
+                  }
+                  setAutoTaxDisclaimerOpen(false);
+                }}
+              >
+                Understood, apply
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+        <Dialog open={unsupportedGeoOpen} onOpenChange={(v) => !v && setUnsupportedGeoOpen(false)}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Region Not Supported</DialogTitle>
+              <DialogDescription>{unsupportedGeoReason}</DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end mt-2">
+              <Button variant="outline" onClick={() => setUnsupportedGeoOpen(false)}>Close</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </form>
-    </Form >
+    </Form>
   );
 };

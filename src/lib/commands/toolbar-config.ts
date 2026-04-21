@@ -50,7 +50,7 @@ export const TOOLBAR_BUTTONS: ToolbarButtonConfig[] = [
   },
   {
     id: 'autoTax',
-    title: 'Auto-calculate taxes (Pro)',
+    title: 'Auto-fill payroll contributions (Pro)',
     icon: Calculator,
     label: 'Auto Tax',
     isPro: true,

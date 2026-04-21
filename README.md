@@ -72,18 +72,37 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SENTRY_DSN=your_sentry_dsn (optional)
 ```
 
-4. Run database migrations:
+4. Install dbmate (one-time):
 ```bash
-# Apply Supabase migrations
-npx supabase db push
+brew install dbmate
 ```
 
-5. Start the development server:
+5. Run database migrations:
+```bash
+npm run db:up
+```
+
+6. Start the development server:
 ```bash
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see the application.
+
+## Database Migrations
+
+Migrations are managed with [dbmate](https://github.com/amacneil/dbmate). Migration files live in `db/migrations/` and the canonical schema snapshot is in `db/schema.sql`.
+
+**Prerequisite:** `brew install dbmate`
+
+| Command | Description |
+|---------|-------------|
+| `npm run db:status` | Show pending and applied migrations |
+| `npm run db:up` | Apply all pending migrations |
+| `npm run db:down` | Roll back the last migration |
+| `npm run db:new <name>` | Create a new migration file |
+
+New migrations are created with `npm run db:new <name>` and include `-- migrate:up` / `-- migrate:down` sections.
 
 ## Available Scripts
 

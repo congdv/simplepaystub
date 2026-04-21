@@ -124,7 +124,7 @@ const PAYMENT_DEFAULT_VALUES = {
   date: new Date(),
   periodStart: new Date(),
   periodEnd: new Date(),
-  frequency: '',
+  frequency: DEFAULT_PAYMENT_FREQUENCY,
   chequeNumber: '',
   ytd: '',
 };

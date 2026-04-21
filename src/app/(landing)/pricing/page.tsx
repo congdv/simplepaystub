@@ -3,8 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Check, Zap } from 'lucide-react';
 import paths from '@/paths';
 
 const FREE_FEATURES = [
@@ -13,33 +12,53 @@ const FREE_FEATURES = [
   'Email delivery',
   'Nova & Mono templates',
   'Paystub history (local)',
+  '3 free credits on sign-up',
 ];
 
-const PRO_FEATURES = [
-  'Everything in Free',
-  'Auto tax calculations (federal, FICA, state)',
+const CREDIT_PACKS = [
+  {
+    id: 'starter',
+    name: 'Starter',
+    credits: 5,
+    price: '$4.99',
+    perCredit: '$1.00',
+    highlight: false,
+  },
+  {
+    id: 'value',
+    name: 'Value',
+    credits: 20,
+    price: '$14.99',
+    perCredit: '$0.75',
+    highlight: true,
+  },
+  {
+    id: 'pro',
+    name: 'Pro',
+    credits: 50,
+    price: '$29.99',
+    perCredit: '$0.60',
+    highlight: false,
+  },
+] as const;
+
+const CREDIT_FEATURES = [
+  'Auto-fill payroll contributions (US FICA, Canada CPP/EI)',
   'Bulk generation via CSV upload',
-  'Premium template library',
-  'Secure email delivery with expiring links',
-  'Priority support',
+  'Credits never expire',
 ];
-
-const MONTHLY_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID!;
-const ANNUAL_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRO_ANNUAL_PRICE_ID!;
 
 export default function PricingPage() {
-  const [annual, setAnnual] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleSubscribe = async () => {
-    setLoading(true);
+  const handleBuy = async (packId: string) => {
+    setLoading(packId);
     try {
-      const priceId = annual ? ANNUAL_PRICE_ID : MONTHLY_PRICE_ID;
-      const res = await fetch('/api/stripe/checkout', {
+      const res = await fetch('/api/credits/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId }),
+        body: JSON.stringify({ packId }),
       });
 
       if (res.status === 401) {
@@ -48,13 +67,11 @@ export default function PricingPage() {
       }
 
       const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      }
+      if (data.url) window.location.href = data.url;
     } catch (err) {
       console.error('Checkout error:', err);
     } finally {
-      setLoading(false);
+      setLoading(null);
     }
   };
 
@@ -62,100 +79,105 @@ export default function PricingPage() {
     <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
       {/* Header */}
       <div className="text-center mb-10">
-        <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Simple, transparent pricing</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Simple, pay-as-you-go pricing</h1>
         <p className="text-slate-500 text-base sm:text-lg max-w-xl mx-auto">
-          Start for free. Upgrade when you need powerful automation and compliance tools.
+          All core features are free. Buy credits only when you need Auto Tax or bulk generation.
         </p>
       </div>
 
-      {/* Billing toggle */}
-      <div className="flex items-center justify-center gap-3 mb-10">
-        <span className={cn('text-sm font-medium', !annual ? 'text-slate-900' : 'text-slate-400')}>Monthly</span>
-        <button
-          onClick={() => setAnnual((v) => !v)}
-          className={cn(
-            'relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none',
-            annual ? 'bg-blue-600' : 'bg-slate-300'
-          )}
-          aria-label="Toggle annual billing"
-        >
-          <span
-            className={cn(
-              'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
-              annual ? 'translate-x-6' : 'translate-x-1'
-            )}
-          />
-        </button>
-        <span className={cn('text-sm font-medium', annual ? 'text-slate-900' : 'text-slate-400')}>
-          Annual <span className="ml-1 text-xs text-green-600 font-semibold">Save 33%</span>
-        </span>
+      {/* Free tier */}
+      <div className="max-w-3xl mx-auto mb-10">
+        <div className="bg-white rounded-2xl border border-slate-200 p-8">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-1">Free — always</p>
+              <div className="flex items-end gap-1 mb-3">
+                <span className="text-4xl font-bold text-slate-900">$0</span>
+                <span className="text-slate-500 mb-1">/ forever</span>
+              </div>
+              <ul className="space-y-2">
+                {FREE_FEATURES.map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-slate-700">
+                    <Check className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="sm:pt-10">
+              <Link
+                href={paths.home}
+                className="block text-center rounded-lg border border-slate-300 px-6 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap"
+              >
+                Get started free
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-        {/* Free */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-8 flex flex-col">
-          <div className="mb-6">
-            <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-1">Free</p>
-            <div className="flex items-end gap-1">
-              <span className="text-4xl font-bold text-slate-900">$0</span>
-              <span className="text-slate-500 mb-1">/ forever</span>
-            </div>
-            <p className="text-sm text-slate-500 mt-2">Everything you need to create professional paystubs.</p>
-          </div>
-
-          <ul className="space-y-3 mb-8 flex-1">
-            {FREE_FEATURES.map((f) => (
-              <li key={f} className="flex items-start gap-2 text-sm text-slate-700">
-                <Check className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
-                {f}
-              </li>
-            ))}
-          </ul>
-
-          <Link
-            href={paths.home}
-            className="block text-center rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
-          >
-            Get started free
-          </Link>
+      {/* Credit packs */}
+      <div className="text-center mb-6">
+        <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-sm font-medium px-3 py-1.5 rounded-full">
+          <Zap className="h-3.5 w-3.5" />
+          Credits unlock premium features
         </div>
+      </div>
 
-        {/* Pro */}
-        <div className="bg-blue-600 rounded-2xl border border-blue-600 p-8 flex flex-col text-white shadow-lg shadow-blue-200">
-          <div className="mb-6">
-            <p className="text-sm font-semibold text-blue-200 uppercase tracking-wide mb-1">Pro</p>
-            <div className="flex items-end gap-1">
-              <span className="text-4xl font-bold">{annual ? '$6.67' : '$9.99'}</span>
-              <span className="text-blue-200 mb-1">/ month</span>
-            </div>
-            {annual && (
-              <p className="text-xs text-blue-200 mt-1">Billed $79.99 annually</p>
-            )}
-            <p className="text-sm text-blue-100 mt-2">Advanced automation, compliance, and premium features.</p>
-          </div>
+      <div className="mb-4 max-w-3xl mx-auto">
+        <ul className="flex flex-wrap justify-center gap-x-6 gap-y-1">
+          {CREDIT_FEATURES.map((f) => (
+            <li key={f} className="flex items-center gap-1.5 text-sm text-slate-600">
+              <Check className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+              {f}
+            </li>
+          ))}
+        </ul>
+      </div>
 
-          <ul className="space-y-3 mb-8 flex-1">
-            {PRO_FEATURES.map((f) => (
-              <li key={f} className="flex items-start gap-2 text-sm text-blue-50">
-                <Check className="h-4 w-4 text-blue-200 mt-0.5 shrink-0" />
-                {f}
-              </li>
-            ))}
-          </ul>
-
-          <button
-            onClick={handleSubscribe}
-            disabled={loading}
-            className="block w-full text-center rounded-lg bg-white text-blue-600 px-4 py-2.5 text-sm font-semibold hover:bg-blue-50 transition-colors disabled:opacity-60"
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+        {CREDIT_PACKS.map((pack) => (
+          <div
+            key={pack.id}
+            className={`rounded-2xl border p-6 flex flex-col ${
+              pack.highlight
+                ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-200'
+                : 'bg-white border-slate-200'
+            }`}
           >
-            {loading ? 'Redirecting…' : `Get Pro — ${annual ? '$79.99/yr' : '$9.99/mo'}`}
-          </button>
-        </div>
+            <div className="mb-1">
+              {pack.highlight && (
+                <span className="text-xs font-semibold bg-white/20 text-white px-2 py-0.5 rounded-full">
+                  Most popular
+                </span>
+              )}
+            </div>
+            <p className={`text-sm font-semibold uppercase tracking-wide mb-1 ${pack.highlight ? 'text-blue-200' : 'text-slate-500'}`}>
+              {pack.name}
+            </p>
+            <div className="flex items-end gap-1 mb-1">
+              <span className="text-3xl font-bold">{pack.price}</span>
+            </div>
+            <p className={`text-sm mb-4 ${pack.highlight ? 'text-blue-100' : 'text-slate-500'}`}>
+              {pack.credits} credits · {pack.perCredit} each
+            </p>
+            <button
+              onClick={() => handleBuy(pack.id)}
+              disabled={loading === pack.id}
+              className={`mt-auto w-full rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors disabled:opacity-60 ${
+                pack.highlight
+                  ? 'bg-white text-blue-600 hover:bg-blue-50'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              {loading === pack.id ? 'Redirecting…' : `Buy ${pack.credits} credits`}
+            </button>
+          </div>
+        ))}
       </div>
 
       <p className="text-center text-xs text-slate-400 mt-8">
-        Prices in USD. Cancel anytime. By subscribing you agree to our{' '}
+        Prices in USD. Credits never expire. By purchasing you agree to our{' '}
         <Link href={paths.terms} className="underline hover:text-slate-600">Terms</Link>.
       </p>
     </div>
