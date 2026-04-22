@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { createClient } from '@/lib/supabase/client';
 import paths from '@/paths';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function SignInPage() {
@@ -18,17 +18,23 @@ export default function SignInPage() {
   const [signing, setSigning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const safeRedirect = (() => {
+    const r = searchParams.get('redirect') ?? '';
+    return r.startsWith('/') && !r.startsWith('//') ? r : paths.home;
+  })();
 
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
-        router.replace(paths.home);
+        router.replace(safeRedirect);
       } else {
         setLoading(false);
       }
     });
-  }, [router]);
+  }, [router, safeRedirect]);
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +47,7 @@ export default function SignInPage() {
         password,
       });
       if (error) setError(error.message);
-      else router.replace(paths.home);
+      else router.replace(safeRedirect);
     } catch (err: any) {
       setError('Sign in failed. Please try again.');
     } finally {

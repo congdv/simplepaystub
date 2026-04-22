@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { createClient } from '@/lib/supabase/client';
 import paths from '@/paths';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function SignUpPage() {
@@ -22,17 +22,23 @@ export default function SignUpPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const safeRedirect = (() => {
+    const r = searchParams.get('redirect') ?? '';
+    return r.startsWith('/') && !r.startsWith('//') ? r : paths.home;
+  })();
 
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
-        router.replace('/dashboard');
+        router.replace(safeRedirect);
       } else {
         setLoading(false);
       }
     });
-  }, [router]);
+  }, [router, safeRedirect]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -83,7 +83,12 @@ export const PaystubForm = () => {
     setOnSave(() => actions.save.execute.bind(actions.save));
     setOnViewPaystub(() => (id: string) => actions.viewPaystub.execute.bind(actions.viewPaystub)(id));
     setOnSendEmail(() => actions.sendEmail.execute.bind(actions.sendEmail));
-    setOnAutoTax(() => () => {
+    setOnAutoTax(() => async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setShowLoginDialog(true);
+        return;
+      }
       if (balance < 1) {
         setUpgradeFeatureName('Auto Tax');
         setUpgradeModalOpen(true);
@@ -194,6 +199,10 @@ export const PaystubForm = () => {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'auto_tax' }),
                   });
+                  if (res.status === 401) {
+                    setShowLoginDialog(true);
+                    return;
+                  }
                   if (!res.ok) {
                     setUpgradeFeatureName('Auto Tax');
                     setUpgradeModalOpen(true);
