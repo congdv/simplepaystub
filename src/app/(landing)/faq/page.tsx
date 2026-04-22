@@ -1,6 +1,11 @@
 export default function FAQ() {
   const faqs = [
     {
+      question: 'How accurate are the tax calculations?',
+      answer:
+        'All tax and withholding amounts — including Auto Tax — are estimates based on standard tax tables and the information you enter. They do not account for your complete financial situation (additional income, credits, dependents, wage-base caps, year-to-date totals, or local taxes) and may differ from your actual tax liability. Our paystubs are intended as reasonable estimates for personal reference and are not tax, legal, or financial advice. Before relying on any figure for filing, employment, or legal purposes, please verify with your employer’s payroll department, a certified tax professional, or the appropriate tax authority (IRS, CRA, or your state/provincial agency).',
+    },
+    {
       question: 'Do you track my data or activity?',
       answer:
         'We may collect basic analytics data (like page visits and general usage patterns) to improve our service, but we never track or store your personal information or paystub data.',
@@ -41,7 +46,7 @@ export default function FAQ() {
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       <div className="mb-10">
         <h1 className="text-3xl font-bold text-slate-900 mb-2">Frequently Asked Questions</h1>
-        <p className="text-slate-500">Everything you need to know about privacy and data security</p>
+        <p className="text-slate-500">Everything you need to know about tax estimates, privacy, and data security</p>
       </div>
 
       <div className="space-y-4">
