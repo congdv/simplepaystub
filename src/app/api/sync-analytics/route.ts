@@ -5,6 +5,8 @@ import { getTotalUserCount } from '@/lib/supabase/admin';
 const ANALYTICS_URL = 'https://analytics.congdv.com/api/event';
 const ANALYTICS_SITE_ID = 'simplepaystub.com';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
     // Verify CRON_SECRET
     const authHeader = req.headers.get('authorization');
