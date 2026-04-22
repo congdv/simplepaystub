@@ -25,13 +25,13 @@ export const Header = ({ showAuth = true }: { showAuth?: boolean }) => {
             className="rounded"
             priority
           />
-          <span className={cn('text-xl font-bold text-primary tracking-tight', font.className)}>
+          <span className={cn('text-base sm:text-xl font-bold text-primary tracking-tight', font.className)}>
             SimplePaystub
           </span>
         </Link>
 
         {/* Right: Credits + Auth */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <CreditBalance />
           {showAuth && <UserButton />}
         </div>

@@ -24,14 +24,17 @@ export function CreditBalance() {
 
   return (
     <div className="flex items-center rounded-full border border-slate-200 shadow-sm overflow-hidden text-sm font-medium">
-      <span className="flex items-center gap-1.5 px-3 py-1.5 text-slate-700">
+      <span className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-slate-700">
         <CircleDollarSign className="h-4 w-4 text-slate-500" />
-        {balance} credits
+        <span>
+          {balance}
+          <span className="hidden sm:inline"> credits</span>
+        </span>
       </span>
       <span className="w-px h-5 bg-slate-200" />
       <Link
         href={paths.pricing}
-        className="px-3 py-1.5 text-slate-700 hover:bg-slate-50 transition-colors"
+        className="px-2.5 sm:px-3 py-1.5 text-slate-700 hover:bg-slate-50 transition-colors"
       >
         Buy
       </Link>
