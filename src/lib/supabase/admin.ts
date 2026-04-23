@@ -1,30 +1,36 @@
-import { Pool } from 'pg';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import * as Sentry from '@sentry/nextjs';
 
-let pool: Pool | null = null;
+let adminClient: SupabaseClient | null = null;
 
-const getPool = () => {
-  if (!pool) {
-    const databaseUrl = process.env.DATABASE_URL;
-    if (!databaseUrl) {
-      throw new Error('DATABASE_URL environment variable is required');
-    }
-    pool = new Pool({
-      connectionString: databaseUrl,
-      max: 15,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 2000,
-    });
+const getAdminClient = () => {
+  if (!adminClient) {
+    adminClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { persistSession: false, autoRefreshToken: false } }
+    );
   }
-  return pool;
+  return adminClient;
 };
 
 export const getTotalUserCount = async (): Promise<number> => {
-  const pool = getPool();
+  const supabase = getAdminClient();
 
   try {
-    const result = await pool.query('SELECT COUNT(*) FROM auth.users WHERE email_confirmed_at IS NOT NULL');
-    return parseInt(result.rows[0].count, 10);
+    let total = 0;
+    let page = 1;
+    const perPage = 1000;
+
+    while (true) {
+      const { data, error } = await supabase.auth.admin.listUsers({ page, perPage });
+      if (error) throw error;
+      total += data.users.filter(u => u.email_confirmed_at !== null).length;
+      if (data.users.length < perPage) break;
+      page++;
+    }
+
+    return total;
   } catch (error) {
     console.error('Error fetching user count:', error);
     Sentry.captureException(error, { tags: { function: 'getTotalUserCount' } });
